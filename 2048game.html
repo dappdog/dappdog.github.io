@@ -1,0 +1,851 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset=utf-8>
+    <link rel="icon shortcut" href=img/logo.png type=image/png>
+    <link rel=apple-touch-icon href=img/logo.png>
+    <link rel=stylesheet href=lib/bootstrap-4.0.0-dist/css/bootstrap.min.css>
+    <link rel=stylesheet href=lib/prismjs-1.13.0/prism.css>
+    <link rel=stylesheet href=css/base.css>
+    <link rel=stylesheet href=css/ui-block.css>
+    <link rel=stylesheet href=css/codemirror.css>
+    <meta name=viewport content="width=device-width">
+    <title>NEBULAS</title>
+
+    <link rel="stylesheet" href="css/style.css"> 
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/hammer.js/1.0.6/hammer.min.js'></script>
+
+    <script  src="js/index.js"></script>
+
+
+    <style>
+        #content {
+            border-top: 1px solid;
+        }
+
+        .title {
+            text-align: center;
+            color: black;
+            font-size: 30px;
+        }
+
+        .active1 {
+            display: none;
+        }
+
+        #tabs {
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        #tabs li {
+            float: left;
+            margin: 0;
+        }
+
+        #tabs li a {
+            position: relative;
+            padding: 10px 50px;
+            float: left;
+            text-decoration: none;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, .8);
+        }
+
+        .ccc {
+            background-color: black;
+        }
+
+        .ccc a {
+            color: #fff;
+        }
+
+        .current a {
+            outline: 0;
+            z-index: 4;
+        }
+
+        .hoverItem a {
+            background: black;
+            color: #fff;
+        }
+
+        .tab {
+            display: none;
+        }
+
+        .show {
+            display: block;
+        }
+
+        .execution_banner {
+            height: 200px;
+            background-color: #f5f5f5;
+            margin: 0 auto;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .form-check {
+            display: inline-block;
+        }
+
+        #receipt {
+            word-break: break-all;
+        }
+
+        #receipt_call {
+            word-break: break-all;
+        }
+
+        .code {
+            background-color: #f8f9fa;
+            font-family: consolas, menlo, monaco, lucida console, liberation mono, dejavu sans mono, bitstream vera sans mono, courier new, monospace;
+            overflow: auto;
+            white-space: pre;
+        }
+
+        .errmsg {
+            color: red;
+        }
+
+        .err {
+            border-color: red;
+        }
+
+        .prompt{
+            width: 20px;
+            height: 20px;
+            display: inline-table;
+        }
+        
+        .prompt_contenner{
+            width: 200px;
+            height: 100px;
+            border: 1px solid black;
+            position: absolute;
+            left: 16%;
+            margin-top: -6%;
+            box-shadow:2px 2px 17px #333333;
+        }
+
+        .call_prompt_contenner{
+            width: 200px;
+            height: 100px;
+            border: 1px solid black;
+            position: absolute;
+            left: 28%;
+            margin-top: -14%;
+            box-shadow:2px 2px 17px #333333;
+        }
+
+         .function_prompt_contenner{
+            width: 200px;
+            height: 100px;
+            border: 1px solid black;
+            position: absolute;
+            left: 24%;
+            margin-top: -14%;
+            box-shadow:2px 2px 17px #333333;
+        }
+
+        .CodeMirror {border: 1px solid black; font-size:13px;}
+    </style>
+</head>
+
+<body>
+        
+
+
+
+    <div class=container >
+            <div class="container">
+                    <div class="heading">
+                      <h1 class="title">2048</h1>
+                      <div class="score-container" style="height: 60px">0</div>
+                    </div>
+                    <p class="game-intro">Join the numbers and get to the <strong>2048 tile!</strong></p>
+                  
+            <div class="game-container">
+                    <div class="game-message">
+                      <p></p>
+                      <div class="lower">
+                        <a class="retry-button">Try again</a>
+                      </div>
+                    </div>
+                
+                    <div class="grid-container">
+                      <div class="grid-row">
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                      </div>
+                      <div class="grid-row">
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                      </div>
+                      <div class="grid-row">
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                      </div>
+                      <div class="grid-row">
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell"></div>
+                      </div>
+                    </div>
+                
+                    <div class="tile-container">
+                
+                    </div>
+                  </div>
+
+
+        <ul id=tabs id=myTab role=tablist>
+            <li hidden="hidden" class="current ccc">
+                <a href=# title=tab3 data-i18n=contract/call></a>
+            </li>
+        </ul>
+        <div id=content>
+            <div class="run_contract show tab" id=tab3>
+
+                <div class="form-group row" hidden="hidden">
+                    <div class=col>
+                        <label data-i18n=contract/contract_funtion></label>
+                        <span id=function_prompt class=prompt><img src=img/prompt.png></span>
+                        <div id=function_prompt_contenner class="active1 function_prompt_contenner"> <b data-i18n=contract/contract_fn_prompt></b></div>
+                        <input class=form-control type=text id=call_function>
+                    </div>
+                    <div class=col>
+                        <label data-i18n=contract/contract_fun></label>
+                        <span id=call_prompt class=prompt><img src=img/prompt.png></span>
+                        <div id=call_prompt_contenner class="active1 call_prompt_contenner"> <b  data-i18n=contract/contract_fun_prompt></b></div>
+                        <input class=form-control type=text id=call_args>
+                    </div>
+                </div>
+
+
+                <div class="form-group  row">
+                        <div class=col>
+                            <label>种子(一个整数)</label>
+                            <input class=form-control type=text id=seed>
+                        </div>
+                    </div>
+                <div class="form-group row">   
+                        <div class=col>
+                            <button id=reset-btn class="btn btn-block">按种子重新生成游戏</button>
+                        </div>
+                    </div>
+
+                <div class=select-wallet-file></div>
+
+                <div class="form-group detail row">
+                    <div class=col>
+                        <label data-i18n=send-nas/from-address></label>
+                        <div class=icon-address data-id=run_from_addr data-disabled></div>
+                    </div>
+                    <div class=col>
+                        <label data-i18n=send-nas/balance></label>
+                        <input class=form-control disabled id=run_balance>
+                    </div>
+                </div>
+
+                <div class="form-group detail row">
+                    <div class=col>
+                        <label data-i18n=gas-limit></label>
+                        <input class=form-control type=text id=run_gas_limit value=2000000>
+                    </div>
+                    <div class=col>
+                        <label data-i18n=gas-price></label>
+                        <input class=form-control type=text id=run_gas_price>
+                    </div>
+                </div>
+
+                <div class="form-group detail row">
+                        <div class=col>
+                                <button id=submit-btn class="btn btn-block">提交成绩</button>
+                            </div>
+                    </div>
+
+                    <div class="form-group detail row">
+                            <div class=col>
+                                <label>总排行榜</label>
+								    <table border="1" id="rank1">
+                                        </table>
+                                </div>
+								<div>
+                                <label>相同种子排行榜</label>
+									<table border="1" id="rank2">
+                                        </table>
+                                </div>
+                        </div>
+               
+
+
+
+                <div class="active1 result" hidden="hidden" id=result></div>
+
+                <div class="form-group row" hidden="hidden">
+                    <div class=col>
+                        <button id=call_test data-i18n=contract/call_test class="btn btn-block"></button>
+                    </div>
+                    <div class=col>
+                        <button class="btn btn-block" data-i18n=contract/call_submit disabled id=call></button>
+                    </div>
+                </div>
+
+                <div class="active1 next row" hidden="hidden">
+                    <div class=col-6>
+                        <span class=execution data-i18n=contract/test_result></span>
+                        <textarea class="execution_banner form-control" id=call_test_result></textarea>
+                    </div>
+                    <div class=col-6>
+                        <span class=execution data-i18n=contract/result></span>
+                        <br>
+                        <span data-i18n=contract/txhash></span>
+                        <i data-i18n=contract/clickToCheck></i>&darr;
+                        <a class="form-control mt14" id=receipt_call></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+   
+
+
+    <div class="fade loading modal" data-backdrop=static>
+        <div class=modal-dialog>
+            <div class=modal-content>
+                <div class=modal-body>
+                    <div class=progress>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role=progressbar style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src=lib/jquery-3.3.1.min.js></script>
+    <script src=lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
+    <script src=lib/bootbox.min.js data-depends="bootstrap jquery.slim"></script>
+    <script src=lib/blockies.min.js></script>
+    <script src=lib/js-beautify-1.7.5/beautify.js></script>
+    <script src=lib/prismjs-1.13.0/prism.js></script>
+    <script src=lib/nebulas.js></script>
+    <script src=js/1-localSave.js></script>
+    <script src=js/home.v1.js></script>
+    <script src=js/i18n.js data-depends=jquery.slim></script>
+    <script src=js/ui-block.js data-depends="bootbox blockies jquery.slim i18n.js nebulas.js"></script>
+    <script src=lib/codemirror/codemirror.js></script>
+    <script src=lib/codemirror/javascript.js></script>
+    <script>
+        "use strict";
+
+        var nebulas = require("nebulas"),
+            Account = nebulas.Account,
+            Utils = nebulas.Utils,
+            neb = new nebulas.Neb(),
+            globalParams = {
+                account: null
+            },
+            validateTab2 = uiBlock.validate("#tab2"),
+            validateTab3 = uiBlock.validate("#tab3");
+
+
+        localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
+
+        //localSave.setItem("apiPrefix", "https://mainnet.nebulas.io";
+
+
+        neb.setRequest(new nebulas.HttpRequest(localSave.getItem("apiPrefix") || "https://testnet.nebulas.io/"));
+
+        uiBlock.insert({
+            footer: ".footer",
+            header: ".header",
+            iconAddress: ".icon-address",
+            logoMain: ".logo-main",
+            numberComma: ".number-comma",
+            selectWalletFile: [".select-wallet-file", onUnlockFile]
+        });
+
+        $("#tabs a").click(function (e) {
+            e.preventDefault();
+            $("#tabs li").removeClass("ccc");
+            $(this).parent().addClass("ccc");
+            $("#content div").removeClass("show");
+            $("#" + $(this).attr("title")).addClass("show");
+            $(this).addClass("current");
+        });
+
+        $("#tabs a").hover(function () {
+            if (!$(this).parent().hasClass("current")) {
+                $(this).parent().addClass("hoverItem");
+            }
+        }, function () {
+            $(this).parent().removeClass("hoverItem");
+        });
+
+
+        // prompt（function，args） 
+        $("#prompt").mouseover(function(){
+            $("#prompt_contenner").removeClass("active1");
+        });
+
+        $("#prompt").mouseout(function(){
+            $("#prompt_contenner").addClass("active1");
+        });
+
+        $("#call_prompt").mouseover(function(){
+            $("#call_prompt_contenner").removeClass("active1");
+        });
+
+        $("#call_prompt").mouseout(function(){
+            $("#call_prompt_contenner").addClass("active1");
+        });
+
+         $("#function_prompt").mouseover(function(){
+            $("#function_prompt_contenner").removeClass("active1");
+        });
+
+        $("#function_prompt").mouseout(function(){
+            $("#function_prompt_contenner").addClass("active1");
+        });
+
+        $("#call_test").on("click", onClickCallTest);
+        $("#call").on("click", onClickCall);
+
+
+        $(".detail").hide();
+
+        function show_detail(){
+            $(".detail").show();
+            $(".select-wallet-file").show();
+            refresh_all();
+        refresh_some();
+
+        var x = setInterval(function() {
+            refresh_all();
+            refresh_some();
+        }, 15000);
+        }
+
+        $("#submit-btn").on("click", onSubmit);
+        $("#reset-btn").on("click", onReset);
+
+
+
+       globalParams.CONTRACT_ADDR = "n1x5kB2Fn6Ldwz17ExDL3kdxpgerChzB8E5";
+
+       globalParams.a = null;
+
+       function onReset(){
+        SEED = parseInt( $("#seed").val());
+        RNG = new Random(SEED);
+
+
+        manager = new GameManager(4, KeyboardInputManager, HTMLActuator);
+  
+           
+       }
+
+        function refresh_all(){
+            var _to_addr = globalParams.CONTRACT_ADDR;
+            let _gas_limit = $("#run_gas_limit").val();
+            let _gas_price = $("#run_gas_price").val();
+            let _value = "0";
+            
+            inner_calltest(_to_addr, _gas_limit, _gas_price, _value, "fetch_all", "", function(resp){
+
+                globalParams.a = resp;
+                var rrr = JSON.parse(JSON.parse(resp['result']));
+                var scores = rrr['scores'];
+                console.log(scores,rrr);
+                var str = "";
+				
+                str+="<tr>" + "<th>address</th>"+"<th>score</th>"+"</tr>"
+                for(var i=0; i<scores.length; i++){
+                    str+="<tr><td><a href=https://explorer.nebulas.io/#/address/"+rrr['addrs'][i]+">"+rrr['addrs'][i] +"</a></td><td>"+scores[i] + "</td></tr>";
+                }
+                $("#rank1").html(str);
+                console.log(rrr);
+            });
+        }
+
+         function refresh_some(){
+            var _to_addr = globalParams.CONTRACT_ADDR;
+            let _gas_limit = $("#run_gas_limit").val();
+            let _gas_price = $("#run_gas_price").val();
+            let _value = "0";
+
+            let args = make_params([SEED, 4]);
+            
+            inner_calltest(_to_addr, _gas_limit, _gas_price, _value, "fetch_some", args, function(resp){
+                var rrr = JSON.parse(JSON.parse(resp['result']));
+                var scores = rrr['scores'];
+                console.log(scores);
+                var str = "";
+				
+				str+="<tr>" + "<th>address</th>"+"<th>score</th>"+"</tr>"
+                for(var i=0; i<scores.length; i++){
+                    str+="<tr><td><a href=https://explorer.nebulas.io/#/address/"+rrr['addrs'][i]+">"+rrr['addrs'][i] +"</a></td><td>"+scores[i] + "</td></tr>";
+                }
+                $("#rank2").html(str);
+                console.log(rrr);
+            });
+        }
+
+
+    function make_params(arg_list){
+            var res = "[";
+            for(var i =0; i<arg_list.length; i++){
+                if( typeof(arg_list[i]) != 'number'){
+                    res = res + "\"";
+                    res = res + arg_list[i];
+                    res = res + "\"";
+                }else{
+                    res = res + arg_list[i];
+                }
+                if(i != arg_list.length - 1){
+                    res = res + ",";
+                }
+            }
+            res = res + "]";
+            return res;
+        }
+
+        function onSubmit(){
+            var _to_addr = globalParams.CONTRACT_ADDR;
+            let _gas_limit = $("#run_gas_limit").val();
+            let _gas_price = $("#run_gas_price").val();
+            let _value = "0";
+        
+            let args = make_params([SEED, 4, actions]);
+            
+            sendTx(_to_addr, _gas_limit, _gas_price, _value, "addRecord", args, function(resp){
+                console.log(resp);
+                alert("submitted, "+resp['txhash']);
+            });
+            
+        }
+
+
+
+       
+        function inner_calltest(_to_addr, _gas_limit, _gas_price, _value, _func, _args, callback) { 
+            _innerCall(_to_addr, _gas_limit, _gas_price, _value, _func, _args, function (params) {
+                neb.api
+                    .call({
+                        from: params.from,
+                        to: params.to,
+                        value: params.value,
+                        nonce: params.nonce,
+                        gasPrice: params.gasPrice,
+                        gasLimit: params.gasLimit,
+                        contract: params.contract
+                    })
+                    .then(function (resp) {
+                        callback(resp);
+                    })
+            });
+        }
+
+        function calltest(_to_addr, _gas_limit, _gas_price, _value, _func, _args, res_show) { 
+            _innerCall(_to_addr, _gas_limit, _gas_price, _value, _func, _args, function (params) {
+                neb.api
+                    .call({
+                        from: params.from,
+                        to: params.to,
+                        value: params.value,
+                        nonce: params.nonce,
+                        gasPrice: params.gasPrice,
+                        gasLimit: params.gasLimit,
+                        contract: params.contract
+                    })
+                    .then(function (resp) {
+                        //res_show.text(JSON.stringify(resp));
+                        res_show.text(resp['result']);
+                    })
+            });
+        }
+
+        function onClickCallTest() {
+            innerCall(function (params) {
+                neb.api
+                    .call({
+                        from: params.from,
+                        to: params.to,
+                        value: params.value,
+                        nonce: params.nonce,
+                        gasPrice: params.gasPrice,
+                        gasLimit: params.gasLimit,
+                        contract: params.contract
+                    })
+                    .then(function (resp) {
+                        $("#call_test_result").text(JSON.stringify(resp));
+
+                        if (resp.execute_err && resp.execute_err !== "") {
+                            $("#call").attr("disabled", true);
+                            $("#call_result").text("");
+                            $(".next").removeClass("active1");
+                        } else {
+                            $("#call").attr("disabled", false);
+                            $("#call_result").text("");
+                            $(".next").removeClass("active1");
+                        }
+                    })
+                    .catch(function (err) {
+                        $("#call_test_result").text(JSON.stringify(err));
+                        $("#call").attr("disabled", true);
+                        $("#call_result").text("");
+                        $(".next").removeClass("active1");
+                    });
+            });
+        }
+
+        function sendTx(_to_addr, _gas_limit, _gas_price, _value, _func, _args, callback ) {
+            $(".modal.loading").modal("show");
+
+            _innerCall(_to_addr, _gas_limit, _gas_price, _value, _func, _args, function (params) {
+                var gTx = new nebulas.Transaction(parseInt(localSave.getItem("chainId")),
+                    globalParams.account,
+                    params.to, params.value, params.nonce, params.gasPrice, params.gasLimit, params.contract);
+
+                gTx.signTransaction();
+
+                neb.api
+                    .sendRawTransaction(gTx.toProtoString())
+                    .then(function (resp) {
+                        callback(resp);
+                        //$("#receipt_call").text(resp.txhash).prop("href", "check.html?" + resp.txhash);
+                        $(".modal.loading").modal("hide");
+                    })
+                    .catch(function (err) {
+                        //$("#call_result").text(JSON.stringify(err));
+                        //$(".result").removeClass("active1");
+                        //$(".next").removeClass("active1");
+                        console.log(JSON.stringify(err));
+                        $(".modal.loading").modal("hide");
+                    });
+            });
+        }
+
+        function onClickCall() {
+            $(".modal.loading").modal("show");
+
+            innerCall(function (params) {
+                var gTx = new nebulas.Transaction(parseInt(localSave.getItem("chainId")),
+                    globalParams.account,
+                    params.to, params.value, params.nonce, params.gasPrice, params.gasLimit, params.contract);
+
+                gTx.signTransaction();
+
+                neb.api
+                    .sendRawTransaction(gTx.toProtoString())
+                    .then(function (resp) {
+                        console.log(JSON.stringify(resp));
+                        $("#call_result").text(JSON.stringify(resp));
+                        $(".result").removeClass("active1");
+                        $(".next").removeClass("active1");
+                        $("#receipt_call").text(resp.txhash).prop("href", "check.html?" + resp.txhash);
+                        $(".modal.loading").modal("hide");
+                    })
+                    .catch(function (err) {
+                        $("#call_result").text(JSON.stringify(err));
+                        $(".result").removeClass("active1");
+                        $(".next").removeClass("active1");
+                        $(".modal.loading").modal("hide");
+                    });
+            });
+        }
+
+        function onUnlockFile(swf, fileJson, account, password) {
+            var balance_nas, state,
+                fromAddr = account.getAddressString(),
+                $tab = $(swf).closest(".tab");
+
+            $(".modal.loading").modal("show");
+
+            $("#run_from_addr").val(fromAddr).trigger("input");
+
+            try {
+                account.fromKey(fileJson, password);
+                globalParams.account = account;
+                $("#unlock").hide();
+                $("#send").show();
+
+                neb.api.gasPrice()
+                    .then(function (resp) {
+                        $("#gas_price").val(resp.gas_price);
+                        $("#run_gas_price").val(resp.gas_price);
+
+                        return neb.api.getAccountState(fromAddr);
+                    })
+                    .then(function (resp) {
+                        var balance = nebulas.Unit.fromBasic(resp.balance, "nas");
+
+                       
+                        $("#run_balance").val(balance + " NAS");
+
+                        $(".modal.loading").modal("hide");
+
+                        show_detail();
+
+                    })
+                    .catch(function (e) {
+                        // this catches e thrown by nebulas.js!neb
+
+                        bootbox.dialog({
+                            backdrop: true,
+                            onEscape: true,
+                            message: i18n.apiErrorToText(e.message),
+                            size: "large",
+                            title: "Error"
+                        });
+
+                        $(".modal.loading").modal("hide");
+                        //manager = new GameManager(4, KeyboardInputManager, HTMLActuator);
+                    });
+            } catch (e) {
+                // this catches e thrown by nebulas.js!account
+
+                bootbox.dialog({
+                    backdrop: true,
+                    onEscape: true,
+                    message: localSave.getItem("lang") == "en" ? e : "keystore 文件错误, 或者密码错误",
+                    size: "large",
+                    title: "Error"
+                });
+
+                $(".modal.loading").modal("hide");
+            }
+        }
+
+        
+        function innerCall(callback) {
+            
+            let _to_addr = $("#run_to_addr").val();
+        
+            let _gas_limit = $("#run_gas_limit").val();
+           
+            let _gas_price = $("#run_gas_price").val();
+            
+            let _value = $("#run_value").val();
+           
+            let _func = $("#call_function").val();
+
+            let _args = $("#call_args").val();
+
+            _innerCall(_to_addr, _gas_limit, _gas_price, _value, _func, _args, callback);
+        }
+        
+
+        function _innerCall(_to_addr, _gas_limit, _gas_price, _value, _func, _args, callback) {
+            let params = {};
+
+            if (!globalParams.account) {
+                // TODO 提示钱包信息不正确
+                return;
+            }
+            params.from = globalParams.account.getAddressString();
+
+            // prepare to
+            let toAddr = _to_addr.trim();
+            if (!Account.isValidAddress(toAddr)) {
+                console.log('wrong addr');
+                console.log(toAddr);
+                return;
+            }
+            params.to = toAddr;
+
+            // prepare gasLimit
+            let gasLimit = Utils.toBigNumber(0);
+            try {
+                gasLimit = Utils.toBigNumber(_gas_limit);
+            } catch (err) {
+                console.log(err);
+            }
+            if (gasLimit.cmp(Utils.toBigNumber(0)) <= 0) {
+                console.log('wrong gas limit');
+                return;
+            }
+            params.gasLimit = gasLimit.toNumber();
+
+            // prepare gasPrice
+            let gasPrice = Utils.toBigNumber(0);
+            try {
+                gasPrice = Utils.toBigNumber(_gas_price);
+            } catch (err) {
+                console.log(err);
+            }
+            if (gasPrice.cmp(Utils.toBigNumber(0)) <= 0) {
+                console.log('wrong gas price');
+                return;
+            }
+            params.gasPrice = gasPrice.toNumber();
+
+            // prepare value
+            let value = Utils.toBigNumber(0);
+            try {
+                value = nebulas.Unit.toBasic(Utils.toBigNumber(_value), "nas");
+            } catch (err) {
+                console.log(err);
+            }
+            if (value.cmp(Utils.toBigNumber(0)) < 0) {
+                // TODO 添加提示value输入不对
+                console.log("invalid value");
+                return;
+            }
+            params.value = value;
+
+            // prepare contract
+            params.contract = {
+                "function": _func,
+                "args": _args.trim()
+            };
+
+            // prepare nonce
+            // needs refresh data on every 'test' and 'commit' call, because data update may slow,
+            // you can get different result by hit 'test' multiple times
+            neb.api.getAccountState(params.from).then(function (resp) {
+                var balance = nebulas.Unit.fromBasic(resp.balance, "nas");
+
+                params.nonce = parseInt(resp.nonce) + 1;
+                
+                //$("#run_balance").val(balance + " NAS");
+
+                callback(params);
+            }).catch(function (err) {
+                // console.log("prepare nonce error: " + err);
+                bootbox.dialog({
+                    backdrop: true,
+                    onEscape: true,
+                    message: i18n.apiErrorToText(err.message),
+                    size: "large",
+                    title: "Error"
+                });
+            });
+        }
+        // CodeMirror
+        // var editor = CodeMirror.fromTextArea(document.getElementById("source"), {
+        //     lineNumbers: true,
+        //     styleActiveLine: true,
+        //     matchBrackets: true,
+        //     // mode:' javascript ',
+        //     // indentUnit: ' 2 ',
+        //     smartIndent: true
+        // });
+
+
+    </script>
+</body>
+</html>
