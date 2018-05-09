@@ -362,9 +362,9 @@
             validateTab3 = uiBlock.validate("#tab3");
 
 
-        localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
+        //localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
 
-        //localSave.setItem("apiPrefix", "https://mainnet.nebulas.io";
+        localSave.setItem("apiPrefix", "https://mainnet.nebulas.io");
 
 
         neb.setRequest(new nebulas.HttpRequest(localSave.getItem("apiPrefix") || "https://testnet.nebulas.io/"));
@@ -444,7 +444,8 @@
 
 
 
-       globalParams.CONTRACT_ADDR = "n1x5kB2Fn6Ldwz17ExDL3kdxpgerChzB8E5";
+       //globalParams.CONTRACT_ADDR = "n1x5kB2Fn6Ldwz17ExDL3kdxpgerChzB8E5";
+	   globalParams.CONTRACT_ADDR = "n1ewc6cGrj4LAC4dNnD1xpkg75A56Eoqn1t";
 
        globalParams.a = null;
 
@@ -524,6 +525,10 @@
         }
 
         function onSubmit(){
+			if (!manager.won && !manager.over) {
+				alert("游戏尚未结束，得分无法提交。")
+				return;
+			}
             var _to_addr = globalParams.CONTRACT_ADDR;
             let _gas_limit = $("#run_gas_limit").val();
             let _gas_price = $("#run_gas_price").val();
