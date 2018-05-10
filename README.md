@@ -6,8 +6,9 @@
 
   * 主页面：<https://dappdog.github.io/01game.html>
   * 玩法说明：<https://dappdog.github.io/doc/01Game.docx>
-
-  ​
+* 2048:
+  - 主页面：<https://dappdog.github.io/2048.html>
+  - 玩法说明：<https://dappdog.github.io/doc/2048.docx>
 
 ## Disclaimer
 
