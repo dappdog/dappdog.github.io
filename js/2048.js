@@ -463,19 +463,19 @@ HTMLActuator.prototype.addTile = function (tile) {
 	  element.textContent = "一把梭";
 	  break;
 	case 8:
-	  element.textContent = "老韭菜";
+	  element.textContent = "考察项目";
 	  break;
 	case 16:
-	  element.textContent = "价值投资";
+	  element.textContent = "老韭菜";
 	  break;
 	case 32:
-	  element.textContent = "币圈大佬";
+	  element.textContent = "投资价值";
 	  break;
 	case 64:
-	  element.textContent = "应用落地";
+	  element.textContent = "看好星云";
 	  break;
 	case 128:
-	  element.textContent = "加入星云";
+	  element.textContent = "应用落地";
 	  break;
 	case 256:
 	  element.textContent = "完善底层";
@@ -487,7 +487,7 @@ HTMLActuator.prototype.addTile = function (tile) {
 	  element.textContent = "财务自由";
 	  break;
 	default:
-	  element.textContent = "求分享";
+	  element.textContent = "求分享～";
 	}
   
 
