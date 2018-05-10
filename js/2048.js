@@ -441,19 +441,7 @@ HTMLActuator.prototype.addTile = function (tile) {
   // We can't use classlist because it somehow glitches when replacing classes
   var classes = ["tile", "tile-" + tile.value, positionClass];
   this.applyClasses(element, classes);
-
-/*2    炒币小白
-4    一把梭
-8    老韭菜
-16   价值投资
-32   币圈大佬
-64   应用落地
-128  加入星云
-256  完善底层
-512  用户过亿
-1024 财务自由
-2048 （求分享）*/
-
+	
   switch(tile.value)
 	{
 	case 2:
@@ -475,10 +463,10 @@ HTMLActuator.prototype.addTile = function (tile) {
 	  element.textContent = "看好星云";
 	  break;
 	case 128:
-	  element.textContent = "应用落地";
+	  element.textContent = "ATP!";
 	  break;
 	case 256:
-	  element.textContent = "完善底层";
+	  element.textContent = "应用落地";
 	  break;
 	case 512:
 	  element.textContent = "用户过亿";
