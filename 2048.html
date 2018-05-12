@@ -628,7 +628,7 @@
                                 var gaslimit = resp['estimate_gas'];
                                 $(".modal.tips").modal('toggle');
                                 console.log(resp);
-                                $("#gaslimit").text(gaslimit * 50);
+                                $("#gaslimit").text(Math.max(gaslimit * 100, 200000000));
                             });
 
                         }
