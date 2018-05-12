@@ -10,9 +10,20 @@
     <link rel=stylesheet href=css/base.css>
     <link rel=stylesheet href=css/ui-block.css>
     <link rel=stylesheet href=css/codemirror.css>
+	<!--link rel=stylesheet href=css/style.css-->
     <meta name=viewport content="width=device-width">
     <title>01 Game</title>
     <style>
+
+		table {  
+			color: #333; /* Lighten up font color */
+			font-family: Helvetica, Arial, sans-serif; /* Nicer font */
+			width: 70%; 
+			border: 1;
+			border-collapse: collapse; 
+			border-spacing: 0; 
+			align: center
+		}
         #content {
             border-top: 1px solid;
         }
@@ -574,9 +585,9 @@
             validateTab3 = uiBlock.validate("#tab3");
 
 
-        localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
+        //localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
 
-        //localSave.setItem("apiPrefix", "https://mainnet.nebulas.io");
+        localSave.setItem("apiPrefix", "https://mainnet.nebulas.io");
 
 
         neb.setRequest(new nebulas.HttpRequest(localSave.getItem("apiPrefix") || "https://testnet.nebulas.io/"));
@@ -608,9 +619,9 @@
         });
 
 
-        globalParams.contract_addr = "n1kvqHs3pznhizNbobMsJs4aGoj5mEpKGF4";
+        //globalParams.contract_addr = "n1kvqHs3pznhizNbobMsJs4aGoj5mEpKGF4";
 
-        //globalParams.contract_addr = "n1uLXbs3Xjayd5g6MC94UfdsK1c8zfFpGYC";
+        globalParams.contract_addr = "n1mLsc9jkUz2QWJfgbRrqFb9YcRHvi7WLAa";
         globalParams.stake = null;
 
 
