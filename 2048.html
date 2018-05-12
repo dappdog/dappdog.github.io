@@ -304,14 +304,14 @@
                             </div>
 
                             <div class="form-group detail row">
-                                <div class=col>
+                                <div >
                                     <label>总排行榜</label>
-                                    <table border="1" id="rank1">
+                                    <table border="1" id="rank1" style="width:80%" align="center">
                                     </table>
                                 </div>
-                                <div>
+                                <div >
                                     <label>相同种子排行榜</label> <small><u onclick="$('.modal.seedusage').modal('toggle')">(种子有什么用？)</u></small>
-                                    <table border="1" id="rank2">
+                                    <table border="1" id="rank2" style="width:80%" align="center">
                                     </table>
                                 </div>
                             </div>
@@ -344,7 +344,7 @@
                                             <p>将要发送交易，请您
                                                 <strong>手动把gasLimit设为至少
                                                     <span id="gaslimit"></span>
-                                                </strong>，因为我们的合约将对您的解法进行验证，这样可以保证存储在链上的分数是不可伪造的。验证解法需要耗费一定的gas，您玩的步数越多，耗费gas越大。
+                                                </strong>，因为我们的合约将对您的解法进行验证，这样可以保证存储在链上的分数是不可伪造的。验证解法需要耗费一定的gas，您玩的步数越多，耗费gas越大。注意：gaslimit是耗费gas的上限，并非实际收取的费用。
                                             </p>
                                             <p>
                                                 <small hidden="hidden">否则，如果执行智能合约时只上传了成绩，比如
@@ -533,7 +533,7 @@
 
                                 str += "<tr>" + "<th>address</th>" + "<th>score</th>" + "</tr>"
                                 for (var i = 0; i < scores.length; i++) {
-                                    str += "<tr><td><a href=https://explorer.nebulas.io/#/address/" + rrr[
+                                    str += "<tr><td><a target=_blank href=https://explorer.nebulas.io/#/address/" + rrr[
                                             'addrs'][i] +
                                         "> ..." + rrr['addrs'][i].substring(rrr['addrs'][i].length - 7) +
                                         "</a></td><td>" +
@@ -563,9 +563,9 @@
 
                                 str += "<tr>" + "<th>address</th>" + "<th>score</th>" + "</tr>"
                                 for (var i = 0; i < scores.length; i++) {
-                                    str += "<tr><td><a href=https://explorer.nebulas.io/#/address/" + rrr[
+                                    str += "<tr><td><a target=_blank href=https://explorer.nebulas.io/#/address/" + rrr[
                                             'addrs'][i] +
-                                        "> ..." + rrr['addrs'][i].substring(rrr['addrs'][i].length - 7) +
+                                        " > ..." + rrr['addrs'][i].substring(rrr['addrs'][i].length - 7) +
                                         "</a></td><td>" +
                                         scores[i] + "</td></tr>";
                                 }
@@ -610,7 +610,7 @@
                                 var gaslimit = resp['estimate_gas'];
                                 $(".modal.tips").modal('toggle');
                                 console.log(resp);
-                                $("#gaslimit").text(gaslimit);
+                                $("#gaslimit").text(gaslimit * 50);
                             });
 
                         }
