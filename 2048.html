@@ -495,17 +495,20 @@
                                 refresh_all();
                                 refresh_some();
                             }, 15000);
+				
+				
+				if( window.webExtensionWallet == null){
+    $("#submit-btn").hide();
+    $(".no-wallet").html("快来安装\<a href=\"https://github.com/ChengOrangeJu/WebExtensionWallet\" target='_blank'\>星云官方钱包插件\</a\>，上传您的成绩！ :) ");
+}
+
                         }
 
                         $("#submit-btn").on("click", onSubmit);
                         $("#reset-btn").on("click", onReset);
                         $("#submit-confirm-btn").on("click", onRealSubmit);
 			    
-			    if( window.webExtensionWallet == null){
-    $("#submit-btn").hide();
-    $("#no-wallet").text("快来安装<a href='https://github.com/ChengOrangeJu/WebExtensionWallet' target='_blank'>星云官方钱包插件</a>，上传您的成绩！ :) ");
-}
-
+			    
 
 
 
@@ -513,6 +516,8 @@
                             // Wait till the browser is ready to render the game (avoids glitches)
                             window.requestAnimationFrame(function () {
                                 show_detail();
+				    
+				    
                             });
                         });
 
