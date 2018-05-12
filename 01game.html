@@ -172,23 +172,25 @@
                 <u onclick="$('.modal.readme').modal('toggle')"> 点击查看游戏玩法介绍 </u>
 
                 <div class="fade modal readme" data-backdrop=static>
-                        <div class=modal-dialog>
-                            <div class=modal-content>
-                                <div class=modal-body>
-                                    <label>玩法说明</label>
-                                    <p> TBA </p>
-                                    <div class="form-group detail row">
-                                        <div class=col>
-                                            <button onclick="$('.modal.readme').modal('toggle');" class="btn btn-block">关闭</button>
-                                        </div>
-                                     
+                    <div class=modal-dialog>
+                        <div class=modal-content>
+                            <div class=modal-body>
+                                <label>玩法说明</label>
+                                <p> TBA </p>
+                                <div class="form-group detail row">
+                                    <div class=col>
+                                        <button onclick="$('.modal.readme').modal('toggle');" class="btn btn-block">关闭</button>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                <p><br/></p>
+                <p>
+                    <br/>
+                </p>
 
 
                 <p id=current_prompt style="background-color: yellow;">
@@ -217,40 +219,47 @@
                     </div>
                 </div>
 
-                <div class="form-group detail choose row">
-                    <div class=col>
-                        <button id=rand_gen class="btn btn-block">生成随机种子</button>
-                    </div>
-                </div>
-
-                <div class="form-group detail choose row">
-                    <div class=col>
-                        <button id=submit_hidden class="btn btn-block">提交随机种子加密过的选择</button>
-                    </div>
-                </div>
-
-                <div class="form-group detail reveal row">
-                    <div class=col>
-                        <button id=submit_reveal class="btn btn-block">提交明文</button>
-                    </div>
-                </div>
-
-                <div class="active1 result" id=result></div>
-
-                <div class="form-group detail result row">
-                    <div class=col>
-                        <label>历史游戏结果</label>
-                        <table id="result-table">
-                            <th>
-                                <td>Block</td>
-                                <td>Winner</td>
-                                <td>Loser</td>
-                            </th>
-                        </table>
-                    </div>
+                <div class="form-group detail choose row"></div>
+                <div class=col>
+                    <button id=rand_gen class="btn btn-block">生成随机种子</button>
                 </div>
             </div>
+
+
+            <div class="form-group detail row"></div>
+            <div class=col>
+                <p class="no-wallet"></p>
+            </div>
         </div>
+
+        <div class="form-group detail choose wallet row">
+            <div class=col>
+                <button id=submit_hidden class="btn btn-block">提交随机种子加密过的选择</button>
+            </div>
+        </div>
+
+        <div class="form-group detail reveal wallet row">
+            <div class=col>
+                <button id=submit_reveal class="btn btn-block">提交明文</button>
+            </div>
+        </div>
+
+        <div class="active1 result" id=result></div>
+
+        <div class="form-group detail result row">
+            <div class=col>
+                <label>历史游戏结果</label>
+                <table id="result-table">
+                    <th>
+                        <td>Block</td>
+                        <td>Winner</td>
+                        <td>Loser</td>
+                    </th>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
     </div>
 
     <div class="fade loading modal" data-backdrop=static>
@@ -620,7 +629,7 @@
 
             inner_call(_to_addr, _value, "get_all", "", function (resp) {
                 var result = JSON.parse(JSON.parse(resp['result']));
-                
+
                 console.log(result);
 
                 var stake = result['stake'];
@@ -641,7 +650,9 @@
                 var count_down = last_block + stale - cur_block;
 
                 if (state == '0') {
-                    $("#current_prompt").text("请确定您的策略，并提交(经随机种子加密过的选择)以开启游戏，注意您的最佳对策是在0和1之间随机选择，并且保证种子足够随机，您需要交"+stake+"NAS的押金以保证经济学上的性质，不过当您完成游戏、或一段时间内未能匹配到合适对手时，无论结果输赢，押金都会退回");
+                    $("#current_prompt").text(
+                        "请确定您的策略，并提交(经随机种子加密过的选择)以开启游戏，注意您的最佳对策是在0和1之间随机选择，并且保证种子足够随机，您需要交" + stake +
+                        "NAS的押金以保证经济学上的性质，不过当您完成游戏、或一段时间内未能匹配到合适对手时，无论结果输赢，押金都会退回");
                     $(".reveal").hide();
                     $(".choose").show();
 
@@ -653,13 +664,15 @@
                     if (globalParams.AB == 'A') {
                         $("#current_prompt").text("您已成功开启游戏，请等待对方玩家加入");
                     } else {
-                        $("#current_prompt").text("游戏已开启，请确定您的策略，并提交(提交经随机种子加密过的)选择以加入游戏，注意您的最佳对策是在0和1之间随机选择，并且保证种子足够随机，您需要交"+stake+"NAS的押金以保证经济学上的性质，不过当您完成游戏，无论结果输赢，押金都会退回");
+                        $("#current_prompt").text(
+                            "游戏已开启，请确定您的策略，并提交(提交经随机种子加密过的)选择以加入游戏，注意您的最佳对策是在0和1之间随机选择，并且保证种子足够随机，您需要交" +
+                            stake + "NAS的押金以保证经济学上的性质，不过当您完成游戏，无论结果输赢，押金都会退回");
                         $(".reveal").hide();
                         $(".choose").show();
                         $(".rand").show();
                     }
                 } else if (state == '2') {
-                    $("#current_prompt").text("已匹配到玩家，请在"+count_down+"个block之内提交明文的选择");
+                    $("#current_prompt").text("已匹配到玩家，请在" + count_down + "个block之内提交明文的选择");
                     $(".choose").hide();
                     $(".rand").show();
 
@@ -673,7 +686,7 @@
 
                         if (revealed_A == 'null') {
                             $("#current_prompt").text(
-                                "对方玩家策略已提交，请在"+count_down+"个block之内提交明文的选择");
+                                "对方玩家策略已提交，请在" + count_down + "个block之内提交明文的选择");
                             $(".choose").hide();
                             $(".reveal").show();
 
@@ -691,7 +704,7 @@
 
                         if (revealed_B == 'null') {
                             $("#current_prompt").text(
-                                "对方玩家策略已提交，请在"+count_down+"个block之内提交明文的选择");
+                                "对方玩家策略已提交，请在" + count_down + "个block之内提交明文的选择");
                             $(".choose").hide();
                             $(".reveal").show();
                         } else {
@@ -703,7 +716,13 @@
                         $("#current_prompt").text("当前正有其他用户进行博弈，请稍候");
                     }
                 }
-            });
+            
+            if (window.webExtensionWallet == null) {
+                $(".wallet").hide();
+                $(".no-wallet").html(
+                    "<p> <br/>  快来安装<u href='https://github.com/ChengOrangeJu/WebExtensionWallet' target='_blank'>星云官方钱包插件</u>，上传您的成绩！ :) </p>"
+                );
+            }});
         }
 
         function show_detail() {
