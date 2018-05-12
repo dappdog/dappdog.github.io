@@ -14,16 +14,17 @@
     <meta name=viewport content="width=device-width">
     <title>01 Game</title>
     <style>
-
 		table {  
 			color: #333; /* Lighten up font color */
 			font-family: Helvetica, Arial, sans-serif; /* Nicer font */
-			width: 70%; 
-			border: 1;
+			width: 100%; 
 			border-collapse: collapse; 
 			border-spacing: 0; 
-			align: center
+			text-align: center
 		}
+
+		td, th { border: 1px solid #CCC; height: 30px; } 
+		
         #content {
             border-top: 1px solid;
         }
@@ -295,11 +296,11 @@
                     <div class=col>
                         <label>历史游戏结果</label>
                         <table id="result-table">
-                            <th>
-                                <td>Block</td>
-                                <td>Winner</td>
-                                <td>Loser</td>
-                            </th>
+                            <tr>
+                                <th>Block</th>
+                                <th>Winner</th>
+                                <th>Loser</th>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -710,7 +711,7 @@
                         "> ..." +  winners[i].substring(winners[i].length - 7) +
                         "</a></td><td><a target=_blank href=https://explorer.nebulas.io/#/address/" + losers[i] +
                         "> ..." +  losers[i].substring(losers[i].length - 7) +
-                        "</a></td><td>" 
+                        "</a></td>" 
                 }
                 $("#result-table").html(str);
 
