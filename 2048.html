@@ -547,15 +547,26 @@
                                 var rrr = JSON.parse(JSON.parse(resp['result']));
                                 var scores = rrr['scores'];
                                 console.log(scores, rrr);
+								
+								var c = rrr['scores'].map(function(e, i) {
+								  return [e, rrr['addrs'][i]];
+								});
+								
+                                console.log(c);
+								
+								c.sort(function(a, b) { 
+									return parseInt(a[0]) - parseInt(b[0]);})
+                                console.log(c);
+								c.reverse();
+								
                                 var str = "";
 
                                 str += "<tr>" + "<th>address</th>" + "<th>score</th>" + "</tr>"
                                 for (var i = 0; i < scores.length; i++) {
-                                    str += "<tr><td><a target=_blank href=https://explorer.nebulas.io/#/address/" + rrr[
-                                            'addrs'][i] +
-                                        "> ..." + rrr['addrs'][i].substring(rrr['addrs'][i].length - 7) +
+                                    str += "<tr><td><a target=_blank href=https://explorer.nebulas.io/#/address/" + c[i][1] +
+                                        "> ..." + c[i][1].substring(c[i][1].length - 7) +
                                         "</a></td><td>" +
-                                        scores[i] + "</td></tr>";
+                                        c[i][0] + "</td></tr>";
                                 }
                                 $("#rank1").html(str);
                                 console.log(rrr);
@@ -577,15 +588,26 @@
                                 var rrr = JSON.parse(JSON.parse(resp['result']));
                                 var scores = rrr['scores'];
                                 console.log(scores);
+								
+								var c = rrr['scores'].map(function(e, i) {
+								  return [e, rrr['addrs'][i]];
+								});
+								
+                                console.log(c);
+								
+								c.sort(function(a, b) { 
+									return parseInt(a[0]) - parseInt(b[0]);})
+                                console.log(c);
+								c.reverse();
+								
                                 var str = "";
 
                                 str += "<tr>" + "<th>address</th>" + "<th>score</th>" + "</tr>"
                                 for (var i = 0; i < scores.length; i++) {
-                                    str += "<tr><td><a target=_blank href=https://explorer.nebulas.io/#/address/" + rrr[
-                                            'addrs'][i] +
-                                        " > ..." + rrr['addrs'][i].substring(rrr['addrs'][i].length - 7) +
+                                    str += "<tr><td><a target=_blank href=https://explorer.nebulas.io/#/address/" + c[i][1] +
+                                        "> ..." + c[i][1].substring(c[i][1].length - 7) +
                                         "</a></td><td>" +
-                                        scores[i] + "</td></tr>";
+                                        c[i][0] + "</td></tr>";
                                 }
                                 $("#rank2").html(str);
                                 console.log(rrr);
