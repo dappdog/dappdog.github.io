@@ -169,14 +169,48 @@
                         <span id=nettype></span>
                     </p>
                 </div>
+
+                <div class="form-group detail row">
+                    <div class=col>
+                        <label>您的地址(不是私钥)
+                            <small>
+                                <u onclick="$('.modal.why').modal('toggle')">(为什么要输入这个？)</u>
+                            </small>
+                        </label>
+                        <input class=form-control type=text id=addr>
+                    </div>
+                </div>
+
                 <u onclick="$('.modal.readme').modal('toggle')"> 点击查看游戏玩法介绍 </u>
+
+                <div class="fade modal why" data-backdrop=static>
+                    <div class=modal-dialog>
+                        <div class=modal-content>
+                            <div class=modal-body>
+                                <label>为什么要输入地址？</label>
+                                <p> 因为nebWebWallet暂未开放获取地址的api，将来会自动获取您的地址，敬请期待。不过如果您未曾关闭网页再打开，是可以不输入的 </p>
+                                <div class="form-group detail row">
+                                    <div class=col>
+                                        <button onclick="$('.modal.why').modal('toggle');" class="btn btn-block">关闭</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="fade modal readme" data-backdrop=static>
                     <div class=modal-dialog>
                         <div class=modal-content>
                             <div class=modal-body>
                                 <label>玩法说明</label>
-                                <p> TBA </p>
+                                <p> 一轮游戏中存在两名玩家
+                                    <strong>(不能是相同的地址)</strong>，玩家可选的操作包括 在 0 和 1 两个数字选择一个作为自己的策略，并选择或生成一个随机种子来掩盖自己的策略。玩家首先提交自己的策略和随机种子拼接后的哈希值（在我们的实现中使用
+                                    MD5 算法）。在两名玩家的哈希值均提交之后，两名玩家再提交自己选择的策略以及随机种子的原始值。系统会验证该两者拼接后的哈希值是否与之前提交的值一致，从而确定玩家没有作弊，并根据两名玩家的原始策略确定两者的胜负。
+                                    玩家的胜负规则如下：如果两名玩家选择的策略相同，则开启游戏的玩家获胜，否则加入游戏的玩家获胜。 注意在游戏开始时我们需要两名玩家分别提交 0.01 NAS 作为押金，押金的作用仅仅为保证游戏的顺利及公平进行：1.
+                                    保证玩家在限定时限内进行下一步操作（通过超时机制） 2. 保证玩家在第二阶段提交的策略和随机种子没有经过修改（通过检验哈希值）。如果上面两点没有得到满足，则押金将会转入对方玩家账号。
+                                    在其他的所有情况下，押金将会完整退回，仅收取合约运行所必须的少量 gas 费用。 </p>
                                 <div class="form-group detail row">
                                     <div class=col>
                                         <button onclick="$('.modal.readme').modal('toggle');" class="btn btn-block">关闭</button>
@@ -215,51 +249,51 @@
                     <div class=col>
                         <label>随机种子 </label>
                         <input class=form-control type=text id=rand_seed>
-
                     </div>
                 </div>
 
-                <div class="form-group detail choose row"></div>
-                <div class=col>
-                    <button id=rand_gen class="btn btn-block">生成随机种子</button>
+
+                <div class="form-group detail row">
+                    <div class=col>
+                        <p class="no-wallet"></p>
+                    </div>
+                </div>
+
+
+                <div class="form-group detail choose row">
+                    <div class=col>
+                        <button id=rand_gen class="btn btn-block">生成随机种子</button>
+                    </div>
+                </div>
+
+                <div class="form-group detail choose wallet row">
+                    <div class=col>
+                        <button id=submit_hidden class="btn btn-block">提交随机种子加密过的选择</button>
+                    </div>
+                </div>
+
+                <div class="form-group detail reveal wallet row">
+                    <div class=col>
+                        <button id=submit_reveal class="btn btn-block">提交明文</button>
+                    </div>
+                </div>
+
+                <div class="active1 result" id=result></div>
+
+                <div class="form-group detail result row">
+                    <div class=col>
+                        <label>历史游戏结果</label>
+                        <table id="result-table">
+                            <th>
+                                <td>Block</td>
+                                <td>Winner</td>
+                                <td>Loser</td>
+                            </th>
+                        </table>
+                    </div>
                 </div>
             </div>
-
-
-            <div class="form-group detail row"></div>
-            <div class=col>
-                <p class="no-wallet"></p>
-            </div>
         </div>
-
-        <div class="form-group detail choose wallet row">
-            <div class=col>
-                <button id=submit_hidden class="btn btn-block">提交随机种子加密过的选择</button>
-            </div>
-        </div>
-
-        <div class="form-group detail reveal wallet row">
-            <div class=col>
-                <button id=submit_reveal class="btn btn-block">提交明文</button>
-            </div>
-        </div>
-
-        <div class="active1 result" id=result></div>
-
-        <div class="form-group detail result row">
-            <div class=col>
-                <label>历史游戏结果</label>
-                <table id="result-table">
-                    <th>
-                        <td>Block</td>
-                        <td>Winner</td>
-                        <td>Loser</td>
-                    </th>
-                </table>
-            </div>
-        </div>
-    </div>
-    </div>
     </div>
 
     <div class="fade loading modal" data-backdrop=static>
@@ -569,12 +603,12 @@
                 if ($(".modal.tips").is(':visible')) {
                     $(".modal.tips").modal('toggle');
                 }
-                alert("交易哈希：" + JSON.stringify(e.data.data.txhash, null, '\t'));
+                console.log("交易哈希：" + JSON.stringify(e.data.data.txhash, null, '\t'));
             }
         });
 
 
-        globalParams.contract_addr = "n1iMhHa3mogMndqre6yefJtNx8YxgpTU8i4";
+        globalParams.contract_addr = "n1kvqHs3pznhizNbobMsJs4aGoj5mEpKGF4";
 
         //globalParams.contract_addr = "n1uLXbs3Xjayd5g6MC94UfdsK1c8zfFpGYC";
         globalParams.stake = null;
@@ -627,6 +661,8 @@
             var _to_addr = globalParams.contract_addr;
             var _value = "0";
 
+            globalParams.my_addr = $('#addr').val();
+
             inner_call(_to_addr, _value, "get_all", "", function (resp) {
                 var result = JSON.parse(JSON.parse(resp['result']));
 
@@ -647,12 +683,32 @@
                 var losers = result['losers'];
                 var date = result['date'];
 
+                if (addr_A == globalParams.my_addr) {
+                    globalParams.AB = 'A';
+                } else if (addr_B == globalParams.my_addr) {
+                    globalParams.AB = 'B';
+                }
+
+
+
+                var str = "";
+
+                str += "<tr>" + "<th>Block</th>" + "<th>Winner</th>" + "<th>Loser</th>" + "</tr>"
+                for (var i = 0; i < date.length; i++) {
+                    str += "<tr><td>" + date[i] + "</td> <td><a target=_blank href=https://explorer.nebulas.io/#/address/" + winners[i] +
+                        "> ..." +  winners[i].substring(winners[i].length - 7) +
+                        "</a></td><td><a target=_blank href=https://explorer.nebulas.io/#/address/" + losers[i] +
+                        "> ..." +  losers[i].substring(losers[i].length - 7) +
+                        "</a></td><td>" 
+                }
+                $("#result-table").html(str);
+
                 var count_down = last_block + stale - cur_block;
 
                 if (state == '0') {
                     $("#current_prompt").text(
-                        "请确定您的策略，并提交(经随机种子加密过的选择)以开启游戏，注意您的最佳对策是在0和1之间随机选择，并且保证种子足够随机，您需要交" + stake +
-                        "NAS的押金以保证经济学上的性质，不过当您完成游戏、或一段时间内未能匹配到合适对手时，无论结果输赢，押金都会退回");
+                        "请开启游戏，请确定您的策略，并提交(经随机种子加密过的选择)以开启游戏，注意您的最佳对策是在0和1之间随机选择，并且保证种子足够随机，您需要交" + stake +
+                        "NAS的押金以保证经济学上的性质，不过当您完成游戏、或一段时间内未能匹配到合适对手时，无论结果输赢，押金都会退回。 请注意两名玩家不能是同样的地址");
                     $(".reveal").hide();
                     $(".choose").show();
 
@@ -672,7 +728,7 @@
                         $(".rand").show();
                     }
                 } else if (state == '2') {
-                    $("#current_prompt").text("已匹配到玩家，请在" + count_down + "个block之内提交明文的选择");
+                    $("#current_prompt").text("已匹配到玩家，请在" + count_down + "个block之内提交明文的策略");
                     $(".choose").hide();
                     $(".rand").show();
 
@@ -686,7 +742,7 @@
 
                         if (revealed_A == 'null') {
                             $("#current_prompt").text(
-                                "对方玩家策略已提交，请在" + count_down + "个block之内提交明文的选择");
+                                "对方玩家策略已提交，请在" + count_down + "个block之内提交明文的策略");
                             $(".choose").hide();
                             $(".reveal").show();
 
@@ -704,7 +760,7 @@
 
                         if (revealed_B == 'null') {
                             $("#current_prompt").text(
-                                "对方玩家策略已提交，请在" + count_down + "个block之内提交明文的选择");
+                                "对方玩家策略已提交，请在" + count_down + "个block之内提交明文的策略");
                             $(".choose").hide();
                             $(".reveal").show();
                         } else {
@@ -716,13 +772,14 @@
                         $("#current_prompt").text("当前正有其他用户进行博弈，请稍候");
                     }
                 }
-            
-            if (window.webExtensionWallet == null) {
-                $(".wallet").hide();
-                $(".no-wallet").html(
-                    "<p> <br/> <a href='https://github.com/ChengOrangeJu/WebExtensionWallet' target='_blank'>点击安装星云官方钱包插件</a>，与智能合约交互！ :) </p>"
-                );
-            }});
+
+                if (window.webExtensionWallet == null) {
+                    $(".wallet").hide();
+                    $(".no-wallet").html(
+                        "<p> <br/> <a href='https://github.com/ChengOrangeJu/WebExtensionWallet' target='_blank'>点击安装星云官方钱包插件</a>，与智能合约交互！ :) </p>"
+                    );
+                }
+            });
         }
 
         function show_detail() {
