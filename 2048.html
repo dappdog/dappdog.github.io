@@ -263,7 +263,7 @@
 
 
 
-                          
+
                             <div class=select-wallet-file></div>
 
 
@@ -289,19 +289,22 @@
                             <div class="form-group detail row">
                                 <div class=col>
                                     <button id=submit-btn class="btn btn-block">提交成绩至星云链</button>
-					<p class="no-wallet"></p>
+                                    <p class="no-wallet"></p>
                                 </div>
                             </div>
 
                             <div class="form-group detail row">
-				   
-                                <div >
+
+                                <div>
                                     <label>总排行榜</label>
                                     <table border="1" id="rank1" style="width:80%" align="center">
                                     </table>
                                 </div>
-                                <div >
-                                    <label>相同种子排行榜</label> <small><u onclick="$('.modal.seedusage').modal('toggle')">(种子有什么用？)</u></small>
+                                <div>
+                                    <label>相同种子排行榜</label>
+                                    <small>
+                                        <u onclick="$('.modal.seedusage').modal('toggle')">(种子有什么用？)</u>
+                                    </small>
                                     <table border="1" id="rank2" style="width:80%" align="center">
                                     </table>
                                 </div>
@@ -310,23 +313,23 @@
 
 
                             <div class="fade modal seedusage" data-backdrop=static>
-                                    <div class=modal-dialog>
-                                        <div class=modal-content>
-                                            <div class=modal-body>
-                                                <p> 一局游戏的难度由一个随机数完全确定，这个随机数就是种子。不同种子确定的游戏难度可能会有不同，如果只进行总分比较是不完全公平的，我们引入了同样种子下的排名，可以提供更公平的排名。
-                                                    </p>
-    
-                                                <div class="form-group detail row">
-                                                    <div class=col>
-                                                        <button onclick="$('.modal.seedusage').modal('toggle');" class="btn btn-block">关闭</button>
-                                                    </div>
+                                <div class=modal-dialog>
+                                    <div class=modal-content>
+                                        <div class=modal-body>
+                                            <p> 一局游戏的难度由一个随机数完全确定，这个随机数就是种子。不同种子确定的游戏难度可能会有不同，如果只进行总分比较是不完全公平的，我们引入了同样种子下的排名，可以提供更公平的排名。
+                                            </p>
+
+                                            <div class="form-group detail row">
+                                                <div class=col>
+                                                    <button onclick="$('.modal.seedusage').modal('toggle');" class="btn btn-block">关闭</button>
                                                 </div>
-    
                                             </div>
+
                                         </div>
                                     </div>
-    
                                 </div>
+
+                            </div>
 
                             <div class="fade modal tips" data-backdrop=static>
                                 <div class=modal-dialog>
@@ -355,13 +358,15 @@
                                     </div>
                                 </div>
                             </div>
-				
-				
-				
-				  <div class="form-group  row">
-					   
+
+
+
+                            <div class="form-group  row">
+
                                 <div class=col>
-					<br/> <br/> <br/>	
+                                    <br/>
+                                    <br/>
+                                    <br/>
                                     <label>种子(一个整数)</label>
                                     <input class=form-control type=text id=seed>
                                 </div>
@@ -498,20 +503,22 @@
                                 refresh_all();
                                 refresh_some();
                             }, 15000);
-				
-				
-				if( window.webExtensionWallet == null){
-    $("#submit-btn").hide();
-      $(".no-wallet").html("<p> <br/>  快来安装<a href='https://github.com/ChengOrangeJu/WebExtensionWallet' target='_blank'>星云官方钱包插件</a>，上传您的成绩！ :) </p>");
-}
+
+
+                            if (window.webExtensionWallet == null) {
+                                $("#submit-btn").hide();
+                                $(".no-wallet").html(
+                                    "<p> <br/>  快来安装<a href='https://github.com/ChengOrangeJu/WebExtensionWallet' target='_blank'>星云官方钱包插件</a>，上传您的成绩！ :) </p>"
+                                );
+                            }
 
                         }
 
                         $("#submit-btn").on("click", onSubmit);
                         $("#reset-btn").on("click", onReset);
                         $("#submit-confirm-btn").on("click", onRealSubmit);
-			    
-			    
+
+
 
 
 
@@ -519,8 +526,8 @@
                             // Wait till the browser is ready to render the game (avoids glitches)
                             window.requestAnimationFrame(function () {
                                 show_detail();
-				    
-				    
+
+
                             });
                         });
 
@@ -547,23 +554,26 @@
                                 var rrr = JSON.parse(JSON.parse(resp['result']));
                                 var scores = rrr['scores'];
                                 console.log(scores, rrr);
-								
-								var c = rrr['scores'].map(function(e, i) {
-								  return [e, rrr['addrs'][i]];
-								});
-								
+
+                                var c = rrr['scores'].map(function (e, i) {
+                                    return [e, rrr['addrs'][i]];
+                                });
+
                                 console.log(c);
-								
-								c.sort(function(a, b) { 
-									return parseInt(a[0]) - parseInt(b[0]);})
+
+                                c.sort(function (a, b) {
+                                    return parseInt(a[0]) - parseInt(b[0]);
+                                })
                                 console.log(c);
-								c.reverse();
-								
+                                c.reverse();
+
                                 var str = "";
 
                                 str += "<tr>" + "<th>address</th>" + "<th>score</th>" + "</tr>"
                                 for (var i = 0; i < scores.length; i++) {
-                                    str += "<tr><td><a target=_blank href=https://explorer.nebulas.io/#/address/" + c[i][1] +
+                                    str +=
+                                        "<tr><td><a target=_blank href=https://explorer.nebulas.io/#/address/" +
+                                        c[i][1] +
                                         "> ..." + c[i][1].substring(c[i][1].length - 7) +
                                         "</a></td><td>" +
                                         c[i][0] + "</td></tr>";
@@ -577,34 +587,37 @@
                             var _to_addr = globalParams.CONTRACT_ADDR;
                             let _value = "0";
 
-                            
+
                             SEED = parseInt($("#seed").val());
-                            
+
                             let args = make_params([SEED, 4]);
 
                             inner_call(_to_addr, _value, "fetch_some", args, function (resp) {
-                                console.log("DEBUG",resp);
+                                console.log("DEBUG", resp);
 
                                 var rrr = JSON.parse(JSON.parse(resp['result']));
                                 var scores = rrr['scores'];
                                 console.log(scores);
-								
-								var c = rrr['scores'].map(function(e, i) {
-								  return [e, rrr['addrs'][i]];
-								});
-								
+
+                                var c = rrr['scores'].map(function (e, i) {
+                                    return [e, rrr['addrs'][i]];
+                                });
+
                                 console.log(c);
-								
-								c.sort(function(a, b) { 
-									return parseInt(a[0]) - parseInt(b[0]);})
+
+                                c.sort(function (a, b) {
+                                    return parseInt(a[0]) - parseInt(b[0]);
+                                })
                                 console.log(c);
-								c.reverse();
-								
+                                c.reverse();
+
                                 var str = "";
 
                                 str += "<tr>" + "<th>address</th>" + "<th>score</th>" + "</tr>"
                                 for (var i = 0; i < scores.length; i++) {
-                                    str += "<tr><td><a target=_blank href=https://explorer.nebulas.io/#/address/" + c[i][1] +
+                                    str +=
+                                        "<tr><td><a target=_blank href=https://explorer.nebulas.io/#/address/" +
+                                        c[i][1] +
                                         "> ..." + c[i][1].substring(c[i][1].length - 7) +
                                         "</a></td><td>" +
                                         c[i][0] + "</td></tr>";
