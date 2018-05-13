@@ -1,0 +1,749 @@
+<html>
+
+<head>
+    <meta charset=utf-8>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/hammer.js/1.0.6/hammer.min.js'></script>
+    <link rel=stylesheet href=lib/bootstrap-4.0.0-dist/css/bootstrap.min.css>
+    <script src=lib/jquery-3.3.1.min.js></script>
+    <script src=lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
+    <script>
+        var NNN = 3;
+    </script>
+
+
+    <style>
+        .btn {
+            background-color: rgb(237, 225, 202);
+            color: rgb(118, 110, 101);
+            font-weight: 500;
+            letter-spacing: 2px;
+            margin: 1rem 0 .5rem 0;
+            padding: 0.75rem 2.1875rem;
+            font-size: 120%;
+            border-radius: 5em
+        }
+
+        .modal-content {
+            border-radius: 3em;
+        }
+
+        .form-control {
+            background-color: #f5f5f5;
+            border-radius: 3px;
+            box-shadow: none;
+            color: #565656;
+            font-size: 0.875rem;
+            line-height: 1.43;
+            min-height: 3em;
+            padding: 0.2em 1.07em 0.2em;
+            border: 1px solid #e8e8e8
+        }
+
+        label>i {
+            color: gray;
+            font-size: small;
+        }
+
+        .form-control:focus {
+            border: 1px solid #e8e8e8
+        }
+
+
+        #content {
+            border-top: 1px solid;
+        }
+
+        .title {
+            text-align: center;
+            color: black;
+            font-size: 30px;
+        }
+
+        .active1 {
+            display: none;
+        }
+
+        #tabs {
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        #tabs li {
+            float: left;
+            margin: 0;
+        }
+
+        #tabs li a {
+            position: relative;
+            padding: 10px 50px;
+            float: left;
+            text-decoration: none;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, .8);
+        }
+
+        .ccc {
+            background-color: black;
+        }
+
+        .ccc a {
+            color: #fff;
+        }
+
+        .current a {
+            outline: 0;
+            z-index: 4;
+        }
+
+        .hoverItem a {
+            background: black;
+            color: #fff;
+        }
+
+        .tab {
+            display: none;
+        }
+
+        .show {
+            display: block;
+        }
+
+        .execution_banner {
+            height: 200px;
+            background-color: #f5f5f5;
+            margin: 0 auto;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .form-check {
+            display: inline-block;
+        }
+
+        #receipt {
+            word-break: break-all;
+        }
+
+        #receipt_call {
+            word-break: break-all;
+        }
+
+        .code {
+            background-color: #f8f9fa;
+            font-family: consolas, menlo, monaco, lucida console, liberation mono, dejavu sans mono, bitstream vera sans mono, courier new, monospace;
+            overflow: auto;
+            white-space: pre;
+        }
+
+        .errmsg {
+            color: red;
+        }
+
+        .err {
+            border-color: red;
+        }
+
+        .prompt {
+            width: 20px;
+            height: 20px;
+            display: inline-table;
+        }
+
+        .prompt_contenner {
+            width: 200px;
+            height: 100px;
+            border: 1px solid black;
+            position: absolute;
+            left: 16%;
+            margin-top: -6%;
+            box-shadow: 2px 2px 17px #333333;
+        }
+
+        .call_prompt_contenner {
+            width: 200px;
+            height: 100px;
+            border: 1px solid black;
+            position: absolute;
+            left: 28%;
+            margin-top: -14%;
+            box-shadow: 2px 2px 17px #333333;
+        }
+
+        .function_prompt_contenner {
+            width: 200px;
+            height: 100px;
+            border: 1px solid black;
+            position: absolute;
+            left: 24%;
+            margin-top: -14%;
+            box-shadow: 2px 2px 17px #333333;
+        }
+
+        .CodeMirror {
+            border: 1px solid black;
+            font-size: 13px;
+        }
+
+        .cent {
+            margin: 0 auto
+        }
+    </style>
+
+    <link href="css/style-d.css" rel="stylesheet" type="text/css">
+
+    <!---<script-->
+
+</head>
+
+<body style="margin:0 auto">
+
+
+    <div class=title style="margin:0 auto">
+        <h2> NAS-8-Digit-Game
+            <span class="net-type"></span>
+        </h2>
+        <h5> Score:
+            <span id=score></span>;
+            <span id=won></span>
+        </h5>
+    </div>
+
+    <div>
+        <p>
+            <!-- 百度分享 BEGIN -->
+            <div class="bdsharebuttonbox">
+                <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+                <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+                <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+                <a href="#" class="bds_more" data-cmd="more"></a>
+            </div>
+            <script>
+                window._bd_share_config = {
+                    "common": {
+                        "bdSnsKey": {},
+                        "bdText": "",
+                        "bdMini": "2",
+                        "bdMiniList": false,
+                        "bdPic": "",
+                        "bdStyle": "1",
+                        "bdSize": "24"
+                    },
+                    "share": {},
+                    "image": {
+                        "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+                        "viewText": "分享到：",
+                        "viewSize": "16"
+                    },
+                    "selectShare": {
+                        "bdContainerClass": null,
+                        "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+                    }
+                };
+                with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement(
+                    'script')).src = '/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() /
+                    36e5)];
+            </script>
+            <!-- 百度分享 END -->
+
+        </p>
+    </div>
+
+
+    <div class="game-container cent" style=" width: 380px; height: 380px">
+
+
+
+        <!--  <div class="grid-container">
+            <div class="grid-row">
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+            </div>
+
+            <div class="grid-row">
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+            </div>
+        </div>
+
+        <div class="tile-container">
+            <div id=i1 class="tile tile-4 tile-position-1-1 tile-new">
+                <div class="tile-inner">1</div>
+            </div>
+            <div id=i2 class="tile tile-4 tile-position-1-2 tile-new">
+                <div class="tile-inner">2</div>
+            </div>
+            <div id=i3 class="tile tile-4 tile-position-1-3 tile-new">
+                <div class="tile-inner">3</div>
+            </div>
+            <div id=i4 class="tile tile-4 tile-position-1-4 tile-new">
+                <div class="tile-inner">4</div>
+            </div>
+            <div id=i5 class="tile tile-4 tile-position-2-1 tile-new">
+                <div class="tile-inner">5</div>
+            </div>
+            <div id=i6 class="tile tile-4 tile-position-2-2 tile-new">
+                <div class="tile-inner">6</div>
+            </div>
+            <div id=i7 class="tile tile-4 tile-position-2-3 tile-new">
+                <div class="tile-inner">7</div>
+            </div>
+            <div id=i8 class="tile tile-4 tile-position-2-4 tile-new">
+                <div class="tile-inner">8</div>
+            </div>
+            <div id=i9 class="tile tile-4 tile-position-3-1 tile-new">
+                <div class="tile-inner">9</div>
+            </div>
+            <div id=i10 class="tile tile-4 tile-position-3-2 tile-new">
+                <div class="tile-inner">10</div>
+            </div>
+            <div id=i11 class="tile tile-4 tile-position-3-3 tile-new">
+                <div class="tile-inner">11</div>
+            </div>
+            <div id=i12 class="tile tile-4 tile-position-3-4 tile-new">
+                <div class="tile-inner">12</div>
+            </div>
+            <div id=i13 class="tile tile-4 tile-position-4-1 tile-new">
+                <div class="tile-inner">13</div>
+            </div>
+            <div id=i14 class="tile tile-4 tile-position-4-2 tile-new">
+                <div class="tile-inner">14</div>
+            </div>
+            <div id=i15 class="tile tile-4 tile-position-4-3 tile-new">
+                <div class="tile-inner">15</div>
+            </div>
+        </div> -->
+
+
+
+        <div class="grid-container">
+            <div class="grid-row">
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+            </div>
+
+
+        </div>
+
+        <div class="tile-container">
+            <div id=i1 class="tile tile-4 tile-position-1-1 tile-new">
+                <div class="tile-inner">1</div>
+            </div>
+            <div id=i2 class="tile tile-4 tile-position-1-2 tile-new">
+                <div class="tile-inner">2</div>
+            </div>
+            <div id=i3 class="tile tile-4 tile-position-1-3 tile-new">
+                <div class="tile-inner">3</div>
+            </div>
+            <div id=i4 class="tile tile-4 tile-position-2-1 tile-new">
+                <div class="tile-inner">4</div>
+            </div>
+            <div id=i5 class="tile tile-4 tile-position-2-2 tile-new">
+                <div class="tile-inner">5</div>
+            </div>
+            <div id=i6 class="tile tile-4 tile-position-2-3 tile-new">
+                <div class="tile-inner">6</div>
+            </div>
+            <div id=i7 class="tile tile-4 tile-position-3-1 tile-new">
+                <div class="tile-inner">7</div>
+            </div>
+            <div id=i8 class="tile tile-4 tile-position-3-2 tile-new">
+                <div class="tile-inner">8</div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class=cent>
+        <p class="game-explanation">
+            <strong class="important">玩法：使用键盘方向键控制，最终目标是顺序的排列</strong>
+            <a href="15digit.html" target="_blank">想挑战一下？玩15数码游戏</a>
+        </p>
+
+    </div>
+
+    <div class="form-group cent row">
+        <div class=col>
+            <button id=submit-btn class="btn btn-block">提交您的成绩至星云链</button>
+            <p class="no-wallet"></p>
+        </div>
+    </div>
+
+
+    <div class="form-group cent row">
+        <div class=col>
+            <br/>
+            <label>种子(0-
+                <span id="max_seed"></span>的整数)</label>
+        </div>
+    </div>
+    <div class="form-group  cent row">
+        <div class=col>
+            <input class=form-control type=text id=seed>
+        </div>
+    </div>
+
+    <div class="form-group cent row">
+        <div class=col>
+            <button id=reset-btn class="btn btn-block" onclick="onReset()">按种子重置游戏</button>
+        </div>
+    </div>
+
+
+    <div class="form-group detail row">
+        <div class=col>
+            <label>总排行榜</label>
+            <table border="1" id="rank1" style="width:80%" align="center">
+            </table>
+        </div>
+    </div>
+    <div class="form-group detail row">
+        <div class=col>
+            <label>相同种子排行榜</label>
+            <small>
+                <u onclick="$('.modal.seedusage').modal('toggle')">(种子有什么用？)</u>
+            </small>
+            <table border="1" id="rank2" style="width:80%" align="center">
+            </table>
+        </div>
+    </div>
+
+
+
+    <div class="fade modal seedusage" data-backdrop=static>
+        <div class=modal-dialog>
+            <div class=modal-content>
+                <div class=modal-body>
+                    <label> 种子有什么用？</label>
+                    <p> 游戏的初始状态由一个随机种子唯一确定，这个随机数就是种子。不同种子确定的完成游戏最少步数会有不同，如果只进行总分比较是不完全公平的，我们引入了同样种子下的排名，可以提供更公平的排名。
+                    </p>
+
+                    <div class="form-group detail row">
+                        <div class=col>
+                            <button onclick="$('.modal.seedusage').modal('toggle');" class="btn btn-block">关闭</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="fade modal tips" data-backdrop=static>
+        <div class=modal-dialog>
+            <div class=modal-content>
+                <div class=modal-body>
+                    <p>将要发送交易，请您
+                        <strong>手动把gasLimit设为至少
+                            <span id="gaslimit"></span>
+                        </strong>，因为我们的合约将对您的解法进行验证，这样可以保证存储在链上的分数是不可伪造的。验证解法需要耗费一定的gas，您玩的步数越多，耗费gas越大。注意：gaslimit是耗费gas的上限，并非实际收取的费用。
+                    </p>
+                    <p>
+                        <small hidden="hidden">否则，如果执行智能合约时只上传了成绩，比如
+                            <a href="http://nebulasapp.atpianyi.com/index/game/index" target="_blank">这种游戏</a>，就完全无法做到可验证性，任何人都可以轻易发送一个交易，让自己上排行榜。</small>
+                    </p>
+
+                    <div class="form-group detail row">
+                        <div class=col>
+                            <button onclick="$('.modal.tips').modal('toggle');" class="btn btn-block">关闭</button>
+                        </div>
+                        <div class=col>
+                            <button id=submit-confirm-btn class="btn btn-block">继续</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="copyright text-center">Copyright © 2018 DAppDog 工作室</div>
+    <div class="copyright text-center">友情链接
+        <a href="https://nebulas.io" target="_blank">星云链
+            <a>
+                <a href="https://atlasp.io" target="_blank">ATP</a>
+                <a href="https://explorer.nebulas.io/#/" target="_blank">星云浏览器</a>
+    </div>
+
+
+
+    <script src="js/nd.js"></script>
+    <script src=lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
+    <script src=lib/bootbox.min.js data-depends="bootstrap jquery.slim"></script>
+    <script src=lib/blockies.min.js></script>
+    <script src=lib/js-beautify-1.7.5/beautify.js></script>
+    <script src=lib/prismjs-1.13.0/prism.js></script>
+    <script src=lib/nebulas.js></script>
+    <script src=js/1-localSave.js></script>
+    <script src=js/home.v1.js></script>
+    <script src=js/i18n.js data-depends=jquery.slim></script>
+    <script src=js/ui-block.js data-depends="bootbox blockies jquery.slim i18n.js nebulas.js"></script>
+    <script src=lib/codemirror/codemirror.js></script>
+    <script src=lib/codemirror/javascript.js></script>
+    <script>
+        localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
+
+        //localSave.setItem("apiPrefix", "https://mainnet.nebulas.io");
+
+        var contract_addr = "n1wAaoaJWhQDWSk8hgBxsaUzpxDQW2SBn7g";
+
+
+        $("#submit-btn").on("click", onSubmit);
+
+        $("#submit-confirm-btn").on("click", onRealSubmit);
+
+
+        function onReset() {
+            var seed = parseInt($("#seed").val());
+            G.reset(NNN * NNN, seed);
+            console.log("reset");
+        }
+
+
+
+        window.addEventListener('message', function (e) {
+            console.log("message received, msg.data: " + JSON.stringify(e.data));
+            if (!!e.data.data.txhash) {
+                if ($(".modal.tips").is(':visible')) {
+                    $(".modal.tips").modal('toggle');
+                }
+                console.log("交易哈希：" + JSON.stringify(e.data.data.txhash, null, '\t'));
+            }
+        });
+
+
+
+        if (localSave.getItem("apiPrefix").includes('test')) {
+            $(".net-type").text("(测试网)");
+        } else {
+            $(".net-type").text("(主网)");
+        }
+
+
+        function make_params(arg_list) {
+            var res = "[";
+            for (var i = 0; i < arg_list.length; i++) {
+                if (typeof (arg_list[i]) != 'number') {
+                    res = res + "\"";
+                    res = res + arg_list[i];
+                    res = res + "\"";
+                } else {
+                    res = res + arg_list[i];
+                }
+                if (i != arg_list.length - 1) {
+                    res = res + ",";
+                }
+            }
+            res = res + "]";
+            return res;
+        }
+
+        function refresh() {
+            get_all(process_list);
+            get_some(process_list);
+        }
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Wait till the browser is ready to render the game (avoids glitches)
+            window.requestAnimationFrame(function () {
+                refresh();
+
+                var x = setInterval(function () {
+                    refresh();
+                }, 15000);
+
+
+                if (window.webExtensionWallet == null) {
+                    $("#submit-btn").hide();
+                    $(".no-wallet").html(
+                        "<p> <br/>  快来安装<a href='https://github.com/ChengOrangeJu/WebExtensionWallet' target='_blank'>星云官方钱包插件</a>，上传您的成绩！ :) </p>"
+                    );
+                }
+
+
+            });
+        });
+
+
+        function process_list(list, table) {
+            var map = {};
+            var scores = [];
+            var sortedList = [];
+
+            for (var i = 0; i < list.length; i++) {
+                map[list[i][3]] = list[i];
+                scores.push(list[i][3]);
+            }
+
+            scores.sort(function (a, b) {
+                return b - a
+            });
+
+            for (var i = 0; i < scores.length; i++) {
+                sortedList.push(map[scores[i]]);
+            }
+
+            var str = "";
+
+            str += "<tr>" + "<th>address</th>" + "<th>score</th>" + "<th>seed</th>" + "</tr>"
+            for (var i = 0; i < sortedList.length; i++) {
+                var x = sortedList[i];
+                var k = x[0];
+                var from = x[2];
+                var seed = x[1];
+                var score = x[3]
+
+                str += "<tr>" + "<td>" + "<a target='_blank' href=https://explorer.nebulas.io/#/address/" + from + ">" +
+                    from + "</a></td>" + " <td> " + score + " </td> " + "<td>" + seed + "</td>" + "</tr>";
+            }
+
+            $(table).html(str);
+
+        }
+
+        function get_all(callback) {
+            var _to_addr = contract_addr;
+            var _value = '0';
+            var _args = make_params([G.K]);
+
+            inner_call(_to_addr, _value, "fetch_all", _args, function (resp) {
+                console.log(resp);
+                var list = JSON.parse(JSON.parse(resp['result']));
+                callback(list, "#rank1");
+            });
+        }
+
+        function get_some(callback) {
+            var _to_addr = contract_addr;
+            var _value = '0';
+            var _args = make_params([G.K, G.seed]);
+
+            inner_call(_to_addr, _value, "fetch_some", _args, function (resp) {
+                var list = JSON.parse(JSON.parse(resp['result']));
+                callback(list, "#rank2");
+            });
+        }
+
+        function onSubmit() {
+            var _to_addr = contract_addr;
+            var _value = '0';
+            var _args = make_params([G.K, G.seed, G.moves]);
+
+            inner_call(_to_addr, _value, "addRecord", _args, function (resp) {
+                if (G.state != 1) {
+                    alert("游戏尚未结束，得分无法提交。")
+                    return;
+                }
+
+                $(".modal.tips").modal('toggle');
+                console.log(resp);
+                var gaslimit = resp['estimate_gas'];
+                $("#gaslimit").text(Math.max(gaslimit * 100, 200000000));
+            });
+        }
+
+        function onRealSubmit() {
+
+            var _to_addr = contract_addr;
+            var _value = '0';
+            var _args = make_params([G.K, G.seed, G.moves]);
+
+            sendTx(_to_addr, _value, "addRecord", _args);
+        }
+
+
+        function sendTx(_to_addr, _value, _func, _args) {
+            window.postMessage({
+                "target": "contentscript",
+                "data": {
+                    "to": _to_addr,
+                    "value": _value.toString(),
+                    "contract": {
+                        "function": _func,
+                        "args": _args
+                    }
+                },
+                "method": "neb_sendTransaction",
+            }, "*");
+        }
+
+
+        function inner_call(_to_addr, _value, _func, _args, callback) {
+            var url = 'https://mainnet.nebulas.io/v1/user/call';
+            var from = 'n1YeD6SCiSNxjQ1CEUhSpThNxPU77mvB1sp';
+
+
+            if (localSave.getItem("apiPrefix").includes('test')) {
+                url = 'https://testnet.nebulas.io/v1/user/call';
+                from = 'n1cNkcUumVmt6CHjYhgTECZHnm3nGDzkWfx';
+            }
+
+
+            var contract = _to_addr;
+
+            var requestObj = {
+                from: from,
+                to: contract,
+                value: _value,
+                nonce: 111112888,
+                gasPrice: '1000000',
+                gasLimit: '200000000',
+                contract: {
+                    function: _func,
+                    args: _args
+                }
+            };
+
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestObj)
+                })
+                .then(res => res.json())
+                .then(res => {
+                    callback(res['result']);
+                });
+        }
+    </script>
+    <p class="console"></p>
+</body>
+
+</html>
