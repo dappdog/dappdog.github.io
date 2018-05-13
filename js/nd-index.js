@@ -119,7 +119,7 @@ function process_list(list, table) {
         var k = x[0];
         var from = x[2];
         var seed = x[1];
-        var score = x[3]
+        var score = 100000 - (G.MAX_SCORE - x[3]);
 
         str += "<tr>" + "<td>" + "<a target='_blank' href=https://explorer.nebulas.io/#/address/" + from + ">" +
             from + "</a></td>" + " <td> " + score + " </td> " + "<td>" + seed + "</td>" + "</tr>";

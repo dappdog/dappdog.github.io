@@ -301,7 +301,7 @@ console_viewer.prototype.refresh = function (manager) {
 
     console.log("refresh");
 
-    $("#score").text(manager.score);
+    $("#score").text(100000 - manager.MAX_SCORE + manager.score);
     $("#seed").val(manager.seed);
     
     $("#max_seed").text(manager.f);
