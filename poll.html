@@ -1,0 +1,410 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset=utf-8>
+    <link rel="icon shortcut" href=img/logo.png type=image/png>
+    <link rel=apple-touch-icon href=img/logo.png>
+    <link rel=stylesheet href=lib/bootstrap-4.0.0-dist/css/bootstrap.min.css>
+    <link rel=stylesheet href=lib/prismjs-1.13.0/prism.css>
+    <link rel=stylesheet href=css/base.css>
+    <link rel=stylesheet href=css/ui-block.css>
+    <link rel=stylesheet href=css/codemirror.css>
+    <meta name=viewport content="width=device-width">
+    <title>Poll</title>
+    <style>
+        #content {
+            border-top: 1px solid;
+        }
+
+        .title {
+            text-align: center;
+            color: black;
+            font-size: 30px;
+        }
+
+        .active1 {
+            display: none;
+        }
+
+        #tabs {
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        #tabs li {
+            float: left;
+            margin: 0;
+        }
+
+        #tabs li a {
+            position: relative;
+            padding: 10px 50px;
+            float: left;
+            text-decoration: none;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, .8);
+        }
+
+        .ccc {
+            background-color: black;
+        }
+
+        .ccc a {
+            color: #fff;
+        }
+
+        .current a {
+            outline: 0;
+            z-index: 4;
+        }
+
+        .hoverItem a {
+            background: black;
+            color: #fff;
+        }
+
+        .tab {
+            display: none;
+        }
+
+        .show {
+            display: block;
+        }
+
+        .execution_banner {
+            height: 200px;
+            background-color: #f5f5f5;
+            margin: 0 auto;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .form-check {
+            display: inline-block;
+        }
+
+        #receipt {
+            word-break: break-all;
+        }
+
+        #receipt_call {
+            word-break: break-all;
+        }
+
+        .code {
+            background-color: #f8f9fa;
+            font-family: consolas, menlo, monaco, lucida console, liberation mono, dejavu sans mono, bitstream vera sans mono, courier new, monospace;
+            overflow: auto;
+            white-space: pre;
+        }
+
+        .errmsg {
+            color: red;
+        }
+
+        .err {
+            border-color: red;
+        }
+
+        .prompt{
+            width: 20px;
+            height: 20px;
+            display: inline-table;
+        }
+        
+        .prompt_contenner{
+            width: 200px;
+            height: 100px;
+            border: 1px solid black;
+            position: absolute;
+            left: 16%;
+            margin-top: -6%;
+            box-shadow:2px 2px 17px #333333;
+        }
+
+        .call_prompt_contenner{
+            width: 200px;
+            height: 100px;
+            border: 1px solid black;
+            position: absolute;
+            left: 28%;
+            margin-top: -14%;
+            box-shadow:2px 2px 17px #333333;
+        }
+
+         .function_prompt_contenner{
+            width: 200px;
+            height: 100px;
+            border: 1px solid black;
+            position: absolute;
+            left: 24%;
+            margin-top: -14%;
+            box-shadow:2px 2px 17px #333333;
+        }
+
+        .CodeMirror {border: 1px solid black; font-size:13px;}
+    </style>
+</head>
+
+<body>
+
+    <div class=container>
+        <ul id=tabs id=myTab hidden='hidden' role=tablist>
+            <li class="current ccc">
+                <a href=# title=tab3 data-i18n=contract/call></a>
+            </li>
+        </ul>
+        <div id=content>
+            <div class="run_contract show tab" id=tab3>
+                <div class=title>
+                    Poll <span class="net-type"></span>
+                </div>
+
+                <div class="form-group begin row" >
+					<div class=col>
+						<label>借贷case号</label>
+						<input class="form-control case_id" type=text placeholder="留空以开启新的借贷">
+					</div>
+				</div>
+
+				<div class=col>
+					<button id=new class="btn btn-block">点击新建</button>
+				</div>
+				
+				<div class=col>
+					<button id=check class="btn btn-block">点击查看</button>
+				</div>
+               
+                
+
+				<p id=current_prompt style="background-color: yellow;"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="fade loading modal" data-backdrop=static>
+        <div class=modal-dialog>
+            <div class=modal-content>
+                <div class=modal-body>
+                    <div class=progress>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role=progressbar style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src=lib/jquery-3.3.1.min.js></script>
+    <script src=lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
+    <script src=lib/bootbox.min.js data-depends="bootstrap jquery.slim"></script>
+    <script src=lib/blockies.min.js></script>
+    <script src=lib/js-beautify-1.7.5/beautify.js></script>
+    <script src=lib/prismjs-1.13.0/prism.js></script>
+    <script src=lib/nebulas.js></script>
+    <script src=js/1-localSave.js></script>
+    <script src=js/home.v1.js></script>
+    <script src=js/i18n.js data-depends=jquery.slim></script>
+    <script src=js/ui-block.js data-depends="bootbox blockies jquery.slim i18n.js nebulas.js"></script>
+    <script src=lib/codemirror/codemirror.js></script>
+    <script src=lib/codemirror/javascript.js></script>
+    <script>
+        "use strict";
+
+        var nebulas = require("nebulas"),
+            Account = nebulas.Account,
+            Utils = nebulas.Utils,
+            neb = new nebulas.Neb(),
+            globalParams = {
+                account: null
+            };
+
+
+        localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
+
+        //localSave.setItem("apiPrefix", "https://mainnet.nebulas.io");
+
+
+        neb.setRequest(new nebulas.HttpRequest(localSave.getItem("apiPrefix") || "https://testnet.nebulas.io/"));
+
+        uiBlock.insert({
+            footer: ".footer",
+            header: ".header",
+            iconAddress: ".icon-address",
+            logoMain: ".logo-main",
+            numberComma: ".number-comma"			
+        });
+		
+		$("#new").on('click', onClickNew);
+		$("#check").on('click', onClickCheck);
+
+
+        $(".detail").hide();
+
+        if(localSave.getItem("apiPrefix").includes('test')){
+            $("#net-type").text("(测试网)");
+        }else{
+            $("#net-type").text("(主网)");
+        }
+
+
+
+        globalParams.contract_addr = "n1j5ptU1MbGb3AgaAyejmyqHp2T9uZTJ89U";
+
+	    globalParams.current_rate = -1;
+        globalParams.payback = -1;
+        globalParams.showing = -1;
+
+     
+
+        function make_params(arg_list){
+			var res = "[";
+			for (var i = 0; i < arg_list.length; i++) {
+				console.log(arg_list[i], typeof(arg_list[i]))
+				if (typeof (arg_list[i]) == 'number') {
+					res = res + arg_list[i];
+				} else if (typeof (arg_list[i]) == 'string') {
+					res = res + "\"";
+					res = res + arg_list[i];
+					res = res + "\"";
+				} else {
+					console.log(make_params(arg_list[i]));
+					res = res +  make_params(arg_list[i]);
+				}
+				if (i != arg_list.length - 1) {
+					res = res + ",";
+				}
+			}
+			res = res + "]";
+			return res;
+			return JSON.stringify(arg_list);
+        }
+
+        function refresh(){
+            var _to_addr = globalParams.contract_addr;
+            var _value = "0";
+            var _args = "";
+
+            var id = $("#case_id").val();
+			var id = '38324';
+
+            let args = make_params([id]);
+			console.log(args);
+			
+            inner_call(_to_addr, _value, "detail", args, function(resp){
+				console.log(resp);
+                let res = JSON.parse(resp['result']);
+				
+				if (window.webExtensionWallet == null) {
+					$(".wallet").hide();
+					$(".no-wallet").html(
+						"<p> <br/> <a href='https://github.com/ChengOrangeJu/WebExtensionWallet' target='_blank'>点击安装星云官方钱包插件</a>，与智能合约交互！ :) </p>"
+					);
+				}
+            });
+        }
+
+        function onClickNew() {
+			var id = 'a';
+			var dist = ['A', 'B', 'C'];
+			var duration = 30000;
+			
+            var _to_addr = globalParams.contract_addr;
+			var _value = "0";
+			
+            var _args = make_params([id, dist, duration]);
+			console.log(_args);
+			sendTx(_to_addr, _value, "set_poll", _args);
+        }
+		
+		function onClickCheck() {
+			var _to_addr = globalParams.contract_addr;
+            var _value = "0";
+            var _args = "";
+
+            var id = $("#case_id").val();
+			var id = '38324';
+
+            var args = make_params([id]);
+			
+			inner_call(_to_addr, _value, "detail", args, function(resp){
+				console.log(resp);
+                let res = JSON.parse(resp['result']);
+				return;
+			})
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Wait till the browser is ready to render the game (avoids glitches)
+            window.requestAnimationFrame(function () {
+                refresh();
+                //show_detail();
+            });
+        });
+
+
+        function sendTx(_to_addr, _value, _func, _args) {
+            window.postMessage({
+                "target": "contentscript",
+                "data": {
+                    "to": _to_addr,
+                    "value": _value.toString(),
+                    "contract": {
+                        "function": _func,
+                        "args": _args
+                    }
+                },
+                "method": "neb_sendTransaction",
+            }, "*");
+        }
+
+
+        function inner_call(_to_addr, _value, _func, _args, callback) {
+            var url = 'https://mainnet.nebulas.io/v1/user/call';
+            var from = 'n1YeD6SCiSNxjQ1CEUhSpThNxPU77mvB1sp';
+
+
+            if (localSave.getItem("apiPrefix").includes('test')) {
+                url = 'https://testnet.nebulas.io/v1/user/call';
+                from = 'n1cNkcUumVmt6CHjYhgTECZHnm3nGDzkWfx';
+            }
+
+
+            var contract = _to_addr;
+
+            var args = '';
+
+
+            var requestObj = {
+                from: from,
+                to: contract,
+                value: _value,
+                nonce: 111112888,
+                gasPrice: '1000000',
+                gasLimit: '200000000',
+                contract: {
+                    function: _func,
+                    args: _args
+                }
+            };
+			
+			console.log(requestObj);
+			
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestObj)
+                })
+                .then(res => res.json())
+                .then(res => {
+                    callback(res['result']);
+                });
+        }
+
+
+    </script>
+</body>
+</html>
