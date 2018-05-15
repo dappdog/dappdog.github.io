@@ -151,33 +151,39 @@
 <body>
 
     <div class=container>
-        <ul id=tabs id=myTab hidden='hidden' role=tablist>
+        <ul id=tabs hidden="hidden" role=tablist>
             <li class="current ccc">
                 <a href=# title=tab3 data-i18n=contract/call></a>
             </li>
         </ul>
+
         <div id=content>
             <div class="run_contract show tab" id=tab3>
                 <div class=title>
-                    Poll <span class="net-type"></span>
+                    Poll<span id="nettype"></span>
                 </div>
 
                 <div class="form-group begin row" >
-					<div class=col>
-						<label>借贷case号</label>
-						<input class="form-control case_id" type=text placeholder="留空以开启新的借贷">
-					</div>
-				</div>
+                    <div class=col>
+                        <label>请输入投票编号</label>
+                        <input class="form-control case_id" type=text placeholder="38324">
+                    </div>
+                </div>
 
-				<div class=col>
-					<button id=new class="btn btn-block">点击新建</button>
-				</div>
-				
-				<div class=col>
-					<button id=check class="btn btn-block">点击查看</button>
-				</div>
-               
-                
+                <div class="form-group row" >
+                    <div class=col>
+                        <button id=new class="btn btn-block">新建投票</button>
+                    </div>
+                    <div class=col>
+                        <button id=vote class="btn btn-block">参与投票</button>
+                    </div>
+                    <div class=col>
+                        <button id=check class="btn btn-block">查看投票</button>
+                    </div>
+                </div>
+
+                <div id="page_content">
+                </div>
 
 				<p id=current_prompt style="background-color: yellow;"></p>
             </div>
@@ -194,6 +200,13 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="copyright text-center">Copyright © 2018 DAppDog 工作室</div>
+    <div class="copyright text-center">友情链接
+        <a href="https://nebulas.io" target="_blank">星云链 </a>
+        <a href="https://atlasp.io" target="_blank">ATP</a>
+        <a href="https://explorer.nebulas.io/#/" target="_blank">星云浏览器</a>
     </div>
 
     <script src=lib/jquery-3.3.1.min.js></script>
@@ -213,8 +226,6 @@
         "use strict";
 
         var nebulas = require("nebulas"),
-            Account = nebulas.Account,
-            Utils = nebulas.Utils,
             neb = new nebulas.Neb(),
             globalParams = {
                 account: null
@@ -222,7 +233,6 @@
 
 
         localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
-
         //localSave.setItem("apiPrefix", "https://mainnet.nebulas.io");
 
 
@@ -236,27 +246,18 @@
             numberComma: ".number-comma"			
         });
 		
-		$("#new").on('click', onClickNew);
-		$("#check").on('click', onClickCheck);
-
-
-        $(".detail").hide();
 
         if(localSave.getItem("apiPrefix").includes('test')){
-            $("#net-type").text("(测试网)");
+            $("#nettype").text("（测试网）");
         }else{
-            $("#net-type").text("(主网)");
+            $("#nettype").text("（主网）");
         }
 
-
-
-        globalParams.contract_addr = "n1j5ptU1MbGb3AgaAyejmyqHp2T9uZTJ89U";
+        globalParams.contract_addr = "n1pjr69KNiqFRgffh9pAogcdE5oADXFfUs7";
 
 	    globalParams.current_rate = -1;
         globalParams.payback = -1;
         globalParams.showing = -1;
-
-     
 
         function make_params(arg_list){
 			var res = "[";
@@ -278,24 +279,91 @@
 			}
 			res = res + "]";
 			return res;
-			return JSON.stringify(arg_list);
         }
 
-        function refresh(){
+
+        $("#new").on('click', function(e) {
             var _to_addr = globalParams.contract_addr;
             var _value = "0";
-            var _args = "";
+
+            var id = $("#case_id").val();
+            var id = '38324';
+
+            var _args = make_params([id]);
+            inner_call(_to_addr, _value, "detail", _args, function(resp){
+                var res = JSON.parse(resp['result']);
+                var alters = JSON.parse(res)['alters'];
+                console.log(alters)
+                $("#page_content").text(alters);
+                return;
+            })
+        });
+
+        $('#submit_new').on('click', function(e) {
+        });
+
+        $('#submit_vote').on('click', function(e) {
+            var id = $(".case_id").val();
+            alert(id);
+            var dist = ['A', 'B', 'C'];
+            var duration = 30000;
+
+            var _to_addr = globalParams.contract_addr;
+            var _value = "0";
+
+            var _args = make_params([id, dist, duration]);
+            console.log(_args);
+            sendTx(_to_addr, _value, "set_poll", _args);
+        });
+
+        $("#check").on('click', function(e) {
+			var _to_addr = globalParams.contract_addr;
+            var _value = "0";
 
             var id = $("#case_id").val();
 			var id = '38324';
 
-            let args = make_params([id]);
-			console.log(args);
-			
-            inner_call(_to_addr, _value, "detail", args, function(resp){
-				console.log(resp);
+            var _args = make_params([id]);
+
+			inner_call(_to_addr, _value, "detail", _args, function(resp){
                 let res = JSON.parse(resp['result']);
-				
+                console.log(res);
+                $("#page_content").text(res);
+				return;
+			})
+        });
+
+        $("#vote").on('click', function(e) {
+            var _to_addr = globalParams.contract_addr;
+            var _value = "0";
+
+            var id = $("#case_id").val();
+            var id = '38324';
+
+            var _args = make_params([id]);
+            inner_call(_to_addr, _value, "detail", _args, function(resp){
+                var res = JSON.parse(resp['result']);
+                var alters = JSON.parse(res)['alters'];
+                console.log(alters)
+                $("#page_content").text(alters);
+                return;
+            })
+        });
+
+        function refresh(){
+            var _to_addr = globalParams.contract_addr;
+            var _value = "0";
+
+            var id = $("#case_id").val();
+			var id = '38324';
+
+            var _args = make_params([id]);
+			console.log(_args);
+
+            inner_call(_to_addr, _value, "detail", _args, function(resp){
+                let res = JSON.parse(resp['result']);
+                console.log(res);
+
 				if (window.webExtensionWallet == null) {
 					$(".wallet").hide();
 					$(".no-wallet").html(
@@ -305,44 +373,25 @@
             });
         }
 
-        function onClickNew() {
-			var id = 'a';
-			var dist = ['A', 'B', 'C'];
-			var duration = 30000;
-			
+        function show_detail() {
             var _to_addr = globalParams.contract_addr;
-			var _value = "0";
-			
-            var _args = make_params([id, dist, duration]);
-			console.log(_args);
-			sendTx(_to_addr, _value, "set_poll", _args);
-        }
-		
-		function onClickCheck() {
-			var _to_addr = globalParams.contract_addr;
-            var _value = "0";
-            var _args = "";
+            let _value = "0";
+            let _args = "";
 
-            var id = $("#case_id").val();
-			var id = '38324';
+            globalParams.AB = null;
 
-            var args = make_params([id]);
-			
-			inner_call(_to_addr, _value, "detail", args, function(resp){
-				console.log(resp);
-                let res = JSON.parse(resp['result']);
-				return;
-			})
+            var x = setInterval(function () {
+                refresh();
+            }, 15000);
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
+
+       document.addEventListener("DOMContentLoaded", function () {
             // Wait till the browser is ready to render the game (avoids glitches)
             window.requestAnimationFrame(function () {
-                refresh();
-                //show_detail();
+                show_detail();
             });
         });
-
 
         function sendTx(_to_addr, _value, _func, _args) {
             window.postMessage({
@@ -359,22 +408,16 @@
             }, "*");
         }
 
-
         function inner_call(_to_addr, _value, _func, _args, callback) {
             var url = 'https://mainnet.nebulas.io/v1/user/call';
             var from = 'n1YeD6SCiSNxjQ1CEUhSpThNxPU77mvB1sp';
-
 
             if (localSave.getItem("apiPrefix").includes('test')) {
                 url = 'https://testnet.nebulas.io/v1/user/call';
                 from = 'n1cNkcUumVmt6CHjYhgTECZHnm3nGDzkWfx';
             }
 
-
             var contract = _to_addr;
-
-            var args = '';
-
 
             var requestObj = {
                 from: from,
@@ -403,8 +446,6 @@
                     callback(res['result']);
                 });
         }
-
-
     </script>
 </body>
 </html>
