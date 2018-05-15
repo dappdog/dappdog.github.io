@@ -355,15 +355,30 @@
             var _to_addr = globalParams.contract_addr;
             var _value = "0";
 
-            var id = $("#case_id").val();
-            var id = '38324';
+            var id = $(".case_id").val();
 
             var _args = make_params([id]);
             inner_call(_to_addr, _value, "detail", _args, function(resp){
                 var res = JSON.parse(resp['result']);
+                var title = JSON.parse(res)['title'];
                 var alters = JSON.parse(res)['alters'];
                 console.log(alters)
-                $("#page_content").text(alters);
+                $("#page_content").append('<p>' + title + '</p>');
+
+                var radio = '<div>'
+                for (var i = 0; i < alters.length; ++i) {
+                    radio += '<input type="radio" name="radio" id=alter'+alters[i]+
+                        ' value='+ alters[i] + '><label for='+alters[i]+'>'+
+                        alters[i]+'</label>'
+                }
+
+                radio += '</div>'
+                $("#page_content").append(radio);
+                $('#page_content').append('<div> <button id="button_vote"> 投票 </button></div>')
+                $('#button_vote').on('click', function(e) {
+                    var alter = $('input[type="radio"][name="radio"]:checked').val(); // 获取一组radio被选中项的值
+                    alert(alter);
+                })
                 return;
             })
         });
