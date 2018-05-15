@@ -283,6 +283,7 @@
 
 
         $("#new").on('click', function(e) {
+            $('#page_content').empty()
             var txt1="<p> 请输入您的投票主题：</p>";               // 以 HTML 创建新元素
             var title = '<input type="text" id="poll_title"  value="你更喜欢三国里的哪个？" />'
 
@@ -332,10 +333,8 @@
             });
         });
 
-        $('#submit_vote').on('click', function(e) {
-        });
-
         $("#check").on('click', function(e) {
+            $('#page_content').empty()
 			var _to_addr = globalParams.contract_addr;
             var _value = "0";
 
@@ -352,6 +351,7 @@
         });
 
         $("#vote").on('click', function(e) {
+            $('#page_content').empty()
             var _to_addr = globalParams.contract_addr;
             var _value = "0";
 
@@ -376,8 +376,16 @@
                 $("#page_content").append(radio);
                 $('#page_content').append('<div> <button id="button_vote"> 投票 </button></div>')
                 $('#button_vote').on('click', function(e) {
+                    var id = $('.case_id').val();
                     var alter = $('input[type="radio"][name="radio"]:checked').val(); // 获取一组radio被选中项的值
-                    alert(alter);
+
+                    var _to_addr = globalParams.contract_addr;
+                    var _value = "0";
+
+                    console.log(JSON.stringify([id, alter]))
+                    var _args = JSON.stringify([id, alter]);
+                    console.log(_args);
+                    sendTx(_to_addr, _value, "vote", _args);
                 })
                 return;
             })
