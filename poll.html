@@ -304,7 +304,14 @@
                 $("#page_content").append(txt3);
                 for (var i = 0; i < cnt; i++)
                 {
-                    var alter = '<input id=alter'+i+' value=alter'+i+'>';
+                    var content = 'alter' + i;
+                    if (i == 0)
+                        content = '魏';
+                    else if (i == 1)
+                        content = '蜀';
+                    else if (i == 2)
+                        content = '吴';
+                    var alter = '<input id=alter'+i+' value='+content+'>';
                     $('#page_content').append(alter);
                     $('#page_content').append('<br>');
                 }
@@ -393,7 +400,7 @@
                 for (var i = 0; i < alters.length; ++i) {
                     radio += '<input type="radio" name="radio" id=alter'+alters[i]+
                         ' value='+ alters[i] + '><label for='+alters[i]+'>'+
-                        alters[i]+'</label>'
+                        alters[i]+'</label><br>'
                 }
 
                 radio += '</div>'
