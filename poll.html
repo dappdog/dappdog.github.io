@@ -166,7 +166,7 @@
                 <div class="form-group begin row" >
                     <div class=col>
                         <label>请输入投票编号</label>
-                        <input class="form-control case_id" type=text placeholder="38324">
+                        <input class="form-control case_id" type=text value="38324" />
                     </div>
                 </div>
 
@@ -253,7 +253,7 @@
             $("#nettype").text("（主网）");
         }
 
-        globalParams.contract_addr = "n1pjr69KNiqFRgffh9pAogcdE5oADXFfUs7";
+        globalParams.contract_addr = "n1pUsuFTsWfnqEYYMQgUPLFn9cnsQUwS7KS";
 
 	    globalParams.current_rate = -1;
         globalParams.payback = -1;
@@ -283,45 +283,63 @@
 
 
         $("#new").on('click', function(e) {
-            var _to_addr = globalParams.contract_addr;
-            var _value = "0";
+            var txt1="<p> 请输入您的投票主题：</p>";               // 以 HTML 创建新元素
+            var title = '<input type="text" id="poll_title"  value="你更喜欢三国里的哪个？" />'
 
-            var id = $("#case_id").val();
-            var id = '38324';
+            var txt2=$("<p> </p>").text("请输入您的投票时限（区块个数）.");   // 以 jQuery 创建新元素
+            var expire = '<input type="number" id="expire"  value="1000" />'
 
-            var _args = make_params([id]);
-            inner_call(_to_addr, _value, "detail", _args, function(resp){
-                var res = JSON.parse(resp['result']);
-                var alters = JSON.parse(res)['alters'];
-                console.log(alters)
-                $("#page_content").text(alters);
-                return;
-            })
-        });
+            var txt3=$("<p> </p>").text("请输入您的选项个数.");   // 以 jQuery 创建新元素
+            var cnt = '<input type="number" id="poll_cnt"  value="3" />'
 
-        $('#submit_new').on('click', function(e) {
+            var button = '<div><button id="submit_title">下一步</button></div>'
+            $("#page_content").append(txt1, title, txt2, expire, txt3, cnt, button);         // 追加新元素
+
+            $('#submit_title').on('click', function(e) {
+                var cnt = parseInt($('#poll_cnt').val());
+                var txt3=$("<p></p>").text("请输入您的各个选项内容:");   // 以 jQuery 创建新元素
+                $("#page_content").append(txt3);
+                for (var i = 0; i < cnt; i++)
+                {
+                    var alter = '<input id=alter'+i+' value=alter'+i+'>';
+                    $('#page_content').append(alter);
+                }
+                var submit_poll = '<button id="submit_poll">确定</>'
+                $('#page_content').append(submit_poll);
+                $('#submit_poll').on('click', function(e) {
+                    var id = $('.case_id').val();
+                    var title = $('#poll_title').val();
+                    var alters = []
+                    var cnt = parseInt($('#poll_cnt').val());
+                    var expire = parseInt($('#expire').val())
+
+                    for (var i = 0; i < cnt; i++)
+                    {
+                        var alter = $('#alter'+i).val()
+                        alters.push(alter);
+                    }
+
+                    var payload = {'title': title, 'alters': alters, 'id': id, 'expire': expire}
+
+                    var _to_addr = globalParams.contract_addr;
+                    var _value = "0";
+
+                    console.log(JSON.stringify([id, title, alters, expire]))
+                    var _args = JSON.stringify([id, title, alters, expire]);
+                    console.log(_args);
+                    sendTx(_to_addr, _value, "set_poll", _args);
+                });
+            });
         });
 
         $('#submit_vote').on('click', function(e) {
-            var id = $(".case_id").val();
-            alert(id);
-            var dist = ['A', 'B', 'C'];
-            var duration = 30000;
-
-            var _to_addr = globalParams.contract_addr;
-            var _value = "0";
-
-            var _args = make_params([id, dist, duration]);
-            console.log(_args);
-            sendTx(_to_addr, _value, "set_poll", _args);
         });
 
         $("#check").on('click', function(e) {
 			var _to_addr = globalParams.contract_addr;
             var _value = "0";
 
-            var id = $("#case_id").val();
-			var id = '38324';
+            var id = $(".case_id").val();
 
             var _args = make_params([id]);
 
