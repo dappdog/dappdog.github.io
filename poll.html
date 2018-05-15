@@ -210,6 +210,7 @@
     </div>
 
     <script src=lib/jquery-3.3.1.min.js></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src=lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
     <script src=lib/bootbox.min.js data-depends="bootstrap jquery.slim"></script>
     <script src=lib/blockies.min.js></script>
@@ -222,6 +223,7 @@
     <script src=js/ui-block.js data-depends="bootbox blockies jquery.slim i18n.js nebulas.js"></script>
     <script src=lib/codemirror/codemirror.js></script>
     <script src=lib/codemirror/javascript.js></script>
+
     <script>
         "use strict";
 
@@ -343,9 +345,30 @@
             var _args = make_params([id]);
 
 			inner_call(_to_addr, _value, "detail", _args, function(resp){
-                let res = JSON.parse(resp['result']);
+                let res = JSON.parse(JSON.parse(resp['result']));
                 console.log(res);
-                $("#page_content").text(res);
+
+                var json = {};
+                json.chart = {type:'column'};
+                json.title = {text:res['title']};
+                json.xAxis = {categories: res['alters'],
+                              title:{text: '选项'}};
+                json.yAxis = {min:0, tickInterval:1, title:{text:'票数'}};
+                json.legend = {enable: true}
+                var cnts = []
+                for (var i = 0; i < res['alters'].length; ++i) {
+                    var alter = res['alters'][i];
+                    if (res['dist'][alter] == null)
+                        cnts.push([alter, 0]);
+                    else
+                        cnts.push([alter, res['dist'][alter]]);
+                }
+                json.series = [{
+                    showInLegend: false,
+                    data: cnts
+                }];
+
+                $("#page_content").highcharts(json);
 				return;
 			})
         });
