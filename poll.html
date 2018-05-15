@@ -295,7 +295,7 @@
             var txt3=$("<p> </p>").text("请输入您的选项个数.");   // 以 jQuery 创建新元素
             var cnt = '<input type="number" id="poll_cnt"  value="3" />'
 
-            var button = '<div><button id="submit_title">下一步</button></div>'
+            var button = '<div><button id="submit_title" class="btn btn-block">下一步</button></div>'
             $("#page_content").append(txt1, title, txt2, expire, txt3, cnt, button);         // 追加新元素
 
             $('#submit_title').on('click', function(e) {
@@ -306,8 +306,9 @@
                 {
                     var alter = '<input id=alter'+i+' value=alter'+i+'>';
                     $('#page_content').append(alter);
+                    $('#page_content').append('<br>');
                 }
-                var submit_poll = '<button id="submit_poll">确定</>'
+                var submit_poll = '<button id="submit_poll" class="btn btn-block">确定</>'
                 $('#page_content').append(submit_poll);
                 $('#submit_poll').on('click', function(e) {
                     var id = $('.case_id').val();
@@ -397,7 +398,7 @@
 
                 radio += '</div>'
                 $("#page_content").append(radio);
-                $('#page_content').append('<div> <button id="button_vote"> 投票 </button></div>')
+                $('#page_content').append('<div> <button id="button_vote" class="btn btn-block"> 投票 </button></div>')
                 $('#button_vote').on('click', function(e) {
                     var id = $('.case_id').val();
                     var alter = $('input[type="radio"][name="radio"]:checked').val(); // 获取一组radio被选中项的值
