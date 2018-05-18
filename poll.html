@@ -170,7 +170,7 @@
                     </div>
                 </div-->
 
-                <div class="form-group row" >
+                <div class="form-group row" style="background-color: #fff3cd">
                     <div class=col>
                         <button id=new class="btn btn-block">新建投票</button>
                     </div>
@@ -231,8 +231,8 @@
             };
 
 
-        localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
-        //localSave.setItem("apiPrefix", "https://mainnet.nebulas.io");
+        //localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
+        localSave.setItem("apiPrefix", "https://mainnet.nebulas.io");
 
 
         neb.setRequest(new nebulas.HttpRequest(localSave.getItem("apiPrefix") || "https://testnet.nebulas.io/"));
@@ -252,7 +252,8 @@
             $("#nettype").text("（主网）");
         }
 
-        globalParams.contract_addr = "n1mPZKrJGBAwmWYZ1ktGhkTNZLqdgvwX1K6";
+        //globalParams.contract_addr = "n1mPZKrJGBAwmWYZ1ktGhkTNZLqdgvwX1K6";
+        globalParams.contract_addr = "n1xmdY3SyRqCyk2JJXM7g5L2BxnJbArHp9z";
 	    globalParams.current_rate = -1;
         globalParams.payback = -1;
         globalParams.showing = -1;
@@ -357,14 +358,17 @@
 
                 for (var i = res_.length - 1; i >= 0; --i) {
                     console.log(res_[i], res_[i]['alters']);
-                    $('#page_content').append('<li>' + i + '</li>');
+
+                    var poll_ = '';
+
+                    poll_ += '<li>' + i + '</li>';
 
                     var res = res_[i];
 
                     var title = (res)['title'];
                     var alters = (res)['alters'];
                     console.log(alters)
-                    $("#page_content").append('<p>' + title + '</p>');
+                    poll_ += '<p>' + title + '</p>';
 
                     var radio = '<div>'
                     for (var i_ = 0; i_ < alters.length; ++i_) {
@@ -375,13 +379,15 @@
 
                     radio += '</div>'
 
-                    $("#page_content").append(radio);
+                    poll_ += radio;
 
                     var form_group = '<div class= "form-group row">';
                     form_group += '<div class = col> <button id="button_vote_'+ i +'" class="btn btn-block" value='+ i + '> 参与投票 </button></div>';
-                    form_group += '<div class = col> <button id="button_check_'+ i +'" class="btn btn-block" value='+ i + '> 查看结果 </button></div>';
+                    form_group += '<div class = col> <button id="button_check_'+ i +'" class="btn btn-block" value='+ i + '> 查看状态 </button></div>';
                     form_group += '</div>';
-                    $("#page_content").append(form_group);
+                    poll_ += form_group;
+
+                    $('#page_content').append('<div style="background-color: #f2ffd0">' + poll_ + '</div>');
 
                     $('#button_vote_'+i).on('click', function(e) {
                         var id = parseInt(e.target.value);
