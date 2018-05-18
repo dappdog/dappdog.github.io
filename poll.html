@@ -163,22 +163,16 @@
                     Poll<span id="nettype"></span>
                 </div>
 
-                <div class="form-group begin row" >
+                <!--div class="form-group begin row" >
                     <div class=col>
                         <label>请输入投票编号</label>
                         <input class="form-control case_id" type=text value="38324" />
                     </div>
-                </div>
+                </div-->
 
                 <div class="form-group row" >
                     <div class=col>
                         <button id=new class="btn btn-block">新建投票</button>
-                    </div>
-                    <div class=col>
-                        <button id=vote class="btn btn-block">参与投票</button>
-                    </div>
-                    <div class=col>
-                        <button id=check class="btn btn-block">查看投票</button>
                     </div>
                 </div>
 
@@ -255,8 +249,7 @@
             $("#nettype").text("（主网）");
         }
 
-        globalParams.contract_addr = "n1pUsuFTsWfnqEYYMQgUPLFn9cnsQUwS7KS";
-
+        globalParams.contract_addr = "n1mPZKrJGBAwmWYZ1ktGhkTNZLqdgvwX1K6";
 	    globalParams.current_rate = -1;
         globalParams.payback = -1;
         globalParams.showing = -1;
@@ -282,7 +275,6 @@
 			res = res + "]";
 			return res;
         }
-
 
         $("#new").on('click', function(e) {
             $('#page_content').empty()
@@ -318,7 +310,6 @@
                 var submit_poll = '<button id="submit_poll" class="btn btn-block">确定</>'
                 $('#page_content').append(submit_poll);
                 $('#submit_poll').on('click', function(e) {
-                    var id = $('.case_id').val();
                     var title = $('#poll_title').val();
                     var alters = []
                     var cnt = parseInt($('#poll_cnt').val());
@@ -330,111 +321,109 @@
                         alters.push(alter);
                     }
 
-                    var payload = {'title': title, 'alters': alters, 'id': id, 'expire': expire}
+                    var payload = {'title': title, 'alters': alters, 'expire': expire}
 
                     var _to_addr = globalParams.contract_addr;
                     var _value = "0";
 
-                    console.log(JSON.stringify([id, title, alters, expire]))
-                    var _args = JSON.stringify([id, title, alters, expire]);
+                    console.log(JSON.stringify([title, alters, expire]))
+                    var _args = JSON.stringify([title, alters, expire]);
                     console.log(_args);
                     sendTx(_to_addr, _value, "set_poll", _args);
                 });
             });
         });
 
-        $("#check").on('click', function(e) {
-            $('#page_content').empty()
-			var _to_addr = globalParams.contract_addr;
-            var _value = "0";
-
-            var id = $(".case_id").val();
-
-            var _args = make_params([id]);
-
-			inner_call(_to_addr, _value, "detail", _args, function(resp){
-                let res = JSON.parse(JSON.parse(resp['result']));
-                console.log(res);
-
-                var json = {};
-                json.chart = {type:'column'};
-                json.title = {text:res['title']};
-                json.xAxis = {categories: res['alters'],
-                              title:{text: '选项'}};
-                json.yAxis = {min:0, tickInterval:1, title:{text:'票数'}};
-                json.legend = {enable: true}
-                var cnts = []
-                for (var i = 0; i < res['alters'].length; ++i) {
-                    var alter = res['alters'][i];
-                    if (res['dist'][alter] == null)
-                        cnts.push([alter, 0]);
-                    else
-                        cnts.push([alter, res['dist'][alter]]);
-                }
-                json.series = [{
-                    showInLegend: false,
-                    data: cnts
-                }];
-
-                $("#page_content").highcharts(json);
-				return;
-			})
-        });
-
-        $("#vote").on('click', function(e) {
-            $('#page_content').empty()
-            var _to_addr = globalParams.contract_addr;
-            var _value = "0";
-
-            var id = $(".case_id").val();
-
-            var _args = make_params([id]);
-            inner_call(_to_addr, _value, "detail", _args, function(resp){
-                var res = JSON.parse(resp['result']);
-                var title = JSON.parse(res)['title'];
-                var alters = JSON.parse(res)['alters'];
-                console.log(alters)
-                $("#page_content").append('<p>' + title + '</p>');
-
-                var radio = '<div>'
-                for (var i = 0; i < alters.length; ++i) {
-                    radio += '<input type="radio" name="radio" id=alter'+alters[i]+
-                        ' value='+ alters[i] + '><label for='+alters[i]+'>'+
-                        alters[i]+'</label><br>'
-                }
-
-                radio += '</div>'
-                $("#page_content").append(radio);
-                $('#page_content').append('<div> <button id="button_vote" class="btn btn-block"> 投票 </button></div>')
-                $('#button_vote').on('click', function(e) {
-                    var id = $('.case_id').val();
-                    var alter = $('input[type="radio"][name="radio"]:checked').val(); // 获取一组radio被选中项的值
-
-                    var _to_addr = globalParams.contract_addr;
-                    var _value = "0";
-
-                    console.log(JSON.stringify([id, alter]))
-                    var _args = JSON.stringify([id, alter]);
-                    console.log(_args);
-                    sendTx(_to_addr, _value, "vote", _args);
-                })
-                return;
-            })
-        });
-
         function refresh(){
             var _to_addr = globalParams.contract_addr;
             var _value = "0";
 
-            var id = $("#case_id").val();
-			var id = '38324';
-
-            var _args = make_params([id]);
+            var _args = "";
 			console.log(_args);
 
-            inner_call(_to_addr, _value, "detail", _args, function(resp){
-                let res = JSON.parse(resp['result']);
-                console.log(res);
+            inner_call(_to_addr, _value, "get_all", _args, function(resp){
+                var res_ = JSON.parse(JSON.parse(resp['result']));
+
+                $('#page_content').empty()
+
+                $('#page_content').append('<ul>')
+                for (var i = 0; i < res_.length; ++i) {
+                    console.log(res_[i], res_[i]['alters']);
+                    $('#page_content').append('<li>');
+                    $('#page_content').append(i+'<br>');
+
+                    var res = res_[i];
+
+                    var title = (res)['title'];
+                    var alters = (res)['alters'];
+                    console.log(alters)
+                    $("#page_content").append('<p>' + title + '</p>');
+
+                    var radio = '<div>'
+                    for (var i_ = 0; i_ < alters.length; ++i_) {
+                        radio += '<input type="radio" name="radio" id=alter'+alters[i_]+
+                            ' value='+ alters[i_] + '><label for='+alters[i_]+'>'+
+                            alters[i_]+'</label><br>'
+                    }
+
+                    radio += '</div>'
+
+                    $("#page_content").append(radio);
+                    $('#page_content').append('<div> <button id="button_vote_'+ i +'" class="btn btn-block" value='+ i + '> 参与投票 </button>')
+                    $('#page_content').append(' <button id="button_check_'+ i +'" class="btn btn-block" value='+ i + '> 查看投票 </button></div>')
+
+                    $('#button_vote_'+i).on('click', function(e) {
+                        var id = parseInt(e.target.value);
+                        var alter = $('input[type="radio"][name="radio"]:checked').val(); // 获取一组radio被选中项的值
+
+                        var _to_addr = globalParams.contract_addr;
+                        var _value = "0";
+                        console.log(JSON.stringify([id, alter]))
+                        var _args = JSON.stringify([id, alter]);
+                        console.log(_args);
+                        sendTx(_to_addr, _value, "vote", _args);
+                    });
+
+                    $("#button_check_"+i).on('click', function(e) {
+                        var id = parseInt(e.target.value);
+                        $('#page_content').empty()
+                        var _to_addr = globalParams.contract_addr;
+                        var _value = "0";
+
+                        var _args = make_params([id]);
+
+                        inner_call(_to_addr, _value, "detail", _args, function(resp){
+                            console.log(resp['result']);
+                            let res = JSON.parse(JSON.parse(resp['result']));
+                            console.log(res);
+
+                            var json = {};
+                            json.chart = {type:'column'};
+                            json.title = {text:res['title']};
+                            json.xAxis = {categories: res['alters'],
+                                title:{text: '选项'}};
+                            json.yAxis = {min:0, tickInterval:1, title:{text:'票数'}};
+                            json.legend = {enable: true}
+                            var cnts = []
+                            for (let i = 0; i < res['alters'].length; ++i) {
+                                var alter = res['alters'][i];
+                                if (res['dist'][alter] == null)
+                                    cnts.push([alter, 0]);
+                                else
+                                    cnts.push([alter, res['dist'][alter]]);
+                            }
+                            json.series = [{
+                                showInLegend: false,
+                                data: cnts
+                            }];
+
+                            $("#page_content").highcharts(json);
+                        })
+                    });
+
+                    $('#page_content').append('</li>')
+                }
+                $('#page_content').append('</ul>')
 
 				if (window.webExtensionWallet == null) {
 					$(".wallet").hide();
@@ -446,11 +435,6 @@
         }
 
         function show_detail() {
-            var _to_addr = globalParams.contract_addr;
-            let _value = "0";
-            let _args = "";
-
-            globalParams.AB = null;
 
             var x = setInterval(function () {
                 refresh();
@@ -461,8 +445,18 @@
        document.addEventListener("DOMContentLoaded", function () {
             // Wait till the browser is ready to render the game (avoids glitches)
             window.requestAnimationFrame(function () {
+                refresh();
                 show_detail();
             });
+        });
+
+        window.addEventListener('message', function (e) {
+            console.log("message received, msg.data: " + JSON.stringify(e.data));
+            if (!!e.data.data && !!e.data.data.txhash) {
+                if ($(".modal.tips").is(':visible')) {
+                    $(".modal.tips").modal('toggle');
+                }
+            }
         });
 
         function sendTx(_to_addr, _value, _func, _args) {
