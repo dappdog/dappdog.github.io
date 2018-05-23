@@ -278,7 +278,6 @@
             //globalParams.contract_addr = "n1xmdY3SyRqCyk2JJXM7g5L2BxnJbArHp9z";
 
             $("#btn_list").on('click', function(e) {
-                refresh();
                 show_detail();
             })
 
@@ -321,63 +320,83 @@
                         var stage, counter;
                         console.log(height, auction['bid_ddl'], auction['reveal_ddl'])
                         if (height < auction['bid_ddl']) {
-                            stage = '竞标';
+                            stage = '隐式竞标';
                             counter = auction['bid_ddl'] - height;
                         } else if (height  < auction['reveal_ddl']) {
-                            stage = '公开';
+                            stage = '公开竞标';
                             counter = auction['reveal_ddl'] - height;
                         } else {
-                            stage = '结束';
-                            counter = -1;
+                            stage = '竞标结束';
+                            counter = 0;
                         }
 
                         auction_content += '<p> 拍卖 ' + i + ': '+ item + '</p>';
                         auction_content += '<p> 当前阶段：'+ stage + '</p>';
                         auction_content += '<p> 倒计时：' + counter + '</p>'
-                        auction_content += '<button id ="btn_bid_'+i+'" value="'+'i"> 隐式竞标 </button>'
-                        auction_content += '<button id ="btn_reveal_'+i+'" value="'+'i"> 显式竞标 </button>'
-                        auction_content += '<button id ="btn_check_'+i+'" value="'+'i"> 查看结果 </button>'
+
+                        var bid_content = '';
+                        bid_content += '<div class="form-group detail guar row" >\
+                                            <div class=col>\
+                                                <label>Salt</label>\
+                                                <input class="form-control" id=salt_'+i+' type=text>\
+                                            </div>\
+                                            <div class=col>\
+                                                <label>Bid</label>\
+                                                <input class=form-control type=text id=bid_'+i+' value="0.02">\
+                                            </div>\
+                                        </div>'
+
+                        bid_content += '<div class="form-group detail guar row" >\
+                                            <div class=col>\
+                                                <button id=random_'+i+' class="btn btn-block" value='+i+'>随机生成 Salt</button>\
+                                            </div>\
+                                        </div>'
+
+                        auction_content += bid_content;
+
+                        auction_content += '<button class="btn" id ="btn_bid_'+i+'" value="'+i+'"> 隐式竞标 </button>'
+                        auction_content += '<button class="btn" id ="btn_reveal_'+i+'" value="'+i+'"> 公开竞标 </button>'
+                        auction_content += '<button class="btn" id ="btn_check_'+i+'" value="'+i+'"> 查看结果 </button>'
+
                         auction_content += '</div>';
 
                         $('#auction_list_container').append('<div style="background-color: #f2ffd0">' + auction_content + '</div>');
 
-                        $('#btn_bid_'+i).on('click', function(e) {
-                            var id = parseInt(e.target.value);
+                        $('#random_'+i).on('click', function(e) {
+                            console.log(SHA256(Math.random().toString()))
+                            $('#salt_'+e.target.value).val(Math.random().toString());
+                        })
 
-                            var bid = $('#bid').value();
-                            var salt = $('#salt').value();
+                        $('#btn_bid_'+i).on('click', function(e) {
+                            clearInterval(globalParams.refresh_interval);
+                            var id = parseInt(e.target.value);
+                            var bid = $('#bid_' + e.target.value).val();
+                            var salt = $('#salt_' + e.target.value).val();
                             var hash_code = SHA256(bid + "" + salt);
 
                             var _to_addr = globalParams.contract_addr;
                             var _value = "0";
 
                             var _args = JSON.stringify([id, hash_code]);
-                            console.log(_args);
+
+                            console.log('bid: ', bid, salt, _args);
 
                             sendTx(_to_addr, _value, "bid", _args);
                         });
 
                         $("#btn_reveal_"+i).on('click', function(e) {
                             clearInterval(globalParams.refresh_interval);
+
                             var id = parseInt(e.target.value);
+                            var bid = parseFloat($('#bid_'+e.target.value).val());
+                            var salt = $('#salt_'+e.target.value).val();
 
-                            $('#new_auction_container').attr("hidden", "hidden");
-                            $('#auction_list_container').empty()
-                            $('#auction_container').empty()
-
+                            var _args = JSON.stringify([id, bid, salt]);
                             var _to_addr = globalParams.contract_addr;
-
-                            var bid = $('#bid').value();
-                            var salt = $('#salt').value();
-
                             var _value = bid;
 
-                            var _args = make_params([id, bid, salt]);
-
-                            inner_call(_to_addr, _value, "reveal", _args, function(resp){
-                                console.log(resp['result']);
-                                let res = JSON.parse(resp['result']);
-                            })
+                            console.log(_args);
+                            sendTx(_to_addr, _value, "bid", _args);
                         });
                     }
 
@@ -394,6 +413,8 @@
                 if (globalParams.refresh_interval) {
                     clearInterval(globalParams.refresh_interval);
                 }
+
+                refresh();
                 globalParams.refresh_interval = setInterval(function () {
                     refresh();
                 }, 15000);
@@ -402,7 +423,6 @@
             document.addEventListener("DOMContentLoaded", function () {
                 // Wait till the browser is ready to render the game (avoids glitches)
                 window.requestAnimationFrame(function () {
-                    refresh();
                     show_detail();
                 });
             });
