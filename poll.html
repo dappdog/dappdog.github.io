@@ -451,7 +451,7 @@
 
         function show_detail() {
             if (globalParams.refresh_interval) {
-                clearImmediate(globalParams.refresh_interval);
+                clearInterval(globalParams.refresh_interval);
             }
             globalParams.refresh_interval = setInterval(function () {
                 refresh();
