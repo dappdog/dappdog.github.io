@@ -248,8 +248,32 @@
         <div id="auction_list_container">
         </div>
 
-        <div id="auction_container">
-        </div>
+        <div id="auction_container" hidden="hidden">
+
+            <label> 拍卖 </label>  <p id=index></p> <p id =_item></p>
+            <label> 当前阶段：</label> <p id=stage></p>
+			<label> 倒计时：</label> <p id=counter></p>
+
+            <div class="form-group detail guar row" >
+                <div class=col>
+                    <label>Salt</label>
+                    <input class="form-control" id=salt type=text>
+                </div>
+                <div class=col>
+                    <label>Bid</label>
+                    <input class=form-control type=text id=bid value="0.02">
+                </div>
+            </div>'
+			
+			<div class="form-group detail guar row" >
+                <div class=col>
+                    <button id=random class="btn btn-block">随机生成 Salt</button>
+                </div>
+            </div>'
+
+			<button class="btn" id ="btn_bid"> 隐式竞标 </button>
+			<button class="btn" id ="btn_reveal"> 公开竞标 </button>
+		</div>
 
         <script>
             "use strict";
@@ -282,12 +306,18 @@
             })
 
             $('#btn_new').on('click', function(e) {
+
+                if (globalParams.refresh_auction_interval) {
+                    clearInterval(globalParams.refresh_auction_interval);
+                    globalParams.refresh_auction_interval = null;
+                }
                 if (globalParams.refresh_interval) {
                     clearInterval(globalParams.refresh_interval);
+                    globalParams.refresh_interval = null;
                 }
 
                 $('#auction_list_container').empty()
-                $('#auction_container').empty()
+                $('#auction_container').attr('hidden', 'hidden');
                 $('#new_auction_container').removeAttr('hidden');
             })
 
@@ -303,9 +333,9 @@
                     var auctions = (JSON.parse(resp['result'])['status']);
                     var height = (JSON.parse(resp['result'])['height']);
 
-                    $('#new_auction_container').attr("hidden", "hidden");
                     $('#auction_list_container').empty()
-                    $('#auction_container').empty()
+                    $('#new_auction_container').attr("hidden", "hidden");
+                    $('#auction_container').attr('hidden', 'hidden');
 
                     for (var i = auctions.length - 1; i >= 0; --i) {
                         console.log(auctions[i], auctions[i]['item']);
@@ -334,70 +364,29 @@
                         auction_content += '<p> 当前阶段：'+ stage + '</p>';
                         auction_content += '<p> 倒计时：' + counter + '</p>'
 
-                        var bid_content = '';
-                        bid_content += '<div class="form-group detail guar row" >\
-                                            <div class=col>\
-                                                <label>Salt</label>\
-                                                <input class="form-control" id=salt_'+i+' type=text>\
-                                            </div>\
-                                            <div class=col>\
-                                                <label>Bid</label>\
-                                                <input class=form-control type=text id=bid_'+i+' value="0.02">\
-                                            </div>\
-                                        </div>'
-
-                        bid_content += '<div class="form-group detail guar row" >\
-                                            <div class=col>\
-                                                <button id=random_'+i+' class="btn btn-block" value='+i+'>随机生成 Salt</button>\
-                                            </div>\
-                                        </div>'
-
-                        auction_content += bid_content;
-
-                        auction_content += '<button class="btn" id ="btn_bid_'+i+'" value="'+i+'"> 隐式竞标 </button>'
-                        auction_content += '<button class="btn" id ="btn_reveal_'+i+'" value="'+i+'"> 公开竞标 </button>'
-                        auction_content += '<button class="btn" id ="btn_check_'+i+'" value="'+i+'"> 查看结果 </button>'
-
+                        auction_content += '<button class="btn btn-block" id ="btn_check_'+i+'" value="'+i+'"> 查看详情 </button>'
                         auction_content += '</div>';
 
                         $('#auction_list_container').append('<div style="background-color: #f2ffd0">' + auction_content + '</div>');
 
-                        $('#random_'+i).on('click', function(e) {
-                            console.log(SHA256(Math.random().toString()))
-                            $('#salt_'+e.target.value).val(Math.random().toString());
+                        $('#btn_check_'+i).on('click', function(e) {
+                            if (globalParams.refresh_interval) {
+                                clearInterval(globalParams.refresh_interval);
+                                globalParams.refresh_interval = null;
+                            }
+
+                            if (globalParams.refresh_auction_interval) {
+                                clearInterval(globalParams.refresh_auction_interval);
+                                globalParams.refresh_auction_interval = null;
+                            }
+
+                            var index = parseInt(e.target.value);
+
+                            refresh_auction(index);
+                            globalParams.refresh_auction_interval = setInterval(function () {
+                                refresh_auction(index);
+                            }, 15000);
                         })
-
-                        $('#btn_bid_'+i).on('click', function(e) {
-                            clearInterval(globalParams.refresh_interval);
-                            var id = parseInt(e.target.value);
-                            var bid = $('#bid_' + e.target.value).val();
-                            var salt = $('#salt_' + e.target.value).val();
-                            var hash_code = SHA256(bid + "" + salt);
-
-                            var _to_addr = globalParams.contract_addr;
-                            var _value = "0";
-
-                            var _args = JSON.stringify([id, hash_code]);
-
-                            console.log('bid: ', bid, salt, _args);
-
-                            sendTx(_to_addr, _value, "bid", _args);
-                        });
-
-                        $("#btn_reveal_"+i).on('click', function(e) {
-                            clearInterval(globalParams.refresh_interval);
-
-                            var id = parseInt(e.target.value);
-                            var bid = parseFloat($('#bid_'+e.target.value).val());
-                            var salt = $('#salt_'+e.target.value).val();
-
-                            var _args = JSON.stringify([id, bid, salt]);
-                            var _to_addr = globalParams.contract_addr;
-                            var _value = bid;
-
-                            console.log(_args);
-                            sendTx(_to_addr, _value, "bid", _args);
-                        });
                     }
 
                     if (window.webExtensionWallet == null) {
@@ -409,9 +398,88 @@
                 });
             }
 
+            function refresh_auction(index) {
+
+                $('#auction_list_container').empty()
+                $('#new_auction_container').attr("hidden", "hidden");
+                $('#auction_container').removeAttr('hidden');
+
+                var _to_addr = globalParams.contract_addr;
+                var _value = "0";
+
+                var _args = "";
+                console.log(_args);
+
+                inner_call(_to_addr, _value, "get_auctions", _args, function(resp){
+                    var auctions = (JSON.parse(resp['result'])['status']);
+                    var height = (JSON.parse(resp['result'])['height']);
+                    var auction = auctions[index];
+
+                    var item = auction['item'];
+
+                    var stage, counter;
+
+                    console.log(height, auction['bid_ddl'], auction['reveal_ddl'])
+                    if (height < auction['bid_ddl']) {
+                        stage = '隐式竞标';
+                        counter = auction['bid_ddl'] - height;
+                    } else if (height  < auction['reveal_ddl']) {
+                        stage = '公开竞标';
+                        counter = auction['reveal_ddl'] - height;
+                    } else {
+                        stage = '竞标结束';
+                        counter = 0;
+                    }
+
+                    console.log(item, stage, counter)
+                    $('#_item').text(item);
+                    $('#stage').text(stage);
+                    $('#counter').text(counter);
+
+                    $('#random').on('click', function(e) {
+                        console.log(SHA256(Math.random().toString()))
+                        $('#salt').val(Math.random().toString());
+                    })
+
+                    $('#btn_bid').on('click', function(e) {
+                        var bid = $('#bid').val();
+                        var salt = $('#salt').val();
+                        var hash_code = SHA256(bid + "" + salt);
+
+                        var _to_addr = globalParams.contract_addr;
+                        var _value = "0";
+
+                        var _args = JSON.stringify([index, hash_code]);
+
+                        console.log('bid: ', bid, salt, _args);
+
+                        sendTx(_to_addr, _value, "bid", _args);
+                    });
+
+                    $("#btn_reveal").on('click', function(e) {
+
+                        var bid = parseFloat($('#bid').val());
+                        var salt = $('#salt').val();
+
+                        var _args = JSON.stringify([index, bid, salt]);
+                        var _to_addr = globalParams.contract_addr;
+                        var _value = bid;
+
+                        console.log(_args);
+                        sendTx(_to_addr, _value, "bid", _args);
+                    });
+                })
+            }
+
             function show_detail() {
                 if (globalParams.refresh_interval) {
                     clearInterval(globalParams.refresh_interval);
+                    globalParams.refresh_interval = null;
+                }
+
+                if (globalParams.refresh_auction_interval) {
+                    clearInterval(globalParams.refresh_auction_interval);
+                    globalParams.refresh_auction_interval = null;
                 }
 
                 refresh();
