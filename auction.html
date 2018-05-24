@@ -54,10 +54,10 @@
                 <p>新建一个拍卖的时候需要设定当前拍卖的物品、起拍价、匿名时限和公开时限等。</p>
                 <p>参与一个拍卖的过程分为三步：匿名投标、公开投标和查看结果。</p>
                 <p>匿名投标的过程是为了保证参与者不会其自身投标之前知晓其他人的投标金额，从而保证过程公平。</p>
-                <p>我们使用 SHA256 函数和随机盐值来保证最终公开竞标时的价格和匿名竞标时相同。</p>
+                <p>我们使用 SHA256 函数和随机盐值来保证最终公开投标时的价格和匿名投标时相同。</p>
                 <p>拍卖规则采取次价拍卖，即出价最高的人赢得拍卖，但所付价格为第二高的价格。</p>
-                <p>在公开竞标阶段竞标者需向合约转入押金，但只有赢得拍卖的竞标者的部分押金会转入拍卖者账户，其余均会退回原账户。</p>
-                <p>上述过程是由公开的智能合约来保证的，从而避免庄家作弊的发生。</p>
+                <p>在公开投标阶段投标者需向合约转入押金，但只有赢得拍卖的投标者的部分押金会转入拍卖者账户，其余均会退回原账户。</p>
+                <p>上述过程是由公开的智能合约来保证的，从而避免拍卖者作弊的发生。</p>
             </div>
         </div>
 
@@ -114,29 +114,56 @@
 
             <div class="container" id="auction_container" hidden="hidden">
 
-                <label> 拍卖 </label>  <p id=index></p> <p id =_item></p>
-                <label> 当前阶段：</label> <p id=stage></p>
-                <label> 倒计时：</label> <p id=counter></p>
-
-                <div class="form-group detail guar row" >
-                    <div class=col>
-                        <label>盐值</label>
-                        <input class="form-control" id=salt type=text>
+                <div class="container">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">拍卖品：</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id =_item></p>
+                        </div>
                     </div>
-                    <div class=col>
-                        <label>出价</label>
-                        <input class=form-control type=text id=bid value="0.02">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">拍卖者：</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id=owner></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">当前阶段：</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id=stage></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">倒计时：</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id=counter></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">拍卖结果：</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id=result>None</p>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">盐值：</span>
+                        <input id=salt type="text" class="form-control" name="msg" value="0.618">
+                        <div class="input-group-btn" id=random>
+                            <button class="btn btn-default">
+                                随机生成
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">出价：</span>
+                        <input id=bid type="text" class="form-control" name="msg" value="0.02">
                     </div>
                 </div>
-
-                <div class="form-group detail guar row" >
-                    <div class=col>
-                        <button id=random class="btn btn-block">随机生成盐值</button>
-                    </div>
+                <div class="container ">
+                    <button class="btn btn-primary align-self-center" id ="btn_bid"> 匿名投标 </button>
+                    <button class="btn btn-primary align-self-center" id ="btn_reveal"> 公开投标 </button>
                 </div>
-
-                <button class="btn" id ="btn_bid"> 隐式竞标 </button>
-                <button class="btn" id ="btn_reveal"> 公开竞标 </button>
             </div>
 
             <script>
@@ -213,19 +240,20 @@
                             var stage, counter;
                             console.log(height, auction['bid_ddl'], auction['reveal_ddl'])
                             if (height < auction['bid_ddl']) {
-                                stage = '隐式竞标';
+                                stage = '匿名投标';
                                 counter = auction['bid_ddl'] - height;
                             } else if (height  < auction['reveal_ddl']) {
-                                stage = '公开竞标';
+                                stage = '公开投标';
                                 counter = auction['reveal_ddl'] - height;
                             } else {
-                                stage = '竞标结束';
+                                stage = '投标结束';
                                 counter = 0;
                             }
 
                             auction_content += '<div class="panel-heading">' + i + '. '+ item + '</div>';
 
                             auction_content += '<div class="panel-body">'
+                            auction_content += '<p> 拍卖者：'+ auction['owner'] + '</p>';
                             auction_content += '<p> 当前阶段：'+ stage + '</p>';
                             auction_content += '<p> 倒计时：' + counter + '</p>'
 
@@ -286,20 +314,23 @@
 
                         console.log(height, auction['bid_ddl'], auction['reveal_ddl'])
                         if (height < auction['bid_ddl']) {
-                            stage = '隐式竞标';
+                            stage = '匿名投标';
                             counter = auction['bid_ddl'] - height;
                         } else if (height  < auction['reveal_ddl']) {
-                            stage = '公开竞标';
+                            stage = '公开投标';
                             counter = auction['reveal_ddl'] - height;
                         } else {
-                            stage = '竞标结束';
+                            stage = '投标结束';
                             counter = 0;
                         }
 
                         console.log(item, stage, counter)
                         $('#_item').text(item);
+                        $('#owner').text(auction['owner']);
                         $('#stage').text(stage);
                         $('#counter').text(counter);
+                        if (auction['result'].length)
+                            $('#result').text(auction['result']);
 
                         $('#random').on('click', function(e) {
                             console.log(SHA256(Math.random().toString()))
