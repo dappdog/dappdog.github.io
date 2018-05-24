@@ -6,152 +6,9 @@
         <link rel=stylesheet href=lib/bootstrap-4.0.0-dist/css/bootstrap.min.css>
         <!--link rel=stylesheet href=css/style.css-->
         <meta name=viewport content="width=device-width">
-        <style>
-            table {
-                color: #333; /* Lighten up font color */
-                font-family: Helvetica, Arial, sans-serif; /* Nicer font */
-                width: 100%;
-                border-collapse: collapse;
-                border-spacing: 0;
-                text-align: center
-            }
-
-            td, th { border: 1px solid #CCC; height: 30px; }
-
-            #content {
-                border-top: 1px solid;
-            }
-
-            .title {
-                text-align: center;
-                color: black;
-                font-size: 30px;
-            }
-
-            .active1 {
-                display: none;
-            }
-
-            #tabs {
-                overflow: hidden;
-                margin: 0;
-                padding: 0;
-                list-style: none;
-            }
-
-            #tabs li {
-                float: left;
-                margin: 0;
-            }
-
-            #tabs li a {
-                position: relative;
-                padding: 10px 50px;
-                float: left;
-                text-decoration: none;
-                text-shadow: 0 1px 0 rgba(255, 255, 255, .8);
-            }
-
-            .ccc {
-                background-color: black;
-            }
-
-            .ccc a {
-                color: #fff;
-            }
-
-            .current a {
-                outline: 0;
-                z-index: 4;
-            }
-
-            .hoverItem a {
-                background: black;
-                color: #fff;
-            }
-
-            .tab {
-                display: none;
-            }
-
-            .show {
-                display: block;
-            }
-
-            .execution_banner {
-                height: 200px;
-                background-color: #f5f5f5;
-                margin: 0 auto;
-                word-wrap: break-word;
-                overflow-wrap: break-word;
-            }
-
-            .form-check {
-                display: inline-block;
-            }
-
-            #receipt {
-                word-break: break-all;
-            }
-
-            #receipt_call {
-                word-break: break-all;
-            }
-
-            .code {
-                background-color: #f8f9fa;
-                font-family: consolas, menlo, monaco, lucida console, liberation mono, dejavu sans mono, bitstream vera sans mono, courier new, monospace;
-                overflow: auto;
-                white-space: pre;
-            }
-
-            .errmsg {
-                color: red;
-            }
-
-            .err {
-                border-color: red;
-            }
-
-            .prompt {
-                width: 20px;
-                height: 20px;
-                display: inline-table;
-            }
-
-            .prompt_contenner {
-                width: 200px;
-                height: 100px;
-                border: 1px solid black;
-                position: absolute;
-                left: 16%;
-                margin-top: -6%;
-                box-shadow: 2px 2px 17px #333333;
-            }
-
-            .call_prompt_contenner {
-                width: 200px;
-                height: 100px;
-                border: 1px solid black;
-                position: absolute;
-                left: 28%;
-                margin-top: -14%;
-                box-shadow: 2px 2px 17px #333333;
-            }
-
-            .function_prompt_contenner {
-                width: 200px;
-                height: 100px;
-                border: 1px solid black;
-                position: absolute;
-                left: 24%;
-                margin-top: -14%;
-                box-shadow: 2px 2px 17px #333333;
-            }
-
-            .CodeMirror {
-                border: 1px solid black;
-                font-size: 13px;
+        <style>/* Move down content because we have a fixed navbar that is 3.5rem tall */
+            body {
+                padding-top: 3.5rem;
             }
         </style>
         <title>Auction</title>
@@ -159,6 +16,16 @@
         <!--link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"-->
     </head>
     <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <p class="navbar-brand">星云拍卖</p>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link" href="#" id="btn_list">查看列表</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="btn_new">新建拍卖</a></li>
+            </ul>
+        </div>
+    </nav>
         <main role="main">
 
         <script src=lib/jquery-3.3.1.min.js></script>
@@ -178,20 +45,19 @@
         <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
         <!--https://v4.bootcss.com/docs/4.0/examples/-->
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-            <p class="navbar-brand">星云拍卖</p>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item"><a class="nav-link" href="#" id="btn_list">查看列表</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" id="btn_new">新建拍卖</a></li>
-                </ul>
-            </div>
-        </nav>
 
         <div class="jumbotron">
             <div class="container">
-                <h1 class="'display-3">使用说明</h1>
-                <p></p>
+                <h2 class="'display-3">使用说明</h2>
+                <p>这是一个拍卖应用，用户可以进行的操作包括新建一个拍卖、查看当前所有拍卖、参与一个拍卖。</p>
+                <p>整个拍卖的过程会被写在星云链上公开且不可更改。</p>
+                <p>新建一个拍卖的时候需要设定当前拍卖的物品、起拍价、匿名时限和公开时限等。</p>
+                <p>参与一个拍卖的过程分为三步：匿名投标、公开投标和查看结果。</p>
+                <p>匿名投标的过程是为了保证参与者不会其自身投标之前知晓其他人的投标金额，从而保证过程公平。</p>
+                <p>我们使用 SHA256 函数和随机盐值来保证最终公开竞标时的价格和匿名竞标时相同。</p>
+                <p>拍卖规则采取次价拍卖，即出价最高的人赢得拍卖，但所付价格为第二高的价格。</p>
+                <p>在公开竞标阶段竞标者需要向合约转入押金，但只有赢得拍卖的参与者的押金会转入拍卖者账户，其余均会退回原账户。</p>
+                <p>上述过程是由公开的智能合约来保证的，从而避免庄家作弊的发生。</p>
             </div>
         </div>
 
