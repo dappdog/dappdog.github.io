@@ -3,30 +3,12 @@
 
     <head>
         <meta charset=utf-8>
-        <link rel=stylesheet href=lib/bootstrap-4.0.0-dist/css/bootstrap.min.css>
         <!--link rel=stylesheet href=css/style.css-->
         <meta name=viewport content="width=device-width">
-        <style>/* Move down content because we have a fixed navbar that is 3.5rem tall */
-            body {
-                padding-top: 3.5rem;
-            }
-        </style>
-        <title>Auction</title>
-        <!-- Bootstrap -->
-        <!--link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"-->
-    </head>
-    <body>
-
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <p class="navbar-brand">星云拍卖</p>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item"><a class="nav-link" href="#" id="btn_list">查看列表</a></li>
-                <li class="nav-item"><a class="nav-link" href="#" id="btn_new">新建拍卖</a></li>
-            </ul>
-        </div>
-    </nav>
-        <main role="main">
+        <link rel=stylesheet href=lib/bootstrap-4.0.0-dist/css/bootstrap.min.css>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
         <script src=lib/jquery-3.3.1.min.js></script>
         <script src=lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
@@ -44,11 +26,29 @@
         <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
         <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-        <!--https://v4.bootcss.com/docs/4.0/examples/-->
+        <style>/* Move down content because we have a fixed navbar that is 3.5rem tall */
 
-        <div class="jumbotron">
-            <div class="container">
-                <h2 class="'display-3">使用说明</h2>
+        </style>
+        <title>Auction</title>
+    </head>
+    <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <p class="navbar-brand">星云拍卖</p>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link" href="#" id="btn_list">查看列表</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="btn_new">新建拍卖</a></li>
+            </ul>
+        </div>
+    </nav>
+        <main role="main">
+
+        <!--https://v4.bootcss.com/docs/4.0/examples/-->
+        <div class="jumbotron container">
+            <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo"> <h4>使用说明</h4> </button>
+            <div id="demo" class="container collapse">
+                <br>
                 <p>这是一个拍卖应用，用户可以进行的操作包括新建一个拍卖、查看当前所有拍卖、参与一个拍卖。</p>
                 <p>整个拍卖的过程会被写在星云链上公开且不可更改。</p>
                 <p>新建一个拍卖的时候需要设定当前拍卖的物品、起拍价、匿名时限和公开时限等。</p>
@@ -56,7 +56,7 @@
                 <p>匿名投标的过程是为了保证参与者不会其自身投标之前知晓其他人的投标金额，从而保证过程公平。</p>
                 <p>我们使用 SHA256 函数和随机盐值来保证最终公开竞标时的价格和匿名竞标时相同。</p>
                 <p>拍卖规则采取次价拍卖，即出价最高的人赢得拍卖，但所付价格为第二高的价格。</p>
-                <p>在公开竞标阶段竞标者需要向合约转入押金，但只有赢得拍卖的参与者的押金会转入拍卖者账户，其余均会退回原账户。</p>
+                <p>在公开竞标阶段竞标者需向合约转入押金，但只有赢得拍卖的竞标者的部分押金会转入拍卖者账户，其余均会退回原账户。</p>
                 <p>上述过程是由公开的智能合约来保证的，从而避免庄家作弊的发生。</p>
             </div>
         </div>
@@ -127,13 +127,13 @@
                         <label>出价</label>
                         <input class=form-control type=text id=bid value="0.02">
                     </div>
-                </div>'
+                </div>
 
                 <div class="form-group detail guar row" >
                     <div class=col>
                         <button id=random class="btn btn-block">随机生成盐值</button>
                     </div>
-                </div>'
+                </div>
 
                 <button class="btn" id ="btn_bid"> 隐式竞标 </button>
                 <button class="btn" id ="btn_reveal"> 公开竞标 </button>
@@ -201,12 +201,11 @@
                         $('#new_auction_container').attr("hidden", "hidden");
                         $('#auction_container').attr('hidden', 'hidden');
 
+                        $('#auction_list_container').append('<div class="panel-group">');
                         for (var i = auctions.length - 1; i >= 0; --i) {
                             console.log(auctions[i], auctions[i]['item']);
 
                             var auction_content = '';
-
-                            auction_content += '<div class="col-md-4">'
 
                             var auction = auctions[i];
                             var item = auction['item'];
@@ -224,14 +223,16 @@
                                 counter = 0;
                             }
 
-                            auction_content += '<h2> 拍卖 ' + i + ': '+ item + '</h2>';
+                            auction_content += '<div class="panel-heading">' + i + '. '+ item + '</div>';
+
+                            auction_content += '<div class="panel-body">'
                             auction_content += '<p> 当前阶段：'+ stage + '</p>';
                             auction_content += '<p> 倒计时：' + counter + '</p>'
 
                             auction_content += '<button class="btn btn-secondary" id ="btn_check_'+i+'" value="'+i+'"> 查看详情 </button>'
                             auction_content += '</div>';
 
-                            $('#auction_list_container').append('<div class="row">' + auction_content + '</div>');
+                            $('#auction_list_container').append('<div class="panel panel-success">' + auction_content + '</div>');
 
                             $('#btn_check_'+i).on('click', function(e) {
                                 if (globalParams.refresh_interval) {
@@ -252,7 +253,7 @@
                                 }, 15000);
                             })
                         }
-
+                        $('#auction_list_container').append('</div>');
                         if (window.webExtensionWallet == null) {
                             $(".wallet").hide();
                             $(".no-wallet").html(
