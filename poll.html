@@ -3,211 +3,14 @@
 
 <head>
     <meta charset=utf-8>
-    <link rel="icon shortcut" href=img/logo.png type=image/png>
-    <link rel=apple-touch-icon href=img/logo.png>
-    <link rel=stylesheet href=lib/bootstrap-4.0.0-dist/css/bootstrap.min.css>
-    <link rel=stylesheet href=lib/prismjs-1.13.0/prism.css>
-    <link rel=stylesheet href=css/base.css>
-    <link rel=stylesheet href=css/ui-block.css>
-    <link rel=stylesheet href=css/codemirror.css>
+    <!--link rel=stylesheet href=css/style.css-->
     <meta name=viewport content="width=device-width">
-    <title>Poll</title>
-    <style>
-        #content {
-            border-top: 1px solid;
-        }
-
-        .title {
-            text-align: center;
-            color: black;
-            font-size: 30px;
-        }
-
-        .active1 {
-            display: none;
-        }
-
-        #tabs {
-            overflow: hidden;
-            margin: 0;
-            padding: 0;
-            list-style: none;
-        }
-
-        #tabs li {
-            float: left;
-            margin: 0;
-        }
-
-        #tabs li a {
-            position: relative;
-            padding: 10px 50px;
-            float: left;
-            text-decoration: none;
-            text-shadow: 0 1px 0 rgba(255, 255, 255, .8);
-        }
-
-        .ccc {
-            background-color: black;
-        }
-
-        .ccc a {
-            color: #fff;
-        }
-
-        .current a {
-            outline: 0;
-            z-index: 4;
-        }
-
-        .hoverItem a {
-            background: black;
-            color: #fff;
-        }
-
-        .tab {
-            display: none;
-        }
-
-        .show {
-            display: block;
-        }
-
-        .execution_banner {
-            height: 200px;
-            background-color: #f5f5f5;
-            margin: 0 auto;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-
-        .form-check {
-            display: inline-block;
-        }
-
-        #receipt {
-            word-break: break-all;
-        }
-
-        #receipt_call {
-            word-break: break-all;
-        }
-
-        .code {
-            background-color: #f8f9fa;
-            font-family: consolas, menlo, monaco, lucida console, liberation mono, dejavu sans mono, bitstream vera sans mono, courier new, monospace;
-            overflow: auto;
-            white-space: pre;
-        }
-
-        .errmsg {
-            color: red;
-        }
-
-        .err {
-            border-color: red;
-        }
-
-        .prompt{
-            width: 20px;
-            height: 20px;
-            display: inline-table;
-        }
-        
-        .prompt_contenner{
-            width: 200px;
-            height: 100px;
-            border: 1px solid black;
-            position: absolute;
-            left: 16%;
-            margin-top: -6%;
-            box-shadow:2px 2px 17px #333333;
-        }
-
-        .call_prompt_contenner{
-            width: 200px;
-            height: 100px;
-            border: 1px solid black;
-            position: absolute;
-            left: 28%;
-            margin-top: -14%;
-            box-shadow:2px 2px 17px #333333;
-        }
-
-         .function_prompt_contenner{
-            width: 200px;
-            height: 100px;
-            border: 1px solid black;
-            position: absolute;
-            left: 24%;
-            margin-top: -14%;
-            box-shadow:2px 2px 17px #333333;
-        }
-
-        .CodeMirror {border: 1px solid black; font-size:13px;}
-    </style>
-</head>
-
-<body>
-
-    <div class=container>
-        <ul id=tabs hidden="hidden" role=tablist>
-            <li class="current ccc">
-                <a href=# title=tab3 data-i18n=contract/call></a>
-            </li>
-        </ul>
-
-        <div id=content>
-            <div class="run_contract show tab" id=tab3>
-                <div class=title>
-                    Poll<span id="nettype"></span>
-                </div>
-
-                <!--div class="form-group begin row" >
-                    <div class=col>
-                        <label>请输入投票编号</label>
-                        <input class="form-control case_id" type=text value="38324" />
-                    </div>
-                </div-->
-
-                <div class="form-group row" style="background-color: #fff3cd">
-                    <div class=col>
-                        <button id=new class="btn btn-block">新建投票</button>
-                    </div>
-                    <div class=col>
-                        <button id=polls class="btn btn-block">查看列表</button>
-                    </div>
-                </div>
-
-                <div id="page_content">
-                </div>
-
-				<p id=current_prompt style="background-color: yellow;"></p>
-            </div>
-        </div>
-    </div>
-
-    <div class="fade loading modal" data-backdrop=static>
-        <div class=modal-dialog>
-            <div class=modal-content>
-                <div class=modal-body>
-                    <div class=progress>
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role=progressbar style="width: 100%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="copyright text-center">Copyright © 2018 DAppDog 工作室</div>
-    <div class="copyright text-center">友情链接
-        <a href="https://nebulas.io" target="_blank">星云链 </a>
-        <a href="https://atlasp.io" target="_blank">ATP</a>
-        <a href="https://explorer.nebulas.io/#/" target="_blank">星云浏览器</a>
-    </div>
+    <link rel=stylesheet href=lib/bootstrap-4.0.0-dist/css/bootstrap.min.css>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <script src=lib/jquery-3.3.1.min.js></script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src=lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
     <script src=lib/bootbox.min.js data-depends="bootstrap jquery.slim"></script>
     <script src=lib/blockies.min.js></script>
@@ -220,6 +23,48 @@
     <script src=js/ui-block.js data-depends="bootbox blockies jquery.slim i18n.js nebulas.js"></script>
     <script src=lib/codemirror/codemirror.js></script>
     <script src=lib/codemirror/javascript.js></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <style>/* Move down content because we have a fixed navbar that is 3.5rem tall */
+
+    </style>
+    <title>Poll</title>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <p class="navbar-brand">星云选举</p>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link" href="#" id="page_list">查看列表</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="page_new">新建选举</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main role="main">
+        <div class="jumbotron container">
+            <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo"> <h4>使用说明</h4> </button>
+            <div id="demo" class="container collapse">
+                <br>
+                <p>这是一个选举应用，用户可以进行的操作包括新建一个选举、查看当前所有选举、参与一个选举。</p>
+            </div>
+        </div>
+
+        <div class=container id="page_content">
+        </div>
+    </main>
+
+    <footer class="container">
+        <div class="footer-copyright text-center py-3">Copyright © 2018 DAppDog 工作室</div>
+        <div class="footer-copyright text-center py-3">友情链接：
+            <a href="https://nebulas.io" target="_blank">星云链</a>，
+            <a href="https://explorer.nebulas.io/#/" target="_blank">星云浏览器</a>，
+            <a href="https://atlasp.io" target="_blank">ATP</a>
+        </div>
+    </footer>
+
 
     <script>
         "use strict";
@@ -237,55 +82,15 @@
 
         neb.setRequest(new nebulas.HttpRequest(localSave.getItem("apiPrefix") || "https://testnet.nebulas.io/"));
 
-        uiBlock.insert({
-            footer: ".footer",
-            header: ".header",
-            iconAddress: ".icon-address",
-            logoMain: ".logo-main",
-            numberComma: ".number-comma"			
-        });
-		
-
-        if(localSave.getItem("apiPrefix").includes('test')){
-            $("#nettype").text("（测试网）");
-        }else{
-            $("#nettype").text("（主网）");
-        }
-
         //globalParams.contract_addr = "n1mPZKrJGBAwmWYZ1ktGhkTNZLqdgvwX1K6";
         globalParams.contract_addr = "n1xmdY3SyRqCyk2JJXM7g5L2BxnJbArHp9z";
-	    globalParams.current_rate = -1;
-        globalParams.payback = -1;
-        globalParams.showing = -1;
 
-        function make_params(arg_list){
-			var res = "[";
-			for (var i = 0; i < arg_list.length; i++) {
-				console.log(arg_list[i], typeof(arg_list[i]))
-				if (typeof (arg_list[i]) == 'number') {
-					res = res + arg_list[i];
-				} else if (typeof (arg_list[i]) == 'string') {
-					res = res + "\"";
-					res = res + arg_list[i];
-					res = res + "\"";
-				} else {
-					console.log(make_params(arg_list[i]));
-					res = res +  make_params(arg_list[i]);
-				}
-				if (i != arg_list.length - 1) {
-					res = res + ",";
-				}
-			}
-			res = res + "]";
-			return res;
-        }
-
-        $("#polls").on('click', function(e) {
+        $("#page_list").on('click', function(e) {
             refresh();
             show_detail();
         })
 
-        $("#new").on('click', function(e) {
+        $("#page_new").on('click', function(e) {
             clearInterval(globalParams.refresh_interval);
             $('#page_content').empty()
             var txt1="<p> 请输入您的投票主题：</p>";               // 以 HTML 创建新元素
