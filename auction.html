@@ -188,8 +188,8 @@
                     };
 
 
-                localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
-                //localSave.setItem("apiPrefix", "https://mainnet.nebulas.io");
+                //localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
+                localSave.setItem("apiPrefix", "https://mainnet.nebulas.io");
 
                 neb.setRequest(new nebulas.HttpRequest(localSave.getItem("apiPrefix") || "https://testnet.nebulas.io/"));
 
@@ -201,8 +201,8 @@
                     numberComma: ".number-comma"
                 });
 
-                globalParams.contract_addr = "n22Ub6heAgh2JV6DZgkfSepK2ZFg6pFJtjz";
-                //globalParams.contract_addr = "n1xmdY3SyRqCyk2JJXM7g5L2BxnJbArHp9z";
+                //globalParams.contract_addr = "n22Ub6heAgh2JV6DZgkfSepK2ZFg6pFJtjz";
+                globalParams.contract_addr = "n1y2HeRSw9WvUUhdCkMkSWPsNYfdDRNEbnW";
 
                 $("#btn_list").on('click', function(e) {
                     show_detail();
