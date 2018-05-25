@@ -229,6 +229,14 @@
                 })
 
                 $('#btn_bid').on('click', function(e) {
+                    if ($('#stage').text() != '匿名投标') {
+                        alert('当前不是匿名投标阶段')
+                        return;
+                    }
+                    if (parseFloat($('#bid').val()) < parseFloat($('#min_bid').val())) {
+                        alert('投标金额小于起拍金额')
+                        return;
+                    }
                     var index = parseInt(e.target.value);
                     var bid = $('#bid').val();
                     var salt = $('#salt').val();
@@ -244,6 +252,14 @@
                 });
 
                 $("#btn_reveal").on('click', function(e) {
+                    if ($('#stage').text() != '公开投标') {
+                        alert('当前不是公开投标阶段')
+                        return;
+                    }
+                    if (parseFloat($('#bid').val()) < parseFloat($('#min_bid').val())) {
+                        alert('投标金额小于起拍金额')
+                        return;
+                    }
                     var index = parseInt(e.target.value);
                     var bid = parseFloat($('#bid').val());
                     var salt = $('#salt').val();
@@ -256,6 +272,10 @@
                 });
 
                 $("#btn_finish").on('click', function(e) {
+                    if ($('#stage').text() != '查看结果') {
+                        alert('当前不是查看结果阶段')
+                        return;
+                    }
                     var index = parseInt(e.target.value);
                     var _to_addr = globalParams.contract_addr;
                     var _value = "0";
