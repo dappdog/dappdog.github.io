@@ -56,7 +56,7 @@
                 <p>匿名投标的过程是为了保证参与者不会其自身投标之前知晓其他人的投标金额，从而保证过程公平。</p>
                 <p>我们使用 SHA256 函数和随机盐值来保证最终公开投标时的价格和匿名投标时相同。</p>
                 <p>拍卖规则采取次价拍卖，即出价最高的人赢得拍卖，但所付价格为第二高的价格。</p>
-                <p>在公开投标阶段投标者需向合约转入押金，但只有赢得拍卖的投标者的部分押金会转入拍卖者账户，<br>其余均会退回原账户。</p>
+                <p><strong>在公开投标阶段投标者需向合约转入押金，但只有赢得拍卖的投标者的部分押金会转入拍卖者账户，<br>其余均会退回原账户。</strong></p>
                 <p>上述过程是由公开的智能合约来保证的，从而避免拍卖者作弊的发生。</p>
             </div>
         </div>
@@ -69,7 +69,7 @@
                     </div>
                     <div class=col>
                         <label>最低拍价</label>
-                        <input class=form-control type=text id=min_bid value="0.01">
+                        <input class=form-control type=text id=min_bid value="0.001">
                     </div>
                 </div>
 
@@ -168,7 +168,7 @@
 
                     <div class="input-group">
                         <span class="input-group-addon">出价：</span>
-                        <input id=bid type="text" class="form-control" name="msg" value="0.02">
+                        <input id=bid type="text" class="form-control" name="msg" value="0.002">
                     </div>
                 </div>
                 <div class="container ">
@@ -201,7 +201,7 @@
                     numberComma: ".number-comma"
                 });
 
-                globalParams.contract_addr = "n1eDAEe8YsKSstHfaHNNbNZ8J6AWjiKbvoi";
+                globalParams.contract_addr = "n22Ub6heAgh2JV6DZgkfSepK2ZFg6pFJtjz";
                 //globalParams.contract_addr = "n1xmdY3SyRqCyk2JJXM7g5L2BxnJbArHp9z";
 
                 $("#btn_list").on('click', function(e) {
@@ -252,7 +252,7 @@
                     var _to_addr = globalParams.contract_addr;
                     var _value = bid;
 
-                    sendTx(_to_addr, _value, "bid", _args);
+                    sendTx(_to_addr, _value, "reveal", _args);
                 });
 
                 $("#btn_finish").on('click', function(e) {
