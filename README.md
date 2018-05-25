@@ -4,16 +4,16 @@
 
 * 01Game: 
 
-  * 主页面：<https://dappdog.github.io/01game.html>
-  * 玩法说明：<https://dappdog.github.io/doc/01Game.docx>
+  * 主页面：<http://nann.moe/dapp/01game.html>
+  * 玩法说明：<http://nann.moe/dapp/doc/01Game.docx>
 * 星云 2048:
-  - 主页面：<https://dappdog.github.io/2048.html>
-  - 玩法说明：<https://dappdog.github.io/doc/2048.docx>
-* 星云 Poll:
-  * 主页面：<https://dappdog.github.io/poll.html>
-  * 玩法说明：<https://dappdog.github.io/doc/Poll.docx>
+  - 主页面：<http://nann.moe/dapp/2048.html>
+  - 玩法说明：<http://nann.moe/dapp/doc/2048.docx>
 * 星云拍卖：
-  * 主页面：<https://dappdog.github.io/auction.html>
+  - 主页面：<http://nann.moe/dapp/auction.html>
+* 星云 Poll:
+  * 主页面：<http://nann.moe/dapp/poll.html>
+  * 玩法说明：<http://nann.moe/dapp/doc/Poll.docx>
 
 ## Disclaimer
 
