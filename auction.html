@@ -76,11 +76,11 @@
                 <div class="form-group detail guar row" >
                     <div class=col>
                         <label>显式竞拍时限（区块高度）</label>
-                        <input class=form-control type=text id=bid_duration value="100">
+                        <input class=form-control type=text id=bid_duration value="20">
                     </div>
                     <div class=col>
                         <label>隐式竞拍时限（区块高度)</label>
-                        <input class=form-control type=text id=reveal_duration value="100">
+                        <input class=form-control type=text id=reveal_duration value="20">
                     </div>
                 </div>
 
@@ -201,7 +201,7 @@
                     numberComma: ".number-comma"
                 });
 
-                globalParams.contract_addr = "n1yDXv7u88TrwJ2cSmyRB5HZyBNeoeJmmJe";
+                globalParams.contract_addr = "n1eDAEe8YsKSstHfaHNNbNZ8J6AWjiKbvoi";
                 //globalParams.contract_addr = "n1xmdY3SyRqCyk2JJXM7g5L2BxnJbArHp9z";
 
                 $("#btn_list").on('click', function(e) {
@@ -222,6 +222,46 @@
                     $('#auction_list_container').empty()
                     $('#auction_container').attr('hidden', 'hidden');
                     $('#new_auction_container').removeAttr('hidden');
+                })
+
+                $('#random').on('click', function(e) {
+                    $('#salt').val(Math.random().toString());
+                })
+
+                $('#btn_bid').on('click', function(e) {
+                    var index = parseInt(e.target.value);
+                    var bid = $('#bid').val();
+                    var salt = $('#salt').val();
+                    var hash_code = SHA256(bid + "" + salt);
+
+                    var _to_addr = globalParams.contract_addr;
+                    var _value = "0";
+
+                    var _args = JSON.stringify([index, hash_code]);
+
+
+                    sendTx(_to_addr, _value, "bid", _args);
+                });
+
+                $("#btn_reveal").on('click', function(e) {
+                    var index = parseInt(e.target.value);
+                    var bid = parseFloat($('#bid').val());
+                    var salt = $('#salt').val();
+
+                    var _args = JSON.stringify([index, bid, salt]);
+                    var _to_addr = globalParams.contract_addr;
+                    var _value = bid;
+
+                    sendTx(_to_addr, _value, "bid", _args);
+                });
+
+                $("#btn_finish").on('click', function(e) {
+                    var index = parseInt(e.target.value);
+                    var _to_addr = globalParams.contract_addr;
+                    var _value = "0";
+                    var _args = JSON.stringify([index])
+                    sendTx(_to_addr, _value, "finish", _args);
+
                 })
 
                 function refresh(){
@@ -306,6 +346,10 @@
                     $('#new_auction_container').attr("hidden", "hidden");
                     $('#auction_container').removeAttr('hidden');
 
+                    $('#btn_bid').val(index);
+                    $('#btn_reveal').val(index);
+                    $('#btn_finish').val(index);
+
                     var _to_addr = globalParams.contract_addr;
                     var _value = "0";
 
@@ -341,44 +385,6 @@
                             $('#result_price').text(auction['result'][0]);
                             $('#result_bidder').text(auction['result'][1]);
                         }
-
-                        $('#random').on('click', function(e) {
-                            $('#salt').val(Math.random().toString());
-                        })
-
-                        $('#btn_bid').on('click', function(e) {
-                            var bid = $('#bid').val();
-                            var salt = $('#salt').val();
-                            var hash_code = SHA256(bid + "" + salt);
-
-                            var _to_addr = globalParams.contract_addr;
-                            var _value = "0";
-
-                            var _args = JSON.stringify([index, hash_code]);
-
-
-                            sendTx(_to_addr, _value, "bid", _args);
-                        });
-
-                        $("#btn_reveal").on('click', function(e) {
-
-                            var bid = parseFloat($('#bid').val());
-                            var salt = $('#salt').val();
-
-                            var _args = JSON.stringify([index, bid, salt]);
-                            var _to_addr = globalParams.contract_addr;
-                            var _value = bid;
-
-                            sendTx(_to_addr, _value, "bid", _args);
-                        });
-
-                        $("#btn_finish").on('click', function(e) {
-                            var _to_addr = globalParams.contract_addr;
-                            var _value = "0";
-                            var _args = JSON.stringify([index])
-                            sendTx(_to_addr, _value, "finish", _args);
-
-                        })
                     })
                 }
 
