@@ -8,10 +8,10 @@
   * 玩法说明：<https://dappdog.github.io/doc/01Game.docx>
 * 星云 2048:
   - 主页面：<https://dappdog.github.io/2048.html>
-  - 玩法说明：<https://dappdog.github.io/doc/2048.docx
+  - 玩法说明：<https://dappdog.github.io/doc/2048.docx>
 * 星云 Poll:
   * 主页面：<https://dappdog.github.io/poll.html>
-  * 玩法说明：<https://dappdog.github.io/doc/Poll.docx
+  * 玩法说明：<https://dappdog.github.io/doc/Poll.docx>
 * 星云拍卖：
   * 主页面：<https://dappdog.github.io/auction.html>
 
