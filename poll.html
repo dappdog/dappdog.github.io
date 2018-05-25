@@ -23,6 +23,7 @@
     <script src=js/ui-block.js data-depends="bootbox blockies jquery.slim i18n.js nebulas.js"></script>
     <script src=lib/codemirror/codemirror.js></script>
     <script src=lib/codemirror/javascript.js></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
     <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
@@ -164,35 +165,33 @@
                 for (var i = res_.length - 1; i >= 0; --i) {
                     console.log(res_[i], res_[i]['alters']);
 
-                    var poll_ = '';
-
-                    poll_ += '<li>' + i + '</li>';
 
                     var res = res_[i];
 
                     var title = (res)['title'];
                     var alters = (res)['alters'];
                     console.log(alters)
-                    poll_ += '<p>' + title + '</p>';
 
-                    var radio = '<div>'
+                    var poll_ = '';
+
+                    poll_ += '<div class="panel-heading">' + i + '. ' + title + '</div>';
+
+                    poll_ += '<div class="panel-body">'
+
+                    var radio = ''
                     for (var i_ = 0; i_ < alters.length; ++i_) {
                         radio += '<input type="radio" name="radio" id=alter'+alters[i_]+
                             ' value='+ alters[i_] + '><label for='+alters[i_]+'>'+
                             alters[i_]+'</label><br>'
                     }
-
-                    radio += '</div>'
-
                     poll_ += radio;
 
-                    var form_group = '<div class= "form-group row">';
-                    form_group += '<div class = col> <button id="button_vote_'+ i +'" class="btn btn-block" value='+ i + '> 参与投票 </button></div>';
-                    form_group += '<div class = col> <button id="button_check_'+ i +'" class="btn btn-block" value='+ i + '> 查看状态 </button></div>';
-                    form_group += '</div>';
-                    poll_ += form_group;
+                    poll_ += '<button id="button_vote_'+ i +'" class="btn btn-secondary" value='+ i + '> 参与投票 </button>';
+                    poll_ += '<button id="button_check_'+ i +'" class="btn btn-secondary" value='+ i + '> 查看状态 </button>';
 
-                    $('#page_content').append('<div style="background-color: #f2ffd0">' + poll_ + '</div>');
+                    poll_ += '</div>'
+
+                    $('#page_content').append('<div class="panel panel-success">' + poll_ + '</div>');
 
                     $('#button_vote_'+i).on('click', function(e) {
                         var id = parseInt(e.target.value);
@@ -213,7 +212,7 @@
                         var _to_addr = globalParams.contract_addr;
                         var _value = "0";
 
-                        var _args = make_params([id]);
+                        var _args = JSON.stringify([id]);
 
                         inner_call(_to_addr, _value, "detail", _args, function(resp){
                             console.log(resp['result']);
