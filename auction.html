@@ -384,6 +384,9 @@
                         if (auction['result'].length) {
                             $('#result_price').text(auction['result'][0]);
                             $('#result_bidder').text(auction['result'][1]);
+                        } else {
+                            $('#result_price').text('None');
+                            $('#result_bidder').text('None');
                         }
                     })
                 }
