@@ -196,7 +196,7 @@
                     poll_ += '<div class="panel-body">'
                     poll_ += '<p> 表决发起者：'+ res.raiser + '</p>';
                     poll_ += '<p> 股票价格：'+ res.share + '</p>';
-                    poll_ += '<p> 表决倒计时：' + (res.vote_ddl - height) + '</p>'
+                    poll_ += '<p> 表决倒计时：' + Math.max(0, res.vote_ddl - height) + '</p>'
                     poll_ += '<p> 表决项内容：</p>'
 
                     var radio = ''
@@ -223,8 +223,19 @@
 
                     $('#button_vote_'+i).on('click', function(e) {
                         var id = parseInt(e.target.value);
+
+                        if (res_[id]['poll']['vote_ddl'] < res_[id]['height']) {
+                            alert('表决阶段已经结束。');
+                            return;
+                        }
+
                         var alter = $('input[type="radio"][name="optradio"]:checked').val(); // 获取一组radio被选中项的值
+                        if(alter == null) {
+                            alert('请您选择至少一个表决项。');
+                            return;
+                        }
                         alter = parseInt(alter);
+                        
                         var weight = parseInt($('#weight').val());
 
                         var _to_addr = globalParams.contract_addr;
@@ -236,6 +247,10 @@
 
                     $('#button_finish_'+i).on('click', function(e) {
                         var id = parseInt(e.target.value);
+                        if (res_[id]['poll']['result'] != null) {
+                            alert('您的股票已被偿还。');
+                            return;
+                        }
                         var _to_addr = globalParams.contract_addr;
                         var _value = "0";
                         var _args = JSON.stringify([id]);
