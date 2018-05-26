@@ -186,9 +186,8 @@
                     var res = res_[i]['poll'];
                     var height = res_[i]['height'];
 
-                    var title = (res)['title'];
-                    var alters = (res)['alters'];
-                    console.log(alters)
+                    var title = res['title'];
+                    var alters = res['alters'];
 
                     var poll_ = '';
 
@@ -198,6 +197,7 @@
                     poll_ += '<p> 表决发起者：'+ res.raiser + '</p>';
                     poll_ += '<p> 股票价格：'+ res.share + '</p>';
                     poll_ += '<p> 表决倒计时：' + (res.vote_ddl - height) + '</p>'
+                    poll_ += '<p> 表决项内容：</p>'
 
                     var radio = ''
                     for (var i_ = 0; i_ < alters.length; ++i_) {
@@ -207,8 +207,15 @@
                     }
                     poll_ += radio;
 
-                    poll_ += '<button id="button_vote_'+ i +'" class="btn btn-secondary" value='+ i + '> 参与投票 </button>';
+
+                    poll_ += '<div class="input-group">\
+                                <span class="input-group-addon">请输入您所拥有的股票数目：</span>\
+                                <input id="weight" type="number" class="form-control" value="10">\
+                            </div>'
+
+                    poll_ += '<button id="button_vote_'+ i +'" class="btn btn-secondary" value='+ i + '> 参与表决 </button>';
                     poll_ += '<button id="button_check_'+ i +'" class="btn btn-secondary" value='+ i + '> 查看状态 </button>';
+                    poll_ += '<button id="button_finish_'+ i +'" class="btn btn-secondary" value='+ i + '> 股票偿还 </button>';
 
                     poll_ += '</div>'
 
@@ -218,12 +225,23 @@
                         var id = parseInt(e.target.value);
                         var alter = $('input[type="radio"][name="optradio"]:checked').val(); // 获取一组radio被选中项的值
                         alter = parseInt(alter);
+                        var weight = parseInt($('#weight').val());
 
                         var _to_addr = globalParams.contract_addr;
-                        var _value = "0";
-                        var _args = JSON.stringify([id, alter]);
+                        var _value = weight * res['share'];
+
+                        var _args = JSON.stringify([id, alter, weight]);
                         sendTx(_to_addr, _value, "vote", _args);
                     });
+
+                    $('#button_finish_'+i).on('click', function(e) {
+                        var id = parseInt(e.target.value);
+                        var _to_addr = globalParams.contract_addr;
+                        var _value = "0";
+                        var _args = JSON.stringify([id]);
+
+                        sendTx(_to_addr, _value, "finish", _args);
+                    })
 
                     $("#button_check_"+i).on('click', function(e) {
                         clearInterval(globalParams.refresh_interval);
@@ -241,10 +259,10 @@
                         var cnts = []
                         for (let i = 0; i < res['alters'].length; ++i) {
                             var alter = res['alters'][i];
-                            if (res['dist'][alter] == null)
+                            if (res['dist'][i] == null)
                                 cnts.push([alter, 0]);
                             else
-                                cnts.push([alter, res['dist'][alter]]);
+                                cnts.push([alter, res['dist'][i]]);
                         }
                         json.series = [{
                             showInLegend: false,
