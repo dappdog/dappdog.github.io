@@ -83,11 +83,11 @@
             };
 
 
-        //localSave.setItem("apiPrefix", "https://mainnet.nebulas.io");
-        //globalParams.contract_addr = "n1mPZKrJGBAwmWYZ1ktGhkTNZLqdgvwX1K6";
+        localSave.setItem("apiPrefix", "https://mainnet.nebulas.io");
+        globalParams.contract_addr = "n1tVZyN2YfUwoqDKSD7wGFi5h2WwoE2snNX";
 
-        localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
-        globalParams.contract_addr = "n1exDBaW3yg2XL8BEXW6HPyt7z8zB6PPwLr";
+        //localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
+        //globalParams.contract_addr = "n1exDBaW3yg2XL8BEXW6HPyt7z8zB6PPwLr";
 
         neb.setRequest(new nebulas.HttpRequest(localSave.getItem("apiPrefix") || "https://testnet.nebulas.io/"));
 
