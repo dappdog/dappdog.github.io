@@ -50,6 +50,11 @@
             <div id="demo" class="container collapse">
                 <br>
                 <p>这是一个表决应用，用户可以进行的操作包括新建一个表决、查看当前所有表决、参与一个表决。</p>
+                <p>该表决应用的目标用户是公司的董事会成员，也就是说，拥有更多股权的人拥有更大的表决权。</p>
+                <p>股权占比大小的证明通过在表决过程中向合约转入其所拥有的 NAS 来体现，股权越大，权重越大。</p>
+                <p><strong>每个表决都有对应的时限，表决过程中转入的 NAS 会在表决结束后通过调用合约退回原账户。</strong></p>
+                <p>表决过程中的转账行为仅作为其拥有股票数量的证明。</p>
+                <p>整个表决过程会被记录在星云链上，公开且不可修改。</p>
             </div>
         </div>
 
@@ -110,7 +115,7 @@
                         <input type="number" id="poll_cnt"  value="3" class="form-control" name="msg">\
                     </div>\
                     <div class="input-group">\
-                        <span class="input-group-addon">请输入每份股票价格：</span>\
+                        <span class="input-group-addon">请输入股票单价（NAS）：</span>\
                          <input type="number" id="share"  value="0.001" class="form-control" name="msg" step="0.001">\
                      </div>\
                     <div class="container">\
@@ -195,8 +200,8 @@
 
                     poll_ += '<div class="panel-body">'
                     poll_ += '<p> 表决发起者：'+ res.raiser + '</p>';
-                    poll_ += '<p> 股票价格：'+ res.share + '</p>';
-                    poll_ += '<p> 表决倒计时：' + Math.max(0, res.vote_ddl - height) + '</p>'
+                    poll_ += '<p> 股票单价（NAS）：'+ res.share + '</p>';
+                    poll_ += '<p> 表决倒计时（区块高度）：' + Math.max(0, res.vote_ddl - height) + '</p>'
                     poll_ += '<p> 表决项内容：</p>'
 
                     var radio = ''
@@ -235,7 +240,7 @@
                             return;
                         }
                         alter = parseInt(alter);
-                        
+
                         var weight = parseInt($('#weight').val());
 
                         var _to_addr = globalParams.contract_addr;
