@@ -36,11 +36,11 @@
 <body>
 
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <p class="navbar-brand">星云选举</p>
+        <p class="navbar-brand">星云表决</p>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item"><a class="nav-link" href="#" id="page_list">查看列表</a></li>
-                <li class="nav-item"><a class="nav-link" href="#" id="page_new">新建选举</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" id="page_new">新建表决</a></li>
             </ul>
         </div>
     </nav>
@@ -49,7 +49,7 @@
             <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo"> <h4>使用说明</h4> </button>
             <div id="demo" class="container collapse">
                 <br>
-                <p>这是一个选举应用，用户可以进行的操作包括新建一个选举、查看当前所有选举、参与一个选举。</p>
+                <p>这是一个表决应用，用户可以进行的操作包括新建一个表决、查看当前所有表决、参与一个表决。</p>
             </div>
         </div>
 
@@ -59,6 +59,7 @@
 
     <footer class="container">
         <div class="footer-copyright text-center py-3">Copyright © 2018 DAppDog 工作室</div>
+        <div class="footer-copyright text-center py-3">联系方式：dappdog.studio@gmail.com</div>
         <div class="footer-copyright text-center py-3">友情链接：
             <a href="https://nebulas.io" target="_blank">星云链</a>，
             <a href="https://explorer.nebulas.io/#/" target="_blank">星云浏览器</a>，
@@ -77,14 +78,13 @@
             };
 
 
-        //localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
-        localSave.setItem("apiPrefix", "https://mainnet.nebulas.io");
+        //localSave.setItem("apiPrefix", "https://mainnet.nebulas.io");
+        //globalParams.contract_addr = "n1mPZKrJGBAwmWYZ1ktGhkTNZLqdgvwX1K6";
 
+        localSave.setItem("apiPrefix", "https://testnet.nebulas.io");
+        globalParams.contract_addr = "n1exDBaW3yg2XL8BEXW6HPyt7z8zB6PPwLr";
 
         neb.setRequest(new nebulas.HttpRequest(localSave.getItem("apiPrefix") || "https://testnet.nebulas.io/"));
-
-        //globalParams.contract_addr = "n1mPZKrJGBAwmWYZ1ktGhkTNZLqdgvwX1K6";
-        globalParams.contract_addr = "n1xmdY3SyRqCyk2JJXM7g5L2BxnJbArHp9z";
 
         $("#page_list").on('click', function(e) {
             refresh();
@@ -93,23 +93,42 @@
 
         $("#page_new").on('click', function(e) {
             clearInterval(globalParams.refresh_interval);
-            $('#page_content').empty()
-            var txt1="<p> 请输入您的投票主题：</p>";               // 以 HTML 创建新元素
-            var title = '<input type="text" id="poll_title"  value="你更喜欢三国里的哪个？" />'
+            $('#page_content').empty();
 
-            var txt2=$("<p> </p>").text("请输入您的投票时限（区块个数）.");   // 以 jQuery 创建新元素
-            var expire = '<input type="number" id="expire"  value="1000" />'
-
-            var txt3=$("<p> </p>").text("请输入您的选项个数.");   // 以 jQuery 创建新元素
-            var cnt = '<input type="number" id="poll_cnt"  value="3" />'
-
-            var button = '<div><button id="submit_title" class="btn btn-block">下一步</button></div>'
-            $("#page_content").append(txt1, title, txt2, expire, txt3, cnt, button);         // 追加新元素
+            $("#page_content").append('\
+                <div class="container">\
+                    <div class="input-group">\
+                        <span class="input-group-addon">请输入表决主题：</span>\
+                        <input id="poll_title" type="text" class="form-control" name="msg" value="你更支持三国里的哪个？">\
+                    </div>\
+                    <div class="input-group">\
+                        <span class="input-group-addon">请输入表决时限（区块高数）：</span>\
+                        <input type="number" id="expire"  value="10" class="form-control" name="msg">\
+                    </div>\
+                    <div class="input-group">\
+                        <span class="input-group-addon">请输入表决项个数：</span>\
+                        <input type="number" id="poll_cnt"  value="3" class="form-control" name="msg">\
+                    </div>\
+                    <div class="input-group">\
+                        <span class="input-group-addon">请输入每份股票价格：</span>\
+                         <input type="number" id="share"  value="0.001" class="form-control" name="msg" step="0.001">\
+                     </div>\
+                    <div class="container">\
+                        <button class="btn btn-primary align-self-center"  id="submit_title">下一步</button>\
+                    </div>\
+                </div>\
+            ')
 
             $('#submit_title').on('click', function(e) {
+                $('#submit_title').attr('disabled','disabled');
                 var cnt = parseInt($('#poll_cnt').val());
-                var txt3=$("<p></p>").text("请输入您的各个选项内容:");   // 以 jQuery 创建新元素
-                $("#page_content").append(txt3);
+
+                var temp_content = '';
+                temp_content += '<div class="container">'
+
+                temp_content += '<div class="input-group">'
+                temp_content += '<span class="input-group-addon">请输入各个表决项内容：</span>'
+
                 for (var i = 0; i < cnt; i++)
                 {
                     var content = 'alter' + i;
@@ -119,17 +138,19 @@
                         content = '蜀';
                     else if (i == 2)
                         content = '吴';
-                    var alter = '<input id=alter'+i+' value='+content+'>';
-                    $('#page_content').append(alter);
-                    $('#page_content').append('<br>');
+                    temp_content += '<input type="text" id="alter'+i+'" value="'+content+'" class="form-control" name="msg">'
                 }
-                var submit_poll = '<button id="submit_poll" class="btn btn-block">确定</>'
-                $('#page_content').append(submit_poll);
+                temp_content += '</div>'
+
+                temp_content += '<div class="container"><button class="btn btn-primary align-self-center"  id="submit_poll">提交新建</button></div>'
+                $('#page_content').append(temp_content);
+
                 $('#submit_poll').on('click', function(e) {
                     var title = $('#poll_title').val();
-                    var alters = []
                     var cnt = parseInt($('#poll_cnt').val());
-                    var expire = parseInt($('#expire').val())
+                    var expire = parseInt($('#expire').val());
+                    var share = parseFloat($('#share').val());
+                    var alters = []
 
                     for (var i = 0; i < cnt; i++)
                     {
@@ -137,14 +158,10 @@
                         alters.push(alter);
                     }
 
-                    var payload = {'title': title, 'alters': alters, 'expire': expire}
-
                     var _to_addr = globalParams.contract_addr;
                     var _value = "0";
+                    var _args = JSON.stringify([title, alters, expire, share]);
 
-                    console.log(JSON.stringify([title, alters, expire]))
-                    var _args = JSON.stringify([title, alters, expire]);
-                    console.log(_args);
                     sendTx(_to_addr, _value, "set_poll", _args);
                 });
             });
@@ -157,16 +174,17 @@
             var _args = "";
 			console.log(_args);
 
-            inner_call(_to_addr, _value, "get_all", _args, function(resp){
+            inner_call(_to_addr, _value, "get_polls", _args, function(resp){
                 var res_ = JSON.parse(JSON.parse(resp['result']));
 
                 $('#page_content').empty()
 
                 for (var i = res_.length - 1; i >= 0; --i) {
-                    console.log(res_[i], res_[i]['alters']);
+                    console.log(res_[i]);
 
 
-                    var res = res_[i];
+                    var res = res_[i]['poll'];
+                    var height = res_[i]['height'];
 
                     var title = (res)['title'];
                     var alters = (res)['alters'];
@@ -177,12 +195,15 @@
                     poll_ += '<div class="panel-heading">' + i + '. ' + title + '</div>';
 
                     poll_ += '<div class="panel-body">'
+                    poll_ += '<p> 表决发起者：'+ res.raiser + '</p>';
+                    poll_ += '<p> 股票价格：'+ res.share + '</p>';
+                    poll_ += '<p> 表决倒计时：' + (res.vote_ddl - height) + '</p>'
 
                     var radio = ''
                     for (var i_ = 0; i_ < alters.length; ++i_) {
-                        radio += '<input type="radio" name="radio" id=alter'+alters[i_]+
-                            ' value='+ alters[i_] + '><label for='+alters[i_]+'>'+
-                            alters[i_]+'</label><br>'
+                        radio += '<div class="radio">\
+                                    <label for='+alters[i_]+'>'+'<input type="radio" name="optradio" id=alter'+alters[i_]+ ' value='+ i_ + '>'+ alters[i_]+'</label>\
+                                  </div>'
                     }
                     poll_ += radio;
 
@@ -195,59 +216,49 @@
 
                     $('#button_vote_'+i).on('click', function(e) {
                         var id = parseInt(e.target.value);
-                        var alter = $('input[type="radio"][name="radio"]:checked').val(); // 获取一组radio被选中项的值
+                        var alter = $('input[type="radio"][name="optradio"]:checked').val(); // 获取一组radio被选中项的值
+                        alter = parseInt(alter);
 
                         var _to_addr = globalParams.contract_addr;
                         var _value = "0";
-                        console.log(JSON.stringify([id, alter]))
                         var _args = JSON.stringify([id, alter]);
-                        console.log(_args);
                         sendTx(_to_addr, _value, "vote", _args);
                     });
 
                     $("#button_check_"+i).on('click', function(e) {
                         clearInterval(globalParams.refresh_interval);
-                        var id = parseInt(e.target.value);
                         $('#page_content').empty()
-                        var _to_addr = globalParams.contract_addr;
-                        var _value = "0";
 
-                        var _args = JSON.stringify([id]);
+                        var res = res_[parseInt(e.target.value)]['poll'];
 
-                        inner_call(_to_addr, _value, "detail", _args, function(resp){
-                            console.log(resp['result']);
-                            let res = JSON.parse(JSON.parse(resp['result']));
-                            console.log(res);
+                        var json = {};
+                        json.chart = {type:'column'};
+                        json.title = {text:res['title']};
+                        json.xAxis = {categories: res['alters'],
+                            title:{text: '选项'}};
+                        json.yAxis = {min:0, tickInterval:1, title:{text:'票数'}};
+                        json.legend = {enable: true}
+                        var cnts = []
+                        for (let i = 0; i < res['alters'].length; ++i) {
+                            var alter = res['alters'][i];
+                            if (res['dist'][alter] == null)
+                                cnts.push([alter, 0]);
+                            else
+                                cnts.push([alter, res['dist'][alter]]);
+                        }
+                        json.series = [{
+                            showInLegend: false,
+                            data: cnts
+                        }];
 
-                            var json = {};
-                            json.chart = {type:'column'};
-                            json.title = {text:res['title']};
-                            json.xAxis = {categories: res['alters'],
-                                title:{text: '选项'}};
-                            json.yAxis = {min:0, tickInterval:1, title:{text:'票数'}};
-                            json.legend = {enable: true}
-                            var cnts = []
-                            for (let i = 0; i < res['alters'].length; ++i) {
-                                var alter = res['alters'][i];
-                                if (res['dist'][alter] == null)
-                                    cnts.push([alter, 0]);
-                                else
-                                    cnts.push([alter, res['dist'][alter]]);
-                            }
-                            json.series = [{
-                                showInLegend: false,
-                                data: cnts
-                            }];
-
-                            $("#page_content").highcharts(json);
-                        })
+                        $("#page_content").highcharts(json);
                     });
                 }
 
 				if (window.webExtensionWallet == null) {
 					$(".wallet").hide();
 					$(".no-wallet").html(
-						"<p> <br/> <a href='https://github.com/ChengOrangeJu/WebExtensionWallet' target='_blank'>点击安装星云官方钱包插件</a>，与智能合约交互！ :) </p>"
+						"<p> <br> <a href='https://github.com/ChengOrangeJu/WebExtensionWallet' target='_blank'>点击安装星云官方钱包插件</a>，与智能合约交互！ :) </p>"
 					);
 				}
             });

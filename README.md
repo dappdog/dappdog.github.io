@@ -2,18 +2,11 @@
 
 ## DApp List
 
-* 01Game: 
+* 01Game:  <http://nann.moe/dapp/01game.html>
 
-  * 主页面：<http://nann.moe/dapp/01game.html>
-  * 玩法说明：<http://nann.moe/dapp/doc/01Game.docx>
-* 星云 2048:
-  - 主页面：<http://nann.moe/dapp/2048.html>
-  - 玩法说明：<http://nann.moe/dapp/doc/2048.docx>
-* 星云拍卖：
-  - 主页面：<http://nann.moe/dapp/auction.html>
-* 星云 Poll:
-  * 主页面：<http://nann.moe/dapp/poll.html>
-  * 玩法说明：<http://nann.moe/dapp/doc/Poll.docx>
+* 星云 2048: <http://nann.moe/dapp/2048.html>
+* 星云拍卖：<http://nann.moe/dapp/auction.html>
+* 星云表决: <http://nann.moe/dapp/poll.html>
 
 ## Disclaimer
 
