@@ -17,6 +17,7 @@
     <script src=lib/js-beautify-1.7.5/beautify.js></script>
     <script src=lib/prismjs-1.13.0/prism.js></script>
     <script src=lib/nebulas.js></script>
+    <script src=lib/nebPay.js></script>
     <script src=js/1-localSave.js></script>
     <script src=js/home.v1.js></script>
     <script src=js/i18n.js data-depends=jquery.slim></script>
@@ -90,6 +91,11 @@
         //globalParams.contract_addr = "n1exDBaW3yg2XL8BEXW6HPyt7z8zB6PPwLr";
 
         neb.setRequest(new nebulas.HttpRequest(localSave.getItem("apiPrefix") || "https://testnet.nebulas.io/"));
+
+
+        var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
+        var nebPay = new NebPay();
+        var serialNumber;
 
         $("#page_list").on('click', function(e) {
             refresh();
@@ -167,19 +173,37 @@
                     var _value = "0";
                     var _args = JSON.stringify([title, alters, expire, share]);
 
-                    sendTx(_to_addr, _value, "set_poll", _args);
+                    serialNumber = nebPay.call(_to_addr, _value, "set_poll", _args, {    //使用nebpay的call接口去调用合约,
+                        listener: show_info        //设置listener, 处理交易返回信息
+                    });
                 });
             });
         });
 
+        function show_info(resp) {
+            if (msg.txhash) {
+                alert("交易发送成功");
+            } else {
+                alert(msg.toString() || "交易发送成功");
+            }
+        }
+
         function refresh(){
+            var from = 'n1YeD6SCiSNxjQ1CEUhSpThNxPU77mvB1sp';
             var _to_addr = globalParams.contract_addr;
             var _value = "0";
 
+            var gas_price = "1000000";
+            var gas_limit = "2000000";
             var _args = "";
-			console.log(_args);
+            var contract = {
+                "function": "get_polls",
+                "args": _args
+            }
 
-            inner_call(_to_addr, _value, "get_polls", _args, function(resp){
+			console.log(contract);
+
+			neb.api.call(from, _to_addr, _value, '0', gas_price, gas_limit, contract).then(function(resp){
                 var res_ = JSON.parse(JSON.parse(resp['result']));
 
                 $('#page_content').empty()
@@ -247,7 +271,10 @@
                         var _value = weight * res['share'];
 
                         var _args = JSON.stringify([id, alter, weight]);
-                        sendTx(_to_addr, _value, "vote", _args);
+
+                        nebPay.call(_to_addr, _value, "vote", _args, {    //使用nebpay的call接口去调用合约,
+                            listener: show_info        //设置listener, 处理交易返回信息
+                        });
                     });
 
                     $('#button_finish_'+i).on('click', function(e) {
@@ -260,7 +287,9 @@
                         var _value = "0";
                         var _args = JSON.stringify([id]);
 
-                        sendTx(_to_addr, _value, "finish", _args);
+                        nebPay.call(_to_addr, _value, "finish", _args, {    //使用nebpay的call接口去调用合约,
+                            listener: show_info        //设置listener, 处理交易返回信息
+                        });
                     })
 
                     $("#button_check_"+i).on('click', function(e) {
@@ -327,60 +356,6 @@
                 }
             }
         });
-
-        function sendTx(_to_addr, _value, _func, _args) {
-            window.postMessage({
-                "target": "contentscript",
-                "data": {
-                    "to": _to_addr,
-                    "value": _value.toString(),
-                    "contract": {
-                        "function": _func,
-                        "args": _args
-                    }
-                },
-                "method": "neb_sendTransaction",
-            }, "*");
-        }
-
-        function inner_call(_to_addr, _value, _func, _args, callback) {
-            var url = 'https://mainnet.nebulas.io/v1/user/call';
-            var from = 'n1YeD6SCiSNxjQ1CEUhSpThNxPU77mvB1sp';
-
-            if (localSave.getItem("apiPrefix").includes('test')) {
-                url = 'https://testnet.nebulas.io/v1/user/call';
-                from = 'n1cNkcUumVmt6CHjYhgTECZHnm3nGDzkWfx';
-            }
-
-            var contract = _to_addr;
-
-            var requestObj = {
-                from: from,
-                to: contract,
-                value: _value,
-                nonce: 111112888,
-                gasPrice: '1000000',
-                gasLimit: '200000000',
-                contract: {
-                    function: _func,
-                    args: _args
-                }
-            };
-			
-			console.log(requestObj);
-			
-            fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(requestObj)
-                })
-                .then(res => res.json())
-                .then(res => {
-                    callback(res['result']);
-                });
-        }
     </script>
 </body>
 </html>

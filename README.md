@@ -13,10 +13,6 @@
 - Please take care of the risk when using the code. We are not responsible for your loss.
 - Please abide your local law when using the code.
 
-## Notice
-
-Our frontend is modified based on the code of nebulas official web wallet: <https://github.com/nebulasio/web-wallet>.
-
 ## License
 
 This project is licensed under the [GNU Lesser General Public License Version 3.0 (“LGPL v3”)](https://www.gnu.org/licenses/lgpl-3.0.en.html).
