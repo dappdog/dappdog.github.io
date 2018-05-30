@@ -17,6 +17,7 @@
         <script src=lib/js-beautify-1.7.5/beautify.js></script>
         <script src=lib/prismjs-1.13.0/prism.js></script>
         <script src=lib/nebulas.js></script>
+        <script src=lib/nebPay.js></script>
         <script src=js/1-localSave.js></script>
         <script src=js/home.v1.js></script>
         <script src=js/i18n.js data-depends=jquery.slim></script>
@@ -104,7 +105,9 @@
 
                         var _args = JSON.stringify([item, min_bid, bid_duration, reveal_duration]);
 
-                        sendTx(_to_addr, _value, "set_auction", _args);
+                        serialNumber = nebPay.call(_to_addr, _value, "set_auction", _args, {    //使用nebpay的call接口去调用合约,
+                            listener: show_info        //设置listener, 处理交易返回信息
+                        });
                     })
                 </script>
 
@@ -195,6 +198,11 @@
 
                 neb.setRequest(new nebulas.HttpRequest(localSave.getItem("apiPrefix") || "https://testnet.nebulas.io/"));
 
+
+                var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
+                var nebPay = new NebPay();
+                var serialNumber;
+
                 uiBlock.insert({
                     footer: ".footer",
                     header: ".header",
@@ -202,6 +210,14 @@
                     logoMain: ".logo-main",
                     numberComma: ".number-comma"
                 });
+
+                function show_info(resp) {
+                    if (msg.txhash) {
+                        alert("交易发送成功");
+                    } else {
+                        alert(msg.toString() || "交易发送成功");
+                    }
+                }
 
                 //globalParams.contract_addr = "n22Ub6heAgh2JV6DZgkfSepK2ZFg6pFJtjz";
                 globalParams.contract_addr = "n1y2HeRSw9WvUUhdCkMkSWPsNYfdDRNEbnW";
@@ -249,8 +265,9 @@
 
                     var _args = JSON.stringify([index, hash_code]);
 
-
-                    sendTx(_to_addr, _value, "bid", _args);
+                    serialNumber = nebPay.call(_to_addr, _value, "bid", _args, {    //使用nebpay的call接口去调用合约,
+                        listener: show_info        //设置listener, 处理交易返回信息
+                    });
                 });
 
                 $("#btn_reveal").on('click', function(e) {
@@ -270,7 +287,9 @@
                     var _to_addr = globalParams.contract_addr;
                     var _value = bid;
 
-                    sendTx(_to_addr, _value, "reveal", _args);
+                    serialNumber = nebPay.call(_to_addr, _value, "reveal", _args, {    //使用nebpay的call接口去调用合约,
+                        listener: show_info        //设置listener, 处理交易返回信息
+                    });
                 });
 
                 $("#btn_finish").on('click', function(e) {
@@ -282,17 +301,28 @@
                     var _to_addr = globalParams.contract_addr;
                     var _value = "0";
                     var _args = JSON.stringify([index])
-                    sendTx(_to_addr, _value, "finish", _args);
 
+                    serialNumber = nebPay.call(_to_addr, _value, "finish", _args, {    //使用nebpay的call接口去调用合约,
+                        listener: show_info        //设置listener, 处理交易返回信息
+                    });
                 })
 
                 function refresh(){
+                    var from = 'n1YeD6SCiSNxjQ1CEUhSpThNxPU77mvB1sp';
                     var _to_addr = globalParams.contract_addr;
                     var _value = "0";
 
+                    var gas_price = "1000000";
+                    var gas_limit = "2000000";
+                    var _args = "";
+                    var contract = {
+                        "function": "get_auctions",
+                        "args": _args
+                    }
+
                     var _args = "";
 
-                    inner_call(_to_addr, _value, "get_auctions", _args, function(resp){
+                    neb.api.call(from, _to_addr, _value, '0', gas_price, gas_limit, contract).then(function(resp){
                         console.log(JSON.parse(resp['result']));
                         var auctions = (JSON.parse(resp['result'])['status']);
                         var height = (JSON.parse(resp['result'])['height']);
@@ -372,12 +402,19 @@
                     $('#btn_reveal').val(index);
                     $('#btn_finish').val(index);
 
+                    var from = 'n1YeD6SCiSNxjQ1CEUhSpThNxPU77mvB1sp';
                     var _to_addr = globalParams.contract_addr;
                     var _value = "0";
 
+                    var gas_price = "1000000";
+                    var gas_limit = "2000000";
                     var _args = "";
+                    var contract = {
+                        "function": "get_auctions",
+                        "args": _args
+                    }
 
-                    inner_call(_to_addr, _value, "get_auctions", _args, function(resp){
+                    neb.api.call(from, _to_addr, _value, '0', gas_price, gas_limit, contract).then(function(resp){
                         var auctions = (JSON.parse(resp['result'])['status']);
                         var height = (JSON.parse(resp['result'])['height']);
                         var auction = auctions[index];
@@ -445,61 +482,6 @@
                         }
                     }
                 });
-
-                function sendTx(_to_addr, _value, _func, _args) {
-                    console.log(_value, _args)
-                    window.postMessage({
-                        "target": "contentscript",
-                        "data": {
-                            "to": _to_addr,
-                            "value": _value.toString(),
-                            "contract": {
-                                "function": _func,
-                                "args": _args
-                            }
-                        },
-                        "method": "neb_sendTransaction",
-                    }, "*");
-                }
-
-                function inner_call(_to_addr, _value, _func, _args, callback) {
-                    var url = 'https://mainnet.nebulas.io/v1/user/call';
-                    var from = 'n1YeD6SCiSNxjQ1CEUhSpThNxPU77mvB1sp';
-
-                    if (localSave.getItem("apiPrefix").includes('test')) {
-                        url = 'https://testnet.nebulas.io/v1/user/call';
-                        from = 'n1cNkcUumVmt6CHjYhgTECZHnm3nGDzkWfx';
-                    }
-
-                    var contract = _to_addr;
-
-                    var requestObj = {
-                        from: from,
-                        to: contract,
-                        value: _value,
-                        nonce: 111112888,
-                        gasPrice: '1000000',
-                        gasLimit: '200000000',
-                        contract: {
-                            function: _func,
-                            args: _args
-                        }
-                    };
-
-                    console.log(requestObj);
-
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(requestObj)
-                    })
-                        .then(res => res.json())
-                        .then(res => {
-                            callback(res['result']);
-                        });
-                }
 
                 function SHA256(s) {
                     /**
@@ -653,6 +635,7 @@
         </main>
         <footer class="container">
             <div class="footer-copyright text-center py-3">Copyright © 2018 DAppDog 工作室</div>
+            <div class="footer-copyright text-center py-3">联系方式：dappdog.studio@gmail.com</div>
             <div class="footer-copyright text-center py-3">友情链接：
                 <a href="https://nebulas.io" target="_blank">星云链</a>，
                 <a href="https://explorer.nebulas.io/#/" target="_blank">星云浏览器</a>，
