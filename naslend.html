@@ -29,8 +29,7 @@
 </head>
 
 <body>
-    <h1 align="center" style="margin-top: 1em" onclick="show('start')">星云贷 (
-        <span id=net-type></span>)</h1>
+    <h1 align="center" style="margin-top: 1em" onclick="show('start')">星云贷 (<span id=net-type></span>)</h1>
     <div class="content start">
         <div class="form-group row">
             <div class="col">
@@ -226,7 +225,8 @@
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
     <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
     <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
-
+    <script src=lib/nebulas.js></script>
+    <script src=lib/nebPay.js></script>
 
     <script>
         function show_bid_rate(min_block, max_block, min_rate, max_rate, cur_block, cur_rate) {
@@ -289,6 +289,7 @@
     </script>
 
     <script>
+        "use strict";
         var TIMER = null;
         var COUNT_DOWN = 8;
 
@@ -300,14 +301,24 @@
 
         var LEND_ID = null;
 
+        var nebulas = require("nebulas"),
+            neb = new nebulas.Neb(),
+            globalParams = {
+                account: null
+            };
+
         if (NET_TYPE == 'MAIN') {
             NET_URL = 'https://mainnet.nebulas.io/v1/user/call';
             NET_ADDR = 'n1YeD6SCiSNxjQ1CEUhSpThNxPU77mvB1sp';
+
+            neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
 
             $('#net-type').text('主网');
         } else {
             NET_URL = 'https://testnet.nebulas.io/v1/user/call';
             NET_ADDR = 'n1cNkcUumVmt6CHjYhgTECZHnm3nGDzkWfx';
+
+            neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
 
             $('#net-type').text('测试网');
         }
@@ -317,34 +328,18 @@
         $("#bid_btn").on("click", onBid);
         $("#pay_btn").on("click", onPay);
 
-        function inner_call(_value, _func, _args, callback) {
-            var _to_addr = CONTRACT_ADDR;
 
-            var requestObj = {
-                from: NET_ADDR,
-                to: _to_addr,
-                value: _value,
-                nonce: 111112888,
-                gasPrice: '1000000',
-                gasLimit: '200000000',
-                contract: {
-                    function: _func,
-                    args: _args
-                }
-            };
-            fetch(NET_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(requestObj)
-                })
-                .then(res => res.json())
-                .then(res => {
-                    callback(res['result']);
-                });
+        var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
+        var nebPay = new NebPay();
+        var serialNumber;
+
+        function show_info(msg) {
+            if (msg.txhash) {
+                alert("交易发送成功");
+            } else {
+                alert(msg.toString() || "交易发送成功");
+            }
         }
-
 
         window.addEventListener('message', function (e) {
             console.log("message received, msg.data: " + JSON.stringify(e.data));
@@ -358,41 +353,6 @@
         });
 
         //show('start');
-
-        function sendTx(_value, _func, _args) {
-            var _to_addr = CONTRACT_ADDR;
-
-            window.postMessage({
-                "target": "contentscript",
-                "data": {
-                    "to": _to_addr,
-                    "value": _value.toString(),
-                    "contract": {
-                        "function": _func,
-                        "args": _args
-                    }
-                },
-                "method": "neb_sendTransaction",
-            }, "*");
-        }
-
-        function make_params(arg_list) {
-            var res = "[";
-            for (var i = 0; i < arg_list.length; i++) {
-                if (typeof (arg_list[i]) != 'number') {
-                    res = res + "\"";
-                    res = res + arg_list[i];
-                    res = res + "\"";
-                } else {
-                    res = res + arg_list[i];
-                }
-                if (i != arg_list.length - 1) {
-                    res = res + ",";
-                }
-            }
-            res = res + "]";
-            return res;
-        }
 
         var CUR_SCENE = 'start';
 
@@ -446,9 +406,13 @@
             var response_duration = parseInt($("#response_duration").val());
             var lend_duration = parseInt($("#lend_duration").val());
 
-            var args = make_params([id, min_interest_rate, response_duration, lend_duration]);
+            var args = JSON.stringify([id, min_interest_rate, response_duration, lend_duration]);
+            var _to_addr = CONTRACT_ADDR;
 
-            sendTx(_value, "guarantee", args);
+            alert("注意：您将要向合约地址转账来提供保证。");
+            nebPay.call(_to_addr, _value, "guarantee", args, {    //使用nebpay的call接口去调用合约,
+                listener: show_info        //设置listener, 处理交易返回信息
+            });
         }
 
         function show_lend(res) {
@@ -471,9 +435,13 @@
             var max_interest_rate = parseFloat($("#max_rate").val());
             var bid_duration = parseInt($("#auction_duration").val());
 
-            var args = make_params([id, max_interest_rate, bid_duration]);
+            var args = JSON.stringify([id, max_interest_rate, bid_duration]);
+            var _to_addr = CONTRACT_ADDR;
 
-            sendTx(_value, "lend", args);
+            alert("注意：您将向合约地址转账来提供借贷。")
+            nebPay.call(_to_addr, _value, "lend", args, {    //使用nebpay的call接口去调用合约,
+                listener: show_info        //设置listener, 处理交易返回信息
+            });
         }
 
         function show_bid(res) {
@@ -498,9 +466,12 @@
             let id = LEND_ID;
             let bid_rate = parseFloat($('.cur-rate').text()) / 100;
 
-            let args = make_params([id, bid_rate]);
+            let args = JSON.stringify([id, bid_rate]);
+            var _to_addr = CONTRACT_ADDR;
 
-            sendTx(_value, "bid", args);
+            nebPay.call(_to_addr, _value, "bid", args, {    //使用nebpay的call接口去调用合约,
+                listener: show_info        //设置listener, 处理交易返回信息
+            });
         }
 
         function show_pay(res) {
@@ -517,9 +488,13 @@
 
 
             let id = LEND_ID;
-            let args = make_params([id]);
+            let args = JSON.stringify([id]);
+            var _to_addr = CONTRACT_ADDR;
 
-            sendTx(_value, "pay_back", args);
+            alert("注意：您将向合约地址转账来偿还借贷。")
+            nebPay.call(_to_addr, _value, "pay_back", args, {    //使用nebpay的call接口去调用合约,
+                listener: show_info        //设置listener, 处理交易返回信息
+            });
         }
 
         function show_finished(res) {
@@ -546,9 +521,20 @@
             if (which == 'start') {
                 refresh_lend_ids();
             } else {
-                console.log("[\"" + LEND_ID + "\"]");
+                var from = NET_ADDR;
+                var _to_addr = CONTRACT_ADDR;
+                var _value = "0";
+                var gas_price = '1000000';
+                var gas_limit = '200000000';
+                var _args = JSON.stringify([LEND_ID]);
+                var contract = {
+                    "function": "detail",
+                    "args": _args
+                }
 
-                inner_call('0', "detail", "[\"" + LEND_ID + "\"]", function (resp) {
+                console.log(contract);
+
+                neb.api.call(from, _to_addr, _value, '0', gas_price, gas_limit, contract).then(function(resp){
                     var res = JSON.parse(JSON.parse(resp['result']));
                     console.log(res);
 
@@ -568,8 +554,22 @@
         }
 
         function refresh_lend_ids() {
-            inner_call('0', "get_ids", "", function (resp) {
+            var from = NET_ADDR;
+            var _to_addr = CONTRACT_ADDR;
+            var _value = "0";
+            var gas_price = '1000000';
+            var gas_limit = '200000000';
+            var _args = "";
+            var contract = {
+                "function": "get_ids",
+                "args": _args
+            }
+
+            console.log(contract);
+
+            neb.api.call(from, _to_addr, _value, '0', gas_price, gas_limit, contract).then(function(resp){
                 var str = "";
+                console.log(resp['result']);
                 var res = JSON.parse(JSON.parse(resp['result']));
                 /*res = {
                     'x': 0,
