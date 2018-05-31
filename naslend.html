@@ -6,216 +6,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
-        crossorigin="anonymous">
 
-    <style>
-        .content {
-            margin: 5em;
-        }
+    <link rel=stylesheet href=lib/bootstrap-4.0.0-dist/css/bootstrap.min.css>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-        .btn {
-            width: 100%
-        }
+    <script src=lib/jquery-3.3.1.min.js></script>
+    <script src=lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
+    <script src=lib/bootbox.min.js data-depends="bootstrap jquery.slim"></script>
 
-        .title {
-            text-align: left;
-            margin-bottom: 0
-        }
-    </style>
-
-    <title>NasLend</title>
-</head>
-
-<body>
-    <h1 align="center" style="margin-top: 1em" onclick="show('start')">星云贷 (<span id=net-type></span>)</h1>
-    <div class="content start">
-        <div class="form-group row">
-            <div class="col">
-                <h4 class=title>当前的借贷列表</h4>
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class="col">
-                <div class="list-group" id="lend_ids">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="fade modal help" data-backdrop=static>
-        <div class=modal-dialog>
-            <div class=modal-content>
-                <div class=modal-body>
-                    TBA
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="content guar">
-        <div class="form-group row">
-            <div class=col>
-                <h4 class=title>为新的借贷提供担保</h4>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <div class=col>
-                <label>担保金额</label>
-                <input class=form-control type=text id=guarantee_amount value="0.01">
-            </div>
-            <div class=col>
-                <label>最低利率</label>
-                <input class=form-control type=text id=min_rate value="1.1">
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <div class=col>
-                <label>寻找出资人时限（块）</label>
-                <input class=form-control type=text id=response_duration value="100">
-            </div>
-            <div class=col>
-                <label>借贷期限（块)</label>
-                <input class=form-control type=text id=lend_duration value="100">
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <div class=col>
-                <label>借贷case编号</label>
-                <input class="form-control case_id" type=text>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <div class=col>
-                <button id=guarantee-btn class="btn btn-primary">提供担保</button>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="content lend">
-        <div class="form-group row">
-            <div class=col>
-                <h4 class=title>为借贷
-                    <span class='lend-id'></span>提供资金， 担保人是
-                    <span class='guar-name'></span>，担保资金
-                    <span class='guar-deposit'></span>NAS</h4>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <div class=col>
-                <label>提供金额（不低于
-                    <span class='guar-deposit'></span>NAS）</label>
-                <input class=form-control type=text id=lend_amount value="0.2">
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <div class=col>
-                <label>最高利率（不低于
-                    <span class='min-rate'></span>%）</label>
-                <input class=form-control type=text id=max_rate value="2">
-            </div>
-            <div class=col>
-                <label>拍卖期限</label>
-                <input class=form-control type=text id=auction_duration value="100">
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <div class=col>
-                <button id=lend_btn class="btn btn-primary">提供贷款</button>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="content bid">
-        <div id="form-group row">
-            <div class=col>
-                <h4 class=title>
-                    <p>竞拍贷款
-                        <span class='lend-id'></span>，金额是
-                        <span class='lend-amount'></span>NAS，您当前的利率是
-                        <span class=cur-rate></span>%</p>
-                    <p>需要在
-                        <span class=last-block></span>块前竞拍</p>
-                </h4>
-                <div align=center id="rate-chart" style="height: 500px"></div>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <div class=col>
-                <button id=bid_btn class="btn btn-primary">竞拍</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="content pay">
-        <div id="form-group row">
-            <div class=col>
-                <h4 class=title>
-                    <p>在未来
-                        <span class="count-down"></span>块之内，偿还贷款编号
-                        <span class='lend-id'></span>，偿还
-                        <span class='pay-amount'></span>NAS。
-                    </p>
-                    <p>
-                        如果您要偿还贷款，请确定您的地址是
-                        <span class="pay-address"></span>，否则会偿还失败。
-                    </p>
-                </h4>
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class=col>
-                <button id=pay_btn class="btn btn-primary">偿还</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="content finished">
-        <div id="form-group row">
-            <div class=col>
-                <h4 class=title>
-                    历史借贷详情
-                </h4>
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class=col>
-                <p>
-                    借贷
-                    <span id='lend-result'></span>，借贷的担保人是
-                    <span id='guarantor'></span>，担保金额是
-                    <span id='guar-amount'></span> NAS，资金提供人是
-                    <span id='lend-account'></span>，借贷金额是
-                    <span id='lend-amount'></span> NAS，借贷利率是
-                    <span id='interest'></span>%，借款人是
-                    <span id='borrower'></span>。
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <span class="refresh">
-    </span>
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
-        crossorigin="anonymous"></script>
     <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
     <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
     <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
@@ -227,6 +27,219 @@
     <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
     <script src=lib/nebulas.js></script>
     <script src=lib/nebPay.js></script>
+
+    <style>
+        .h1 .h2 .h3 .h4 .h5 {
+            text-align: center;
+        }
+
+        .title {
+            text-align: left;
+            margin-bottom: 0
+        }
+
+        .btn {
+            width: 100%
+        }
+    </style>
+
+    <title>NasLend</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <p class="navbar-brand">星云贷 (<span id=net-type></span>)</p>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link" href="#" onclick="show('start')">查看列表</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main role="main">
+        <div class="container">
+        <div class="container start">
+            <div class="form-group row">
+                <p class="h4">当前借贷列表</p>
+            </div>
+            <div class="form-group row">
+                <div class="col">
+                    <div class="list-group" id="lend_ids">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fade modal help" data-backdrop=static>
+            <div class=modal-dialog>
+                <div class=modal-content>
+                    <div class=modal-body>
+                        TBA
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container guar">
+            <div class="form-group row">
+                <div class=col>
+                    <p class="h4">为新的借贷提供担保</p>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class=col>
+                    <label>担保金额</label>
+                    <input class=form-control type=text id=guarantee_amount value="0.01">
+                </div>
+                <div class=col>
+                    <label>最低利率</label>
+                    <input class=form-control type=text id=min_rate value="1.1">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class=col>
+                    <label>寻找出资人时限（块）</label>
+                    <input class=form-control type=text id=response_duration value="100">
+                </div>
+                <div class=col>
+                    <label>借贷期限（块)</label>
+                    <input class=form-control type=text id=lend_duration value="100">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class=col>
+                    <label>借贷case编号</label>
+                    <input class="form-control case_id" type=text>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class=col>
+                    <button id=guarantee-btn class="btn btn-primary">提供担保</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container lend">
+            <div class="form-group row">
+                <div class=col>
+                    <h4 class=title>为借贷
+                        <span class='lend-id'></span>提供资金， 担保人是
+                        <span class='guar-name'></span>，担保资金
+                        <span class='guar-deposit'></span>NAS</h4>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class=col>
+                    <label>提供金额（不低于
+                        <span class='guar-deposit'></span>NAS）</label>
+                    <input class=form-control type=text id=lend_amount value="0.2">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class=col>
+                    <label>最高利率（不低于
+                        <span class='min-rate'></span>%）</label>
+                    <input class=form-control type=text id=max_rate value="2">
+                </div>
+                <div class=col>
+                    <label>拍卖期限</label>
+                    <input class=form-control type=text id=auction_duration value="100">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class=col>
+                    <button id=lend_btn class="btn btn-primary">提供贷款</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container bid">
+            <div id="form-group row">
+                <div class=col>
+                    <h4 class=title>
+                        <p>竞拍贷款
+                            <span class='lend-id'></span>，金额是
+                            <span class='lend-amount'></span>NAS，您当前的利率是
+                            <span class=cur-rate></span>%</p>
+                        <p>需要在
+                            <span class=last-block></span>块前竞拍</p>
+                    </h4>
+                    <div align=center id="rate-chart" style="height: 500px"></div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class=col>
+                    <button id=bid_btn class="btn btn-primary">竞拍</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container pay">
+            <div id="form-group row">
+                <div class=col>
+                    <h4 class=title>
+                        <p>在未来
+                            <span class="count-down"></span>块之内，偿还贷款编号
+                            <span class='lend-id'></span>，偿还
+                            <span class='pay-amount'></span>NAS。
+                        </p>
+                        <p>
+                            如果您要偿还贷款，请确定您的地址是
+                            <span class="pay-address"></span>，否则会偿还失败。
+                        </p>
+                    </h4>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class=col>
+                    <button id=pay_btn class="btn btn-primary">偿还</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container finished">
+            <div class="form-group row">
+                <p class="h4">历史借贷详情</p>
+            </div>
+            <div class="form-group row">
+                <div class="panel panel-success">
+                    <div class="panel-heading">借贷<span id='lend-result'></span></div>
+                    <div class="panel-body">
+                        <p> 借贷的担保人：<span id='guarantor'></span></p>
+                        <p> 担保金额：<span id='guar-amount'></span> NAS </p>
+                        <p> 资金提供人：<span id='lend-account'></span></p>
+                        <p> 借贷金额：<span id='lend-amount'></span> NAS </p>
+                        <p> 借贷利率：<span id='interest'></span>%</p>
+                        <p> 借款人：<span id='borrower'></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <span class="container refresh">
+        </span>
+        </div>
+    </main>
+
+    <footer class="container">
+        <div class="footer-copyright text-center py-3">Copyright © 2018 DAppDog 工作室</div>
+        <div class="footer-copyright text-center py-3">联系方式：dappdog.studio@gmail.com</div>
+        <div class="footer-copyright text-center py-3">友情链接：
+            <a href="https://nebulas.io" target="_blank">星云链</a>，
+            <a href="https://explorer.nebulas.io/#/" target="_blank">星云浏览器</a>，
+            <a href="https://atlasp.io" target="_blank">ATP</a>
+        </div>
+    </footer>
 
     <script>
         function show_bid_rate(min_block, max_block, min_rate, max_rate, cur_block, cur_rate) {
@@ -293,7 +306,7 @@
         var TIMER = null;
         var COUNT_DOWN = 8;
 
-        var CONTRACT_ADDR = "n1oRdNatiaHiRuxXRdKtDKmL4qGC4DAvhsD";
+        var CONTRACT_ADDR = "n1u8SPreqhAZNS6KBbkTWeE9XfF7Cy6WZ4u";
         var NET_TYPE = 'TEST';
 
         var NET_URL = null;
