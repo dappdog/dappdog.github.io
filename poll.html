@@ -100,6 +100,14 @@
         var nebPay = new NebPay();
         var serialNumber;
 
+        function show_info(msg) {
+            if (msg.txhash) {
+                alert("交易发送成功");
+            } else {
+                alert(msg.toString() || "交易发送成功");
+            }
+        }
+
         $("#page_list").on('click', function(e) {
             refresh();
             show_detail();
@@ -182,14 +190,6 @@
                 });
             });
         });
-
-        function show_info(resp) {
-            if (msg.txhash) {
-                alert("交易发送成功");
-            } else {
-                alert(msg.toString() || "交易发送成功");
-            }
-        }
 
         function refresh(){
             var from = 'n1YeD6SCiSNxjQ1CEUhSpThNxPU77mvB1sp';
