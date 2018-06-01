@@ -65,16 +65,6 @@
             </div>
         </div>
 
-        <div class="fade modal help" data-backdrop=static>
-            <div class=modal-dialog>
-                <div class=modal-content>
-                    <div class=modal-body>
-                        TBA
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="container guar">
             <div class="form-group row">
                 <div class=col>
@@ -344,20 +334,10 @@
             if (msg.txhash) {
                 alert("交易发送成功");
             } else {
+                // TODO:
                 alert(msg.toString() || "交易发送成功");
             }
         }
-
-        window.addEventListener('message', function (e) {
-            console.log("message received, msg.data: " + JSON.stringify(e.data));
-            if (!!e.data.data.txhash) {
-                if ($(".modal.tips").is(':visible')) {
-                    $(".modal.tips").modal('toggle');
-                }
-                console.log("交易哈希：" + JSON.stringify(e.data.data.txhash, null, '\t'));
-                show('start');
-            }
-        });
 
         //show('start');
 
@@ -418,7 +398,11 @@
 
             alert("注意：您将要向合约地址转账来提供担保。");
             nebPay.call(_to_addr, _value, "guarantee", args, {    //使用nebpay的call接口去调用合约,
-                listener: show_info        //设置listener, 处理交易返回信息
+                listener: show_info,        //设置listener, 处理交易返回信息
+
+                qrcode: {
+                    showQRCode: true
+                }
             });
         }
 

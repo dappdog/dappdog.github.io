@@ -349,15 +349,6 @@
                 show_detail();
             });
         });
-
-        window.addEventListener('message', function (e) {
-            console.log("message received, msg.data: " + JSON.stringify(e.data));
-            if (!!e.data.data && !!e.data.data.txhash) {
-                if ($(".modal.tips").is(':visible')) {
-                    $(".modal.tips").modal('toggle');
-                }
-            }
-        });
     </script>
 </body>
 </html>
