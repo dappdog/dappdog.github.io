@@ -214,9 +214,13 @@
 
                 function show_info(msg) {
                     if (msg.txhash) {
-                        alert("交易发送成功");
+                        alert("哎呀交易发送成功了呢");
                     } else {
-                        alert(msg.toString() || "交易发送成功");
+                        if (msg.toString() && msg.toString().includes("rejected")) {
+                            alert("呜呜呜为什么要拒绝人家，这样思念就传达不到了呢 o(╥﹏╥)o")
+                        } else {
+                            alert(msg.toString() || "哎呀交易发送成功了呢");
+                        }
                     }
                 }
 
