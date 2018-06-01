@@ -111,6 +111,21 @@
             }
         }
 
+        function show_info_(msg) {
+            console.log("NOTE:", msg)
+            if (msg.txhash) {
+                alert("哎呀交易发送成功了呢");
+                refresh();
+                show_detail();
+            } else {
+                if (msg.toString() && msg.toString().includes("rejected")) {
+                    alert("呜呜呜为什么要拒绝人家，这样思念就传达不到了呢 o(╥﹏╥)o")
+                } else {
+                    alert(msg.toString() || "哎呀交易发送成功了呢");
+                }
+            }
+        }
+
         $("#page_list").on('click', function(e) {
             refresh();
             show_detail();
@@ -188,7 +203,7 @@
                     var _args = JSON.stringify([title, alters, expire, share]);
 
                     serialNumber = nebPay.call(_to_addr, _value, "set_poll", _args, {    //使用nebpay的call接口去调用合约,
-                        listener: show_info,        //设置listener, 处理交易返回信息
+                        listener: show_info_,        //设置listener, 处理交易返回信息
                         qrcode: {
                             showQRCode: true
                         }
