@@ -9,7 +9,7 @@
 
     <link rel=stylesheet href=lib/bootstrap-4.0.0-dist/css/bootstrap.min.css>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <script src=lib/jquery-3.3.1.min.js></script>
@@ -295,7 +295,6 @@
 
         var NET_URL = null;
         var NET_ADDR = null;
-        var callbackUrl = null;
 
         var LEND_ID = null;
 
@@ -312,7 +311,6 @@
         if (NET_TYPE == 'MAIN') {
             NET_URL = 'https://mainnet.nebulas.io/v1/user/call';
             NET_ADDR = 'n1YeD6SCiSNxjQ1CEUhSpThNxPU77mvB1sp';
-            callbackUrl =NebPay.config.mainnetUrl;
 
             neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
 
@@ -320,7 +318,6 @@
         } else {
             NET_URL = 'https://testnet.nebulas.io/v1/user/call';
             NET_ADDR = 'n1cNkcUumVmt6CHjYhgTECZHnm3nGDzkWfx';
-            callbackUrl = NebPay.config.testnetUrl;
 
             neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
 
@@ -404,7 +401,6 @@
             alert("注意：您将要向合约地址转账来提供担保。");
             nebPay.call(_to_addr, _value, "guarantee", args, {    //使用nebpay的call接口去调用合约,
                 listener: show_info,        //设置listener, 处理交易返回信息
-                callback:callbackUrl,
                 qrcode: {
                     showQRCode: true
                 }
@@ -437,7 +433,6 @@
             alert("注意：您将向合约地址转账来提供借贷。")
             nebPay.call(_to_addr, _value, "lend", args, {    //使用nebpay的call接口去调用合约,
                 listener: show_info,        //设置listener, 处理交易返回信息
-                callback:callbackUrl,
                 qrcode: {
                     showQRCode: true
                 }
@@ -471,7 +466,6 @@
 
             nebPay.call(_to_addr, _value, "bid", args, {    //使用nebpay的call接口去调用合约,
                 listener: show_info,        //设置listener, 处理交易返回信息
-                callback:callbackUrl,
                 qrcode: {
                     showQRCode: true
                 }
@@ -498,7 +492,6 @@
             alert("注意：您将向合约地址转账来偿还借贷。")
             nebPay.call(_to_addr, _value, "pay_back", args, {    //使用nebpay的call接口去调用合约,
                 listener: show_info,        //设置listener, 处理交易返回信息
-                callback:callbackUrl,
                 qrcode: {
                     showQRCode: true
                 }
