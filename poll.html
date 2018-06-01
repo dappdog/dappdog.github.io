@@ -97,6 +97,7 @@
         var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
         var nebPay = new NebPay();
         var serialNumber;
+        var callbackUrl = NebPay.config.mainnetUrl;
 
         function show_info(msg) {
             if (msg.txhash) {
@@ -187,7 +188,11 @@
                     var _args = JSON.stringify([title, alters, expire, share]);
 
                     serialNumber = nebPay.call(_to_addr, _value, "set_poll", _args, {    //使用nebpay的call接口去调用合约,
-                        listener: show_info        //设置listener, 处理交易返回信息
+                        listener: show_info,        //设置listener, 处理交易返回信息
+                        callback:callbackUrl,
+                        qrcode: {
+                            showQRCode: true
+                        }
                     });
                 });
             });
@@ -279,7 +284,11 @@
 
                         alert("注意：你将向合约地址转账从而证明自己的占股比例。所有的转账金额会在表决结束后原数奉还。");
                         nebPay.call(_to_addr, _value, "vote", _args, {    //使用nebpay的call接口去调用合约,
-                            listener: show_info        //设置listener, 处理交易返回信息
+                            listener: show_info,        //设置listener, 处理交易返回信息
+                            callback:callbackUrl,
+                            qrcode: {
+                                showQRCode: true
+                            }
                         });
                     });
 
@@ -294,7 +303,11 @@
                         var _args = JSON.stringify([id]);
 
                         nebPay.call(_to_addr, _value, "finish", _args, {    //使用nebpay的call接口去调用合约,
-                            listener: show_info        //设置listener, 处理交易返回信息
+                            listener: show_info,        //设置listener, 处理交易返回信息
+                            callback:callbackUrl,
+                            qrcode: {
+                                showQRCode: true
+                            }
                         });
                     })
 
