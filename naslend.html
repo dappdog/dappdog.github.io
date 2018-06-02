@@ -44,24 +44,18 @@
 
 <body>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <p class="navbar-brand">星云贷 (<span id=net-type></span>)</p>
+        <a class="nav-link" href="#" onclick="show('start')"><p class="navbar-brand">星云贷 (<span id=net-type></span>)</p></a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item"><a class="nav-link" href="#" onclick="show('start')">查看列表</a></li>
+                <a class="nav-link" href="#" onclick="show('start')"><li class="nav-item">首页</li></a>
             </ul>
         </div>
     </nav>
 
     <main role="main">
         <div class="container start">
-            <div class="form-group row">
-                <p class="h4">当前借贷列表</p>
-            </div>
-            <div class="form-group row">
-                <div class="col">
-                    <div class="list-group" id="lend_ids">
-                    </div>
-                </div>
+            <p class="h4">当前借贷列表</p>
+            <div class="list-group" id="lend_ids">
             </div>
         </div>
 
@@ -482,7 +476,8 @@
         }
 
         function onPay() {
-            let _value = parseFloat($('.pay-amount').text());
+            // TODO: round up
+            let _value = parseFloat($('.pay-amount').text()).toPrecision(15);
             var _args = "";
 
 
@@ -618,7 +613,6 @@
                     '为新借贷提供担保' + "</a>"
                 $("#lend_ids").html(str);
             });
-
         }
 
         show('start');
