@@ -562,8 +562,6 @@
                 "args": _args
             }
 
-            console.log(contract);
-
             neb.api.call(from, _to_addr, _value, '0', gas_price, gas_limit, contract).then(function(resp){
                 var str = "";
                 console.log(resp['result']);
@@ -575,7 +573,7 @@
                     'c': 3,
                     'd': 4
                 };*/
-                console.log(res);
+                console.log("result:", res);
                 for (var id in res) {
                     var state = res[id];
 
