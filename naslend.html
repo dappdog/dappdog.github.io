@@ -55,8 +55,8 @@
     <main role="main">
         <div class="container start">
             <p class="h4">当前借贷列表</p>
-            <div class="list-group" id="lend_ids">
-            </div>
+            <ul class="list-group" id="lend_ids">
+            </ul>
         </div>
 
         <div class="container guar">
@@ -581,29 +581,29 @@
 
                     if (state == '0') {
                         str +=
-                            "<a onclick=\" setID('" + id +
+                            "<li onclick=\" setID('" + id +
                             "'); show('lend');\"  class='list-group-item list-group-item-action list-group-item-primary'> 编号" +
-                            id + " (等待储蓄)" + "</a>"
+                            id + " (等待储蓄)" + "</li>"
                     } else if (state == '1') {
                         str +=
-                            "<a onclick=\" setID('" + id +
+                            "<li onclick=\" setID('" + id +
                             "'); show('bid')\" class='list-group-item list-group-item-action list-group-item-warning'> 编号" +
-                            id + " (等待竞拍)" + "</a>"
+                            id + " (等待竞拍)" + "</li>"
                     } else if (state == '2') {
                         str +=
-                            "<a  onclick=\" setID('" + id +
+                            "<li  onclick=\" setID('" + id +
                             "'); show('pay') \" class='list-group-item list-group-item-action list-group-item-light'> 编号" +
-                            id + " (等待偿还)" + "</a>"
+                            id + " (等待偿还)" + "</li>"
                     } else if (state == '3') {
                         str +=
-                            "<a onclick=\"setID('" + id +
+                            "<li onclick=\"setID('" + id +
                             "') ; show('finished');\" class='list-group-item list-group-item-action list-group-item-success'> 编号" +
-                            id + " (完成)" + "</a>"
+                            id + " (完成)" + "</li>"
                     } else if (state == '4') {
                         str +=
-                            "<a onclick=\"setID('" + id +
+                            "<li onclick=\"setID('" + id +
                             "'); show('finished');\" class='list-group-item list-group-item-action list-group-item-danger'> 编号" +
-                            id + " (未成功)" + "</a>"
+                            id + " (未成功)" + "</li>"
                     }
                 }
                 str +=
