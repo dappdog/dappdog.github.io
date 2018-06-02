@@ -383,7 +383,7 @@
         }
 
         function onGuar() {
-            var _value = parseFloat($("#guarantee_amount").val());
+            var _value = parseFloat($("#guarantee_amount").val()).toPrecision(15);
             var _args = "";
             var id = $(".case_id").val();
             var min_interest_rate = parseFloat($("#min_rate").val());
@@ -415,7 +415,7 @@
         }
 
         function onLend() {
-            var _value = parseFloat($("#lend_amount").val());
+            var _value = parseFloat($("#lend_amount").val()).toPrecision(15);
             var _args = "";
 
             var id = LEND_ID;
