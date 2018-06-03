@@ -16,15 +16,15 @@
     <script src=lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
     <script src=lib/bootbox.min.js data-depends="bootstrap jquery.slim"></script>
 
+    <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/simplex.js"></script>
     <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
-    <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
-    <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
     <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+    <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
     <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
     <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+    <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+    <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
     <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
-    <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
-    <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/simplex.js"></script>
     <script src=lib/nebulas.js></script>
     <script src=lib/nebPay.js></script>
 
@@ -54,49 +54,34 @@
 
     <main role="main">
         <div class="container start">
-            <p class="h4">当前借贷列表</p>
+            <p class="h4">借贷列表</p>
             <ul class="list-group" id="lend_ids">
+            </ul>
+            <ul class="list-group">
             </ul>
         </div>
 
         <div class="container guar">
-            <div class="form-group row">
-                <div class=col>
-                    <p class="h4">为新的借贷提供担保</p>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <div class=col>
-                    <label>担保金额</label>
-                    <input class=form-control type=text id=guarantee_amount value="0.01">
-                </div>
-                <div class=col>
-                    <label>最低利率</label>
-                    <input class=form-control type=text id=min_rate value="1.1">
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <div class=col>
-                    <label>寻找出资人时限（块）</label>
-                    <input class=form-control type=text id=response_duration value="100">
-                </div>
-                <div class=col>
-                    <label>借贷期限（块)</label>
-                    <input class=form-control type=text id=lend_duration value="100">
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <div class=col>
-                    <label>借贷case编号</label>
-                    <input class="form-control case_id" type=text>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <div class=col>
+            <p class="h4">担保详情</p>
+            <div class="panel panel-success">
+                <div class="panel-heading"> 借贷号 <span class="case_id"></span></div>
+                <div class="panel-body">
+                    <div class="input-group">
+                        <span class="input-group-addon">担保金额（NAS）：</span>
+                        <input id="guarantee_amount" type="number" class="form-control" value="0.01" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">最低利率：</span>
+                        <input id="min_rate" type="number" class="form-control" value="1.1" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">出资时限（区块高度）：</span>
+                        <input id="response_duration" type="number" class="form-control" value="100">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">借贷时限（区块高度)：</span>
+                        <input id="lend_duration" type="number" class="form-control" value="100">
+                    </div>
                     <button id=guarantee-btn class="btn btn-primary">提供担保</button>
                 </div>
             </div>
@@ -104,103 +89,72 @@
 
 
         <div class="container lend">
-            <div class="form-group row">
-                <div class=col>
-                    <h4 class=title>为借贷
-                        <span class='lend-id'></span>提供资金， 担保人是
-                        <span class='guar-name'></span>，担保资金
-                        <span class='guar-deposit'></span>NAS</h4>
-                </div>
-            </div>
+            <p class="h4">出资详情</p>
+            <div class="panel panel-success">
+                <div class="panel-heading"> 借贷号 <span class="lend_id"></span></div>
+                <div class="panel-body">
+                    <p>担保人：<span class="guar-name"></span></p>
+                    <p>担保金额（NAS）：<span class="guar-deposit"></span></p>
 
-            <div class="form-group row">
-                <div class=col>
-                    <label>提供金额（不低于
-                        <span class='guar-deposit'></span>NAS）</label>
-                    <input class=form-control type=text id=lend_amount value="0.2">
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <div class=col>
-                    <label>最高利率（不低于
-                        <span class='min-rate'></span>%）</label>
-                    <input class=form-control type=text id=max_rate value="2">
-                </div>
-                <div class=col>
-                    <label>拍卖期限</label>
-                    <input class=form-control type=text id=auction_duration value="100">
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <div class=col>
-                    <button id=lend_btn class="btn btn-primary">提供贷款</button>
+                    <div class="input-group">
+                        <span class="input-group-addon">出资金额（NAS）（大于等于<span class="guar-deposit"></span>）：</span>
+                        <input type="number" id="lend_amount" class="form-control guar-deposit" value="0.01" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">竞拍起始利率
+                        （大于等于<span class='min-rate'></span>）：</span>
+                        <input id="max_rate" type="number" class="form-control" value="1.2" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">竞拍时限（区块高度）：</span>
+                        <input id="auction_duration" type="number" class="form-control" value="100">
+                    </div>
+                    <button id="lend_btn" class="btn btn-primary">提供出资</button>
                 </div>
             </div>
         </div>
 
 
         <div class="container bid">
-            <div id="form-group row">
-                <div class=col>
-                    <h4 class=title>
-                        <p>竞拍贷款
-                            <span class='lend-id'></span>，金额是
-                            <span class='lend-amount'></span>NAS，您当前的利率是
-                            <span class=cur-rate></span>%</p>
-                        <p>需要在
-                            <span class=last-block></span>块前竞拍</p>
-                    </h4>
-                    <div align=center id="rate-chart" style="height: 500px"></div>
+            <p class="h4">竞拍详情</p>
+            <div class="panel panel-success">
+                <div class="panel-heading"> 借贷号 <span class="lend_id"></span></div>
+                <div class="panel-body">
+                    <p>借贷金额：<span class="lend-amount"></span></p>
+                    <p>当前利率：<span class="cur-rate"></span></p>
+                    <p>当前区块高度：<span class=cur-block></span></p>
+                    <p>截止区块高度：<span class=last-block></span></p>
                 </div>
             </div>
-
-            <div class="form-group row">
-                <div class=col>
-                    <button id=bid_btn class="btn btn-primary">竞拍</button>
-                </div>
-            </div>
+            <div align=center id="rate-chart" style="height: 500px"></div>
+            <button id=bid_btn class="btn btn-primary">竞拍</button>
         </div>
 
         <div class="container pay">
-            <div id="form-group row">
-                <div class=col>
-                    <h4 class=title>
-                        <p>在未来
-                            <span class="count-down"></span>块之内，偿还贷款编号
-                            <span class='lend-id'></span>，偿还
-                            <span class='pay-amount'></span>NAS。
-                        </p>
-                        <p>
-                            如果您要偿还贷款，请确定您的地址是
-                            <span class="pay-address"></span>，否则会偿还失败。
-                        </p>
-                    </h4>
+            <p class="h4">还款详情</p>
+            <div class="panel panel-success">
+                <div class="panel-heading"> 借贷号 <span class="lend_id"></span></div>
+                <div class="panel-body">
+                    <p>还款金额（NAS）： <span class='pay-amount'></span></p>
+                    <p>还款时限：<span class="count-down"></span></p>
+                    <p>借款人地址：<span class="pay-address"></span></p>
                 </div>
             </div>
-            <div class="form-group row">
-                <div class=col>
-                    <button id=pay_btn class="btn btn-primary">偿还</button>
-                </div>
-            </div>
+            <button id=pay_btn class="btn btn-primary">还款</button>
         </div>
 
         <div class="container finished">
-            <div class="form-group row">
-                <p class="h4">历史借贷详情</p>
-            </div>
-            <div class="form-group row">
-                <div class="panel panel-success">
-                    <div class="panel-heading">借贷<span id='lend-result'></span></div>
-                    <div class="panel-body">
-                        <p> 借贷的担保人：<span id='guarantor'></span></p>
-                        <p> 担保金额：<span id='guar-amount'></span> NAS </p>
-                        <p> 资金提供人：<span id='lend-account'></span></p>
-                        <p> 借贷金额：<span id='lend-amount'></span> NAS </p>
-                        <p> 借贷利率：<span id='interest'></span>%</p>
-                        <p> 借款人：<span id='borrower'></span></p>
-                    </div>
+            <p class="h4">历史借贷详情</p>
+            <div class="panel panel-success">
+                <div class="panel-heading"> 借贷号 <span class="lend_id"></span></div>
+                <div class="panel-body">
+                    <p> 借贷状态：<span id='lend-result'></span></p>
+                    <p> 担保人：<span id='guarantor'></span></p>
+                    <p> 担保金额：<span id='guar-amount'></span> NAS </p>
+                    <p> 出资人：<span id='lend-account'></span></p>
+                    <p> 出资金额：<span id='lend-amount'></span> NAS </p>
+                    <p> 借贷人：<span id='borrower'></span></p>
+                    <p> 借贷利率：<span id='interest'></span></p>
                 </div>
             </div>
         </div>
@@ -222,6 +176,7 @@
 
     <script>
         function show_bid_rate(min_block, max_block, min_rate, max_rate, cur_block, cur_rate) {
+            console.log([min_block, max_block, min_rate, max_rate, cur_block, cur_rate])
             var dom = document.getElementById("rate-chart");
             var myChart = echarts.init(dom);
             var app = {};
@@ -243,7 +198,7 @@
                     data: [min_rate, max_rate],
                     axisLabel: {
                         formatter: function (val) {
-                            return 100 * val + "%";
+                            return val;
                         }
                     },
                     scale: true
@@ -276,7 +231,7 @@
             }
 
             $('#cur-block').text(cur_block);
-            $('#cur-rate').text(cur_rate * 100);
+            $('#cur-rate').text(cur_rate);
         }
     </script>
 
@@ -285,7 +240,7 @@
         var TIMER = null;
         var COUNT_DOWN = 8;
 
-        var CONTRACT_ADDR = "n1u8SPreqhAZNS6KBbkTWeE9XfF7Cy6WZ4u";
+        var CONTRACT_ADDR = "n1xDQvcRRQXuQbCSW7Dv8qNwxUVPZGXRvwR";
         var NET_TYPE = 'TEST';
 
         var NET_URL = null;
@@ -302,6 +257,7 @@
         var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
         var nebPay = new NebPay();
         var serialNumber;
+        var intervalQuery;
 
         if (NET_TYPE == 'MAIN') {
             NET_URL = 'https://mainnet.nebulas.io/v1/user/call';
@@ -332,6 +288,19 @@
                     alert("呜呜呜为什么要拒绝人家，这样思念就传达不到了呢 o(╥﹏╥)o")
                 } else {
                     alert(msg.toString() || "哎呀交易发送成功了呢");
+                }
+            }
+        }
+
+        function show_info_(msg) {
+            if (msg.txhash) {
+                alert("哎呀交易发送成功了呢");
+            } else {
+                if (msg.toString() && msg.toString().includes("rejected")) {
+                    alert("呜呜呜为什么要拒绝人家，这样思念就传达不到了呢 o(╥﹏╥)o")
+                } else {
+                    alert(msg.toString() || "哎呀交易发送成功了呢");
+                    show('start');
                 }
             }
         }
@@ -379,13 +348,13 @@
 
         function show_guar(res) {
             var id = LEND_ID;
-            $('.case_id').val(id);
+            $('.case_id').text(id);
         }
 
         function onGuar() {
             var _value = parseFloat($("#guarantee_amount").val()).toPrecision(15);
             var _args = "";
-            var id = $(".case_id").val();
+            var id = $(".case_id").text();
             var min_interest_rate = parseFloat($("#min_rate").val());
             var response_duration = parseInt($("#response_duration").val());
             var lend_duration = parseInt($("#lend_duration").val());
@@ -394,24 +363,45 @@
             var _to_addr = CONTRACT_ADDR;
 
             alert("注意：您将要向合约地址转账来提供担保。");
-            nebPay.call(_to_addr, _value, "guarantee", args, {    //使用nebpay的call接口去调用合约,
+            serialNumber = nebPay.call(_to_addr, _value, "guarantee", args, {    //使用nebpay的call接口去调用合约,
                 listener: show_info,        //设置listener, 处理交易返回信息
                 qrcode: {
                     showQRCode: true
                 }
             });
+
+            startWaitResponse();
+        }
+
+        function startWaitResponse() {
+            intervalQuery = setInterval(function () {
+                funcIntervalQuery();
+            }, 5000);
+        }
+
+        function funcIntervalQuery() {
+            nebPay.queryPayInfo(serialNumber)   //search transaction result from server (result upload to server by app)
+                .then(function (resp) {
+                    var respObject = JSON.parse(resp);
+                    console.log("tx result: " + resp);   //resp is a JSON string
+                    if (respObject.code === 0) {
+                        clearInterval(intervalQuery);
+                    }
+                })
+                .catch(function (err) {
+                    // TODO: 超时处理
+                    console.log(err);
+                });
         }
 
         function show_lend(res) {
-            $('.lend-id').text(LEND_ID);
+            $('.lend_id').text(LEND_ID);
             $('.guar-name').text(res['guarantor']);
             $('.guar-deposit').text(res['min_deposit'] / 1e18);
 
-            $('.min-rate').text(res['min_interest_rate'] * 100);
-
-            $('#max_rate').val(parseFloat(res['min_interest_rate']) + 0.1);
+            $('.min-rate').text(parseFloat(res['min_interest_rate']).toFixed(3));
+            $('#max_rate').val((parseFloat(res['min_interest_rate']) + 0.1).toFixed(3));
             $('#lend_amount').val(res['min_deposit'] / 1e18);
-
         }
 
         function onLend() {
@@ -435,17 +425,17 @@
         }
 
         function show_bid(res) {
-            $('.lend-id').text(LEND_ID);
+            $('.lend_id').text(LEND_ID);
             $('.lend-amount').text(res['real_deposit'] / 1e18);
-            $('.cur-rate').text(res['current_rate'] * 100);
+            $('.cur-rate').text(res['current_rate'].toFixed(3));
             $('.last-block').text(res['expiration']);
 
             var min_block = res['block'] - (res['max_interest_rate'] - res['current_rate']) * (res['expiration'] -
                 res['block']) / (
                 res['current_rate'] - res['min_interest_rate']);
 
-            show_bid_rate(min_block, res['expiration'], parseFloat(res['min_interest_rate']), res[
-                'max_interest_rate'], res['block'], res['current_rate']);
+            show_bid_rate(min_block, parseInt(res['expiration']), parseFloat(res['min_interest_rate']), parseFloat(res[
+                'max_interest_rate']), res['block'], res['current_rate']);
         }
 
         function onBid() {
@@ -454,7 +444,7 @@
 
 
             let id = LEND_ID;
-            let bid_rate = parseFloat($('.cur-rate').text()) / 100;
+            let bid_rate = parseFloat($('.cur-rate').text());
 
             let args = JSON.stringify([id, bid_rate]);
             var _to_addr = CONTRACT_ADDR;
@@ -471,7 +461,7 @@
             console.log(res);
             $('.pay-address').text(res['borrower']);
             $('.count-down').text(parseInt(res['expiration']) - parseInt(res['block']));
-            $('.lend-id').text(LEND_ID);
+            $('.lend_id').text(LEND_ID);
             $('.pay-amount').text(res['real_deposit'] * res['interest_rate'] / 1e18);
         }
 
@@ -486,6 +476,19 @@
             var _to_addr = CONTRACT_ADDR;
 
             alert("注意：您将向合约地址转账来偿还借贷。")
+
+            nebPay.simulateCall(_to_addr, _value, "pay_back", _args, {
+                qrcode: {
+                    showQRCode: true
+                },
+                goods: {
+                    name: "test",
+                    desc: "test goods"
+                },
+                //callback:callbackUrl, //don't need to set callback for simulateCall
+                listener: show_info  //set listener for extension transaction result
+            });
+
             nebPay.call(_to_addr, _value, "pay_back", args, {    //使用nebpay的call接口去调用合约,
                 listener: show_info,        //设置listener, 处理交易返回信息
                 qrcode: {
@@ -495,18 +498,19 @@
         }
 
         function show_finished(res) {
+            console.log("res:", res);
             if (res['state'] == 3) {
                 $('#lend-result').text('成功');
             } else if (res['state'] == 4) {
                 $('#lend-result').text('失败');
             }
 
-            $('#guarantor').text(res['guarantor']);
+            $(".lend_id").text(LEND_ID);
             $('#guarantor').text(res['guarantor']);
             $('#guar-amount').text(res['min_deposit'] / 1e18);
             $('#lend-account').text(res['lender']);
             $('#lend-amount').text(res['real_deposit'] / 1e18);
-            $('#interest').text(res['interest_rate'] * 100);
+            $('#interest').text(res['interest_rate']);
             $('#borrower').text(res['borrower']);
         }
 
@@ -563,52 +567,46 @@
             }
 
             neb.api.call(from, _to_addr, _value, '0', gas_price, gas_limit, contract).then(function(resp){
-                var str = "";
-                console.log(resp['result']);
+
                 var res = JSON.parse(JSON.parse(resp['result']));
-                /*res = {
-                    'x': 0,
-                    'a': 1,
-                    'b': 2,
-                    'c': 3,
-                    'd': 4
-                };*/
                 console.log("result:", res);
+
+                var str = "";
                 for (var id in res) {
                     var state = res[id];
 
                     console.log(id, state);
 
-                    if (state == '0') {
-                        str +=
-                            "<li onclick=\" setID('" + id +
-                            "'); show('lend');\"  class='list-group-item list-group-item-action list-group-item-primary'> 编号" +
-                            id + " (等待储蓄)" + "</li>"
-                    } else if (state == '1') {
-                        str +=
-                            "<li onclick=\" setID('" + id +
-                            "'); show('bid')\" class='list-group-item list-group-item-action list-group-item-warning'> 编号" +
-                            id + " (等待竞拍)" + "</li>"
-                    } else if (state == '2') {
-                        str +=
-                            "<li  onclick=\" setID('" + id +
-                            "'); show('pay') \" class='list-group-item list-group-item-action list-group-item-light'> 编号" +
-                            id + " (等待偿还)" + "</li>"
-                    } else if (state == '3') {
-                        str +=
-                            "<li onclick=\"setID('" + id +
-                            "') ; show('finished');\" class='list-group-item list-group-item-action list-group-item-success'> 编号" +
-                            id + " (完成)" + "</li>"
-                    } else if (state == '4') {
-                        str +=
-                            "<li onclick=\"setID('" + id +
-                            "'); show('finished');\" class='list-group-item list-group-item-action list-group-item-danger'> 编号" +
-                            id + " (未成功)" + "</li>"
+                    var state2str = {
+                        '0': "等待出资",
+                        '1': "借贷竞拍",
+                        '2': "等待偿还",
+                        '3': "成功",
+                        '4': "失败"
                     }
+
+                    var state2style = {
+                        '0': 'primary',
+                        '1': 'warning',
+                        '2': 'light',
+                        '3': 'success',
+                        '4': 'danger'
+                    }
+
+                    var state2func = {
+                        '0': 'lend',
+                        '1': 'bid',
+                        '2': 'pay',
+                        '3': 'finished',
+                        '4': 'finished'
+                    }
+
+                    str += "<li onclick=\" setID('" + id +
+                        "'); show('"+state2func[state]+"');\"  class=\"list-group-item list-group-item-action list-group-item-"+ state2style[state]+"\"> 借贷号 " +
+                        id + "（" + state2str[state] + "）</li>"
                 }
-                str +=
-                    "<a onclick=\" setID(Math.floor (Math.random() * 100000 )); show('guar');\" class='list-group-item list-group-item-action list-group-item-info'>" +
-                    '为新借贷提供担保' + "</a>"
+                str += "<li onclick=\"setID('"+Math.floor (Math.random() * 100000 )+"'); show('guar');\" class='list-group-item list-group-item-action list-group-item-info'> 我要做担保人 </li>"
+
                 $("#lend_ids").html(str);
             });
         }
