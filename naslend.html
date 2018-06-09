@@ -185,7 +185,7 @@
                 <p> 担保金额：<span id='guar-amount'></span> NAS </p>
                 <p> 出资人：<span id='lend-account'></span></p>
                 <p> 出资金额：<span id='lend-amount'></span> NAS </p>
-                <p> 借贷人：<span id='borrower'></span></p>
+                <p> 借款人：<span id='borrower'></span></p>
                 <p> 借贷利率：<span id='interest'></span></p>
                 <button id="push_btn" class="btn btn-primary">清算</button>
             </div>
@@ -438,8 +438,8 @@
         $('.guar-deposit').text(res['min_deposit'] / 1e18);
         $('.ddl').text(Math.max(0, parseInt(res['expiration']) - res['block']))
 
-        $('.min-rate').text(parseFloat(res['min_interest_rate']).toFixed(3));
-        $('#max_rate').val((parseFloat(res['min_interest_rate']) + 0.1).toFixed(3));
+        $('.min-rate').text(parseFloat(res['min_interest_rate']).toFixed(6));
+        $('#max_rate').val((parseFloat(res['min_interest_rate']) + 0.1).toFixed(6));
         $('#lend_amount').val(res['min_deposit'] / 1e18);
     }
 
@@ -466,10 +466,13 @@
     function show_bid(res) {
         $('.lend_id').text(LEND_ID);
         $('.lend-amount').text(res['real_deposit'] / 1e18);
-        $('.cur-rate').text(res['current_rate'].toFixed(3));
+        $('.cur-rate').text(res['current_rate'].toFixed(6));
 
 
         $('.ddl').text(Math.max(0, parseInt(res['expiration']) - res['block']))
+
+        if (parseInt(res['expiration']) - res['block'] < 0)
+            show('start');
 
         var min_block = res['block'] - (res['max_interest_rate'] - res['current_rate']) * (res['expiration'] -
             res['block']) / (
@@ -508,7 +511,7 @@
 
     function onPay() {
         // TODO: round up
-        let _value = parseFloat($('.pay-amount').text()).toPrecision(15) + 0.0001;
+        let _value = Math.ceil(parseFloat($('.pay-amount').text()).toPrecision(15) * 1000000) / 1000000;
         var _args = "";
 
 
@@ -520,7 +523,7 @@
 
         alert("注意：您将向合约地址转账来偿还借贷。")
 
-        nebPay.simulateCall(_to_addr, _value, "pay_back", args, {
+        /*nebPay.simulateCall(_to_addr, _value, "pay_back", args, {
             qrcode: {
                 showQRCode: false
             },
@@ -529,7 +532,7 @@
                 desc: "test goods"
             },
             listener: show_info  //set listener for extension transaction result
-        });
+        });*/
 
         nebPay.call(_to_addr, _value, "pay_back", args, {    //使用nebpay的call接口去调用合约,
             listener: show_info,        //设置listener, 处理交易返回信息
