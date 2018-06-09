@@ -36,10 +36,6 @@
             text-align: left;
             margin-bottom: 0
         }
-
-        .btn {
-            width: 100%
-        }
     </style>
 
     <title>NasLend</title>
@@ -58,6 +54,35 @@
 </nav>
 
 <main role="main">
+    <div class="jumbotron container">
+        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo"><h4>使用说明</h4></button>
+        <a href="doc/Auction.docx">
+            <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo"><h4>帮助文档</h4></button>
+        </a>
+        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#about_us"><h4>关于我们</h4></button>
+        <div id="demo" class="container collapse">
+            <br>
+            <p>这是一个借贷应用，用户可以进行的操作包括提供担保、提供借贷、借贷竞拍、偿还借贷等。</p>
+            <p>整个借贷的过程会被写在星云链上公开且不可更改。</p>
+            <p>提供一个担保需要设定当前拍卖的物品、起拍价、匿名时限和公开时限等。</p>
+            <p>参与一个拍卖的过程分为三步：匿名投标、公开投标和查看结果。</p>
+            <p>匿名投标的过程是为了保证参与者不会其自身投标之前知晓其他人的投标金额，从而保证过程公平。</p>
+            <p>虽然次价拍卖 truthful, 但如果直接公开投标的话不能排除无法获胜的人故意投高或投低搅局的情况。</p>
+            <p>在这种情况下，故意投高会对得拍者不利，而故意投低会对拍卖者不利。</p>
+            <p>我们使用 SHA256 函数和随机盐值来保证最终公开投标时的价格和匿名投标时相同。</p>
+            <p>拍卖规则采取次价拍卖，即出价最高的人赢得拍卖，但所付价格为第二高的价格。</p>
+            <p><strong>在公开投标阶段投标者需向合约转入押金，但只有赢得拍卖的投标者的部分押金会转入拍卖者账户，<br>其余均会退回原账户。</strong></p>
+            <p>上述过程是由公开的智能合约来保证的，从而避免拍卖者作弊的发生。</p>
+        </div>
+        <div id="about_us" class="container collapse">
+            <br>
+            <p>团队成员均为清华大学交叉信息院二年级的研究生。</p>
+            <p>我们的愿景是为星云探索更多创新的玩法，</p>
+            <p>专注于开发利用区块链独特特性的应用。</p>
+            <p>联系邮箱：dappdog.studio@gmail.com</p>
+        </div>
+    </div>
+
     <div class="container start">
         <p class="h4">借贷列表</p>
         <ul class="list-group" id="lend_ids">
@@ -100,7 +125,7 @@
             <div class="panel-body">
                 <p>担保人：<span class="guar-name"></span></p>
                 <p>担保金额（NAS）：<span class="guar-deposit"></span></p>
-                <p>担保截止时限：<span class="ddl"></span></p>
+                <p>出资截止时限：<span class="ddl"></span></p>
 
                 <div class="input-group">
                     <span class="input-group-addon">出资金额（NAS）（大于等于<span class="guar-deposit"></span>）：</span>
@@ -246,7 +271,11 @@
     var TIMER = null;
     var COUNT_DOWN = 8;
 
-    var CONTRACT_ADDR = "n1nSBmDbmQvukXKXJs59VnKPtXhxw6pkXm9";
+
+    var CONTRACT_ADDR = "n1xVT4UVGbTM1Q5iGigosaT9f99FLm99JnL";
+    var NET_TYPE = 'TEST';
+
+    var CONTRACT_ADDR = "n1mFFz1eZTJpMMG5v2y6drBdrGfqSdH2GLt";
     var NET_TYPE = 'MAIN';
 
     var NET_URL = null;
@@ -295,7 +324,8 @@
             if (msg.toString() && msg.toString().includes("rejected")) {
                 alert("呜呜呜为什么要拒绝人家，这样思念就传达不到了呢 o(╥﹏╥)o")
             } else {
-                alert(msg.toString() || "哎呀交易发送成功了呢");
+                console.log(msg);
+                alert(msg['result'] || "哎呀交易发送成功了呢");
                 show('start');
             }
         }
@@ -485,9 +515,11 @@
         let args = JSON.stringify([id]);
         var _to_addr = CONTRACT_ADDR;
 
+        console.log(args);
+
         alert("注意：您将向合约地址转账来偿还借贷。")
 
-        /* nebPay.simulateCall(_to_addr, _value, "pay_back", _args, {
+        nebPay.simulateCall(_to_addr, _value, "pay_back", args, {
             qrcode: {
                 showQRCode: false
             },
@@ -496,7 +528,7 @@
                 desc: "test goods"
             },
             listener: show_info  //set listener for extension transaction result
-        });*/
+        });
 
         nebPay.call(_to_addr, _value, "pay_back", args, {    //使用nebpay的call接口去调用合约,
             listener: show_info,        //设置listener, 处理交易返回信息
