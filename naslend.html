@@ -574,10 +574,10 @@
 
         if (res['state'] == 3) {
             $('#lend-result').text('成功');
-            $('.push_btn').hide();
+            $('#push_btn').hide();
         } else if (res['state'] == 4) {
             $('#lend-result').text('失败');
-            $('.push_btn').show();
+            $('#push_btn').show();
         }
 
         $(".lend_id").text(LEND_ID);
