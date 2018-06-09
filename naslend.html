@@ -16,17 +16,19 @@
     <script src=lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
     <script src=lib/bootbox.min.js data-depends="bootstrap jquery.slim"></script>
 
-    <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/simplex.js"></script>
-    <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+
+    <script type="text/javascript" src="js/echarts/simplex.js"></script>
+    <script type="text/javascript" src="js/echarts/echarts.min.js"></script>
     <script type="text/javascript"
-            src="https://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+            src="js/echarts/dataTool.min.js"></script>
     <script type="text/javascript"
-            src="https://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
-    <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
-    <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+            src="js/echarts/bmap.min.js"></script>
+    <script type="text/javascript" src="js/echarts/china.js"></script>
+    <script type="text/javascript" src="js/echarts/world.js"></script>
     <script type="text/javascript"
-            src="https://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
-    <script type="text/javascript" src="https://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+            src="js/echarts/echarts-gl.min.js"></script>
+    <script type="text/javascript" src="js/echarts/ecStat.min.js"></script>
+
     <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
     <script src=lib/nebulas.js></script>
     <script src=lib/nebPay.js></script>
@@ -270,7 +272,6 @@
     "use strict";
     var TIMER = null;
     var COUNT_DOWN = 8;
-
 
     var CONTRACT_ADDR = "n1xVT4UVGbTM1Q5iGigosaT9f99FLm99JnL";
     var NET_TYPE = 'TEST';
