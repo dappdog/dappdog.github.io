@@ -643,7 +643,10 @@
 
         neb.api.call(from, _to_addr, _value, '0', gas_price, gas_limit, contract).then(function (resp) {
 
-            var res = JSON.parse(JSON.parse(resp['result']));
+            console.log(resp['result']);
+            var res = {};
+            if (resp['result'])
+                res = JSON.parse(JSON.parse(resp['result']));
 
             console.log("result:", res);
 
