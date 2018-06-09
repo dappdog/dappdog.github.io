@@ -508,7 +508,7 @@
 
     function onPay() {
         // TODO: round up
-        let _value = parseFloat($('.pay-amount').text()).toPrecision(15);
+        let _value = parseFloat($('.pay-amount').text()).toPrecision(15) + 0.0001;
         var _args = "";
 
 
