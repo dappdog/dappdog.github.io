@@ -59,22 +59,19 @@
     <div class="jumbotron container">
         <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo"><h4>使用说明</h4></button>
         <a href="doc/Lend.docx">
-            <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo"><h4>帮助文档</h4></button>
+            <button type="button" class="btn btn-info" data-toggle="collapse"><h4>帮助文档</h4></button>
         </a>
         <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#about_us"><h4>关于我们</h4></button>
         <div id="demo" class="container collapse">
             <br>
-            <p>这是一个借贷应用，用户可以进行的操作包括提供担保、提供借贷、借贷竞拍、偿还借贷等。</p>
-            <p>整个借贷的过程会被写在星云链上公开且不可更改。</p>
-            <p>提供一个担保需要设定当前拍卖的物品、起拍价、匿名时限和公开时限等。</p>
-            <p>参与一个拍卖的过程分为三步：匿名投标、公开投标和查看结果。</p>
-            <p>匿名投标的过程是为了保证参与者不会其自身投标之前知晓其他人的投标金额，从而保证过程公平。</p>
-            <p>虽然次价拍卖 truthful, 但如果直接公开投标的话不能排除无法获胜的人故意投高或投低搅局的情况。</p>
-            <p>在这种情况下，故意投高会对得拍者不利，而故意投低会对拍卖者不利。</p>
-            <p>我们使用 SHA256 函数和随机盐值来保证最终公开投标时的价格和匿名投标时相同。</p>
-            <p>拍卖规则采取次价拍卖，即出价最高的人赢得拍卖，但所付价格为第二高的价格。</p>
-            <p><strong>在公开投标阶段投标者需向合约转入押金，但只有赢得拍卖的投标者的部分押金会转入拍卖者账户，<br>其余均会退回原账户。</strong></p>
-            <p>上述过程是由公开的智能合约来保证的，从而避免拍卖者作弊的发生。</p>
+            <p>这是一个借贷应用，在一个完整的借贷流程中总共有三种角色：担保人、出资人、借款人。</p>
+            <p>担保人可以为一个借贷提供一定金额的担保，作用是在借款人无法按时还清贷款时将担保金额转给出资人，从而减轻出资人的一部分顾虑。</p>
+            <p>出资人为该借贷提供主要的资金来源，并规定相应的借贷利率。最终利率由一场降价拍卖决定。</p>
+            <p>降价拍卖中，利率由起始利率随时间降至最低利率，借款人可在任意时刻对其竞拍。先拍先得。</p>
+            <p>在拍下利率之后，借款人需要在规定时间内偿还由利率计算得到的应还款项。相应利润由担保人和出资人平分。</p>
+            <p>更加具体的操作说明可见图片帮助教程。</p>
+            <br>
+            <p>整个借贷过程会被记录在星云链上，公开且不可修改。</p>
         </div>
         <div id="about_us" class="container collapse">
             <br>
